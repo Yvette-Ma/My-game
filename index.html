@@ -1139,7 +1139,9 @@ async function callAI(userMessage){
     });
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
-    return data.content[0].text;
+    const text = data.content?.[0]?.text;
+    if(!text) throw new Error('AI 回傳內容為空，請重試');
+    return text;
 
   } else if(p === 'google'){
     // Gemini via REST
@@ -1159,7 +1161,9 @@ async function callAI(userMessage){
     });
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
-    return data.candidates[0].content.parts[0].text;
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(!text) throw new Error('AI 回傳內容為空（可能觸發安全過濾），請重試');
+    return text;
 
   } else {
     // OpenAI-compatible (openai / openrouter)
@@ -1188,7 +1192,15 @@ async function callAI(userMessage){
     });
     const data = await res.json();
     if(data.error) throw new Error(data.error.message||JSON.stringify(data.error));
-    return data.choices[0].message.content;
+    // 某些模型（如思考型）content 可能為 null，改從 reasoning 或多個 choices 取值
+    const msg = data.choices?.[0]?.message;
+    if(!msg) throw new Error('AI 未回傳訊息，請重試');
+    const text = msg.content
+      || msg.reasoning
+      || (msg.tool_calls?.[0]?.function?.arguments)
+      || null;
+    if(!text) throw new Error('AI 回傳內容為空（可能是模型限制），請換一個模型');
+    return text;
   }
 }
 
@@ -1289,6 +1301,11 @@ ${petDesc}
 // ── 解析 AI 回應 ──
 function processAIResponse(raw, isFirst=false){
   let data;
+  if(!raw || typeof raw !== 'string'){
+    addEventMsg('⚠️ AI 回應格式異常，請重試。');
+    renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);
+    return;
+  }
   try {
     const cleaned = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
     // 嘗試找 JSON
@@ -1894,7 +1911,7 @@ async function sendKakaoMsg(){
   try {
     const reply = await callAI(`玩家透過KakaoTalk傳訊息給${gameState.bfName}：「${text}」
 請以${gameState.bfName}的口吻回覆一條KakaoTalk訊息（1-3句，符合其人設，純文字，不需JSON）。`);
-    const cleanReply = reply.replace(/```[\s\S]*?```/g,'').trim();
+    const cleanReply = reply ? reply.replace(/```[\s\S]*?```/g,'').trim() : '';
     msgs.push({ from: gameState.bfName, text: cleanReply, time:`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()+1).padStart(2,'0')}` });
     gameState.phoneData.kakao.chats[gameState.bfName] = msgs;
   } catch(e){}
