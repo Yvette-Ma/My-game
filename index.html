@@ -1293,7 +1293,12 @@ ${petDesc}
     await saveGame();
   } catch(e){
     hideLoading();
-    addSystemMsg(`❌ AI 連線失敗：${e.message}。請檢查 API Key 是否正確。`);
+    addSystemMsg(`❌ AI 連線失敗：${e.message}`);
+    renderOptions([
+      {label:'A', text:'重試（重新生成開場劇情）'},
+      {label:'B', text:'回設定頁（更換 API Key 或模型）'},
+    ]);
+    return;
   }
   hideLoading();
 }
@@ -1431,6 +1436,24 @@ function renderOptions(opts){
       btn.innerHTML = `<span class="opt-label">📱</span><span class="opt-text">查看手機</span>`;
       btn.onclick = ()=>openPhoneOverlay('home');
       grid.appendChild(btn);
+    } else if(opt.text === '回設定頁（更換 API Key 或模型）'){
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      btn.onclick = ()=>showSettingsFromGame();
+      grid.appendChild(btn);
+    } else if(opt.text === '重試（重新生成開場劇情）'){
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      btn.onclick = ()=>{
+        document.getElementById('story-panel').innerHTML = '';
+        gameState.history = [];
+        gameState.round = 1;
+        updateHeader();
+        startGame();
+      };
+      grid.appendChild(btn);
     } else {
       const btn = document.createElement('button');
       btn.className = 'opt-btn';
@@ -1463,7 +1486,10 @@ function disableOptions(){
 }
 
 // ── 下一回合 ──
+let lastPlayerChoice = ''; // 記住上次選擇供重試用
 async function nextRound(playerChoice){
+  if(playerChoice === '重試') playerChoice = lastPlayerChoice || '繼續';
+  lastPlayerChoice = playerChoice;
   gameState.round++;
   updateHeader();
   showLoading('生成下一回合…');
@@ -1499,8 +1525,16 @@ async function nextRound(playerChoice){
     await saveGame();
   } catch(e){
     typingDiv.remove();
-    addSystemMsg(`❌ AI 錯誤：${e.message}`);
-    renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);
+    gameState.round--; // 回合數退回，讓重試時再次遞增
+    updateHeader();
+    hideLoading();
+    addSystemMsg(`❌ AI 連線失敗：${e.message}`);
+    renderOptions([
+      {label:'A', text:'重試'},
+      {label:'B', text:'回設定頁（更換 API Key 或模型）'},
+      {label:'D', text:'自定義（玩家自行輸入）'},
+    ]);
+    return;
   }
   hideLoading();
 }
