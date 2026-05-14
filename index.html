@@ -763,12 +763,16 @@ function updateProviderHints(){
   sec.style.display = 'block';
   // 重置選單
   const sel = document.getElementById('input-model');
-  sel.innerHTML = '<option value="">— 輸入 API Key 後點「載入模型」—</option>';
+  if(selectedProvider === 'openrouter'){
+    sel.innerHTML = '<option value="openrouter/free">★ 自動選擇免費模型（預設・最推薦）</option><option value="">— 或輸入 Key 後點「載入模型」選指定模型 —</option>';
+  } else {
+    sel.innerHTML = '<option value="">— 輸入 API Key 後點「載入模型」—</option>';
+  }
   document.getElementById('btn-test-model').style.display = 'none';
   document.getElementById('model-test-result').textContent = '';
   document.getElementById('model-test-result').className = '';
   const hints = {
-    openrouter: '輸入 Key 後點「載入模型」可看到所有可用模型（含免費標示）',
+    openrouter: '預設使用「自動選擇免費模型」，永遠指向當前可用的免費模型，不會失效。或輸入 Key 後點「載入模型」選擇指定模型。',
     openai:     '輸入 Key 後點「載入模型」列出可用 GPT 模型',
     google:     '輸入 Key 後點「載入模型」列出可用 Gemini 模型',
     anthropic:  '輸入 Key 後點「載入模型」列出可用 Claude 模型',
@@ -797,15 +801,27 @@ window.loadModels = async function(){
       document.getElementById('model-hint').textContent = '請在下方手動輸入模型名稱';
       return;
     }
+    // 最頂端加入 openrouter/free 自動路由（最穩定免費選項）
+    if(selectedProvider === 'openrouter'){
+      const autoOpt = document.createElement('option');
+      autoOpt.value = 'openrouter/free';
+      autoOpt.textContent = '★ 自動選擇免費模型 [最推薦・永遠可用]';
+      autoOpt.selected = true;
+      sel.appendChild(autoOpt);
+      // 分隔線
+      const sep = document.createElement('option');
+      sep.disabled = true;
+      sep.textContent = '── 以下為指定模型 ──';
+      sel.appendChild(sep);
+    }
     models.forEach(m => {
       const opt = document.createElement('option');
       opt.value = m.id;
       opt.textContent = m.label;
-      if(m.recommended) opt.selected = true;
       sel.appendChild(opt);
     });
     const freeCount = models.filter(m=>m.id.includes(':free')).length;
-    document.getElementById('model-hint').textContent = `已載入 ${models.length} 個可用模型（含 ${freeCount} 個免費）`;
+    document.getElementById('model-hint').textContent = `已載入 ${models.length} 個模型（含 ${freeCount} 個免費）— 推薦使用頂部的「自動選擇」`;
     document.getElementById('btn-test-model').style.display = '';
   } catch(e) {
     sel.innerHTML = '<option value="">— 載入失敗，請手動輸入 —</option>';
