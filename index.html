@@ -1131,7 +1131,7 @@ async function callAI(userMessage){
       },
       body: JSON.stringify({
         model: model || 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
+        max_tokens: 4096,
         system: sysPrompt,
         messages: msgs
       })
@@ -1155,12 +1155,15 @@ async function callAI(userMessage){
       body: JSON.stringify({
         system_instruction:{parts:[{text:sysPrompt}]},
         contents: geminiMsgs,
-        generationConfig:{ maxOutputTokens:2000, temperature:0.9 }
+        generationConfig:{ maxOutputTokens:8192, temperature:0.9 }
       })
     });
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    // gemini-2.5 thinking 模式會有多個 parts，找最後一個有 text 的
+    const parts = data.candidates?.[0]?.content?.parts || [];
+    const textPart = [...parts].reverse().find(p => p.text && !p.thought);
+    const text = textPart?.text || parts.find(p => p.text)?.text;
     if(!text) throw new Error('AI 回傳內容為空（可能觸發安全過濾），請重試');
     return text;
 
@@ -1184,7 +1187,7 @@ async function callAI(userMessage){
       headers,
       body: JSON.stringify({
         model: model || (p==='openrouter'?'google/gemma-3-27b-it:free':'gpt-4o-mini'),
-        max_tokens: 2000,
+        max_tokens: 4096,
         messages: allMsgs,
         temperature: 0.9
       })
@@ -1225,8 +1228,11 @@ function buildSystemPrompt(){
 6. 每4回合提供一次同房機會
 7. 所有事件生成需真實模擬韓國娛樂圈、飯圈、現代生活
 8. 事件描寫不包含預告、提示或任何人的心理活動
-9. 使用豐富emoji、分段排版，每行不超過30字
-10. 韓劇小說式敘事風格，文筆細膩
+9. 使用emoji增加氛圍，每行不超過30字，自然分段
+10. 韓劇小說式敘事風格，文筆細膩，完全沉浸式
+11. 【重要】禁止使用任何 Markdown 語法（禁止 **粗體**、*斜體*、# 標題、--- 分隔線）
+12. 【重要】禁止直接對玩家說話（如「歡迎來到...」「好的，Yvette」），直接開始敘事
+13. 【重要】narration 和 event 欄位合計不超過400字，確保 JSON 完整輸出
 
 【每回合格式】
 每回合必須包含以下結構，以JSON回覆：
@@ -1253,6 +1259,8 @@ function buildSystemPrompt(){
 
 // ── 開始遊戲 ──
 async function startGame(){
+  gameState.round = 1; // 確保從第1回合開始
+  updateHeader();
   showLoading('生成初始劇情中…');
   addSystemMsg('⏳ 正在根據你的設定生成專屬劇情…');
 
@@ -1272,17 +1280,16 @@ async function startGame(){
 與${bfDesc}的秘密戀情模擬遊戲。
 ${petDesc}
 
-請先生成：
-1. 玩家的背景介紹（工作、生活環境、性格）
-2. 與男友相遇並墜入愛河的前置劇情（200-300字，韓劇風格）
-3. 目前關係狀態說明
-4. 為什麼不能公開戀情的原因（隨機生成，需符合韓娛生態）
-5. 然後進入第一回合的遊戲流程
+請直接以沉浸式敘事開始，不要有任何歡迎語或說明文字，內容包含：
+1. event 欄位：玩家背景 + 與男友相遇相愛的前置劇情（150字以內）
+2. narration 欄位：目前某個具體場景的描寫（當下這一刻）
+3. 不能公開戀情的原因自然融入敘事中
+4. 提供 ABCD 四個選項
+5. 所有欄位嚴格控制長度，確保 JSON 完整不截斷
 
-同時決定男友的隱藏感情基礎（真心/各取所需/利益交換/欺騙）和隱藏缺點，
-但不要在回覆中透露，只需在後續劇情中逐步顯現。
+同時在內部決定男友的隱藏感情基礎與缺點，不在回覆中透露。
 
-請以JSON格式回覆。`;
+請以完整 JSON 格式回覆，不得截斷。`;
 
   try {
     const response = await callAI(prompt);
@@ -1317,12 +1324,25 @@ function processAIResponse(raw, isFirst=false){
     if(match) data = JSON.parse(match[0]);
     else data = JSON.parse(cleaned);
   } catch(e) {
-    // 若解析失敗，直接顯示文字
-    addEventMsg(raw);
-    renderOptions([
-      {label:'A',text:'繼續'},
-      {label:'D',text:'自定義（玩家自行輸入）'}
-    ]);
+    // JSON 解析失敗：可能是 AI 回傳純文字或格式不對
+    // 嘗試直接顯示為敘事文字
+    const looksLikeJson = raw.trim().startsWith('{') || raw.trim().startsWith('```');
+    if(looksLikeJson){
+      // 明顯是 JSON 但解析失敗（可能被截斷），顯示錯誤並提示重試
+      addSystemMsg('⚠️ 回應格式異常，請重試。');
+      renderOptions([
+        {label:'A',text:'重試'},
+        {label:'B',text:'回設定頁（更換 API Key 或模型）'},
+        {label:'D',text:'自定義（玩家自行輸入）'}
+      ]);
+    } else {
+      // 純文字回應，直接顯示
+      addEventMsg(raw);
+      renderOptions([
+        {label:'A',text:'繼續'},
+        {label:'D',text:'自定義（玩家自行輸入）'}
+      ]);
+    }
     return;
   }
 
@@ -1342,10 +1362,10 @@ function processAIResponse(raw, isFirst=false){
   }
 
   // 敘述
-  if(data.narration) addNarrationMsg(data.narration);
+  if(data.narration) addNarrationMsg(cleanMarkdown(data.narration));
 
   // 事件
-  if(data.event) addEventMsg(data.event);
+  if(data.event) addEventMsg(cleanMarkdown(data.event));
 
   // 選項（加入手機選項）
   let opts = data.options || [];
