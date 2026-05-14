@@ -1003,11 +1003,10 @@ window.confirmSettings = function(){
 
   msg.textContent = '';
 
-  // 儲存 api 設定到 localStorage（不進雲端）
+  // 儲存 api 設定到 localStorage 並同步 gameState
   localStorage.setItem('kpop_provider', selectedProvider);
   localStorage.setItem('kpop_model', model);
   localStorage.setItem('kpop_apikey', apikey);
-
   gameState.apiProvider = selectedProvider;
   gameState.apiModel = model;
   gameState.apiKey = apikey;
@@ -1113,8 +1112,8 @@ function updateHeader(){
 async function callAI(userMessage){
   const p = gameState.apiProvider;
   const model = gameState.apiModel;
-  // 永遠優先讀 localStorage 最新的 key，確保更換後立即生效
-  const key = localStorage.getItem('kpop_apikey') || gameState.apiKey || '';
+  // 優先讀 gameState（測試時暫存在此），其次 localStorage
+  const key = gameState.apiKey || localStorage.getItem('kpop_apikey') || '';
   if(!key) throw new Error('缺少 API Key');
 
   const msgs = [...gameState.history, { role:'user', content: userMessage }];
