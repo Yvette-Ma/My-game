@@ -1310,6 +1310,18 @@ ${petDesc}
 }
 
 // ── 解析 AI 回應 ──
+function cleanMarkdown(text){
+  if(!text) return '';
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^---+$/gm, '')
+    .replace(/^===+$/gm, '')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+    .trim();
+}
+
 function processAIResponse(raw, isFirst=false){
   let data;
   if(!raw || typeof raw !== 'string'){
