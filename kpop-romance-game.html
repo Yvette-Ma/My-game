@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>✨ 秘密嫂子 — 韓娛戀愛養成</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080510;
+  --bg2: #0f0a18;
+  --bg3: #160f20;
+  --card: #1a1228;
+  --border: #2e1f45;
+  --border2: #4a2d6e;
+  --rose: #e878a0;
+  --rose2: #c94d78;
+  --rose3: #f0aacc;
+  --gold: #d4a855;
+  --gold2: #f0c878;
+  --text: #f0eaf8;
+  --text2: #c0a8d8;
+  --text3: #7a6090;
+  --green: #78c4a0;
+  --blue: #78a8e0;
+  --purple: #a878e0;
+  --phone-bg: #0a0a14;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto Serif TC',serif;overflow:hidden;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── 粒子 ── */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.pt{position:absolute;border-radius:50%;animation:ptfloat linear infinite;opacity:0;}
+@keyframes ptfloat{0%{transform:translateY(100vh) scale(0);opacity:0;}15%{opacity:.7;}85%{opacity:.3;}100%{transform:translateY(-5vh) scale(1.2);opacity:0;}}
+
+/* ── 通用 ── */
+.screen{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;overflow:hidden;}
+.screen.active{display:flex;}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.6rem 1.4rem;border-radius:2rem;border:1px solid var(--border2);
+  background:linear-gradient(135deg,rgba(168,120,224,.15),rgba(232,120,160,.1));
+  color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:.9rem;
+  cursor:pointer;transition:all .25s;letter-spacing:.05em;
+}
+.btn:hover{background:linear-gradient(135deg,rgba(168,120,224,.35),rgba(232,120,160,.25));border-color:var(--rose);transform:translateY(-1px);box-shadow:0 4px 20px rgba(232,120,160,.2);}
+.btn-primary{background:linear-gradient(135deg,var(--rose2),var(--purple));border-color:transparent;box-shadow:0 4px 20px rgba(232,120,160,.3);}
+.btn-primary:hover{box-shadow:0 6px 30px rgba(232,120,160,.5);transform:translateY(-2px);}
+.btn-sm{padding:.4rem .9rem;font-size:.8rem;}
+
+/* ════════════════ SPLASH ════════════════ */
+#screen-splash{
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 55%,#1a0830 0%,#080510 65%);
+}
+.splash-wrap{text-align:center;animation:fadeUp 1.2s ease forwards;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+.splash-icon{font-size:3.5rem;margin-bottom:.8rem;display:block;filter:drop-shadow(0 0 20px rgba(232,120,160,.6));}
+.splash-title{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(2.2rem,6vw,3.8rem);
+  background:linear-gradient(135deg,var(--rose3),var(--gold2),var(--rose));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.2;margin-bottom:.5rem;
+}
+.splash-sub{color:var(--text3);font-size:.9rem;letter-spacing:.15em;margin-bottom:2.5rem;}
+.splash-btn-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.splash-deco{
+  position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;
+}
+.deco1{width:400px;height:400px;background:rgba(168,120,224,.12);top:-100px;left:-100px;}
+.deco2{width:350px;height:350px;background:rgba(232,120,160,.1);bottom:-80px;right:-80px;}
+
+/* ════════════════ SETTINGS ════════════════ */
+#screen-settings{
+  background:var(--bg2);
+  align-items:center;justify-content:flex-start;
+  padding:1.5rem 1rem 2rem;overflow-y:auto;
+}
+.settings-inner{width:100%;max-width:520px;margin:0 auto;}
+.settings-title{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.6rem;color:var(--rose3);margin-bottom:.3rem;
+}
+.settings-sub{color:var(--text3);font-size:.82rem;margin-bottom:1.5rem;}
+.s-section{margin-bottom:1.4rem;}
+.s-label{font-size:.78rem;color:var(--text3);letter-spacing:.1em;margin-bottom:.4rem;display:block;}
+.s-input{
+  width:100%;padding:.7rem 1rem;border-radius:.75rem;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.s-input:focus{border-color:var(--rose2);}
+.s-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237a6090' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;}
+.s-note{font-size:.75rem;color:var(--text3);margin-top:.35rem;line-height:1.5;}
+.s-row{display:flex;gap:.8rem;align-items:flex-start;}
+.s-row .s-section{flex:1;}
+.s-divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0;}
+.s-section-title{font-size:.85rem;color:var(--rose3);letter-spacing:.08em;margin-bottom:.8rem;display:flex;align-items:center;gap:.4rem;}
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+.model-opt{
+  padding:.5rem .7rem;border-radius:.6rem;border:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.78rem;color:var(--text2);
+}
+.model-opt:hover,.model-opt.selected{border-color:var(--purple);background:rgba(168,120,224,.15);color:var(--text);}
+.identity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.5rem;}
+.identity-opt{
+  padding:.5rem .6rem;border-radius:.6rem;border:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.78rem;color:var(--text2);text-align:center;
+}
+.identity-opt:hover,.identity-opt.selected{border-color:var(--rose2);background:rgba(232,120,160,.15);color:var(--text);}
+.settings-footer{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem;flex-wrap:wrap;}
+#msg-settings{font-size:.8rem;color:var(--rose);margin-top:.5rem;min-height:1.2rem;}
+
+/* ════════════════ GAME ════════════════ */
+#screen-game{
+  background:var(--bg);
+  display:none;flex-direction:column;
+}
+#screen-game.active{display:flex;}
+
+.game-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem 1rem;background:rgba(8,5,16,.85);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(10px);
+  flex-shrink:0;z-index:20;position:relative;
+}
+.gh-left{display:flex;align-items:center;gap:.6rem;}
+.gh-title{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--rose3);}
+.gh-round{font-size:.75rem;color:var(--text3);background:var(--bg3);padding:.2rem .6rem;border-radius:1rem;border:1px solid var(--border);}
+.gh-time{font-size:.75rem;color:var(--gold);font-family:'Noto Sans TC',sans-serif;}
+.gh-right{display:flex;align-items:center;gap:.5rem;}
+.gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.3rem .6rem;border-radius:.5rem;cursor:pointer;font-size:.75rem;transition:all .2s;}
+.gh-btn:hover{border-color:var(--border2);color:var(--text2);}
+
+.game-body{
+  display:flex;flex:1;overflow:hidden;
+  flex-direction:row;
+}
+
+/* 主文本區 */
+.story-panel{
+  flex:1;overflow-y:auto;padding:1.2rem 1rem 1rem;
+  display:flex;flex-direction:column;gap:.8rem;
+}
+.story-msg{
+  max-width:100%;animation:msgIn .4s ease forwards;
+  font-size:clamp(.82rem,2.2vw,.95rem);line-height:1.9;
+}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.story-msg.narration{color:var(--text2);}
+.story-msg.event{
+  background:linear-gradient(135deg,rgba(168,120,224,.08),rgba(232,120,160,.05));
+  border:1px solid var(--border);border-radius:1rem;padding:1rem 1.1rem;
+  color:var(--text);
+}
+.story-msg.event .ev-tag{
+  font-size:.7rem;letter-spacing:.12em;color:var(--rose);
+  margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;
+}
+.story-msg.phone{
+  background:var(--phone-bg);border:1px solid #2a2040;
+  border-radius:1rem;padding:0;overflow:hidden;font-family:monospace;
+  font-size:.78rem;
+}
+.phone-bar{
+  background:#1a1530;padding:.4rem .8rem;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid #2a2040;font-size:.7rem;color:#888;
+}
+.phone-content{padding:.8rem;color:#c8c0e0;white-space:pre-wrap;line-height:1.7;}
+.story-msg.system{
+  text-align:center;font-size:.75rem;color:var(--text3);
+  padding:.3rem 0;letter-spacing:.08em;
+}
+.story-msg.choice-made{
+  background:rgba(120,168,224,.08);border:1px solid rgba(120,168,224,.2);
+  border-radius:.75rem;padding:.7rem 1rem;font-size:.82rem;color:var(--blue);
+}
+.typing-indicator{
+  display:flex;align-items:center;gap:.4rem;padding:.5rem 0;
+  font-size:.8rem;color:var(--text3);
+}
+.typing-dots{display:flex;gap:.25rem;}
+.typing-dots span{
+  width:5px;height:5px;border-radius:50%;background:var(--text3);
+  animation:typingDot 1.2s infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes typingDot{0%,80%,100%{transform:scale(.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+
+/* 通知浮層 */
+.notif-toast{
+  position:fixed;top:70px;right:12px;z-index:100;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:.9rem;padding:.7rem 1rem;max-width:260px;
+  font-size:.78rem;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.5);
+  animation:toastIn .35s ease forwards;pointer-events:none;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+.notif-toast .nt-app{font-size:.68rem;color:var(--text3);margin-bottom:.2rem;}
+.notif-toast .nt-msg{color:var(--text);}
+
+/* 選項區 */
+.options-panel{
+  flex-shrink:0;padding:.8rem 1rem 1rem;
+  background:rgba(8,5,16,.9);border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:.6rem;backdrop-filter:blur(10px);
+}
+.options-title{font-size:.72rem;color:var(--text3);letter-spacing:.1em;margin-bottom:.1rem;}
+.options-grid{display:flex;flex-direction:column;gap:.45rem;}
+.opt-btn{
+  display:flex;align-items:flex-start;gap:.6rem;
+  padding:.65rem .9rem;border-radius:.75rem;
+  background:rgba(26,18,40,.8);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;text-align:left;
+  font-family:'Noto Sans TC',sans-serif;font-size:.82rem;line-height:1.5;
+  transition:all .2s;width:100%;
+}
+.opt-btn:hover{
+  background:rgba(168,120,224,.15);border-color:var(--purple);
+  color:var(--text);transform:translateX(3px);
+}
+.opt-btn.phone-opt{border-color:rgba(120,168,224,.3);}
+.opt-btn.phone-opt:hover{background:rgba(120,168,224,.15);border-color:var(--blue);}
+.opt-label{
+  font-size:.7rem;color:var(--text3);min-width:1.2rem;
+  font-family:'Playfair Display',serif;font-style:italic;margin-top:.05rem;
+}
+.opt-text{flex:1;}
+.custom-input-row{display:flex;gap:.5rem;margin-top:.2rem;}
+.custom-input{
+  flex:1;padding:.55rem .8rem;border-radius:.6rem;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:'Noto Sans TC',sans-serif;font-size:.82rem;outline:none;
+}
+.custom-input:focus{border-color:var(--rose2);}
+.custom-send{padding:.55rem 1rem;border-radius:.6rem;background:var(--rose2);border:none;color:#fff;cursor:pointer;font-size:.82rem;transition:background .2s;}
+.custom-send:hover{background:var(--rose);}
+.options-panel.disabled .opt-btn{opacity:.5;pointer-events:none;}
+
+/* ── 手機全屏 ── */
+#phone-overlay{
+  position:fixed;inset:0;z-index:50;
+  background:var(--phone-bg);
+  display:none;flex-direction:column;
+  font-family:monospace;
+}
+#phone-overlay.open{display:flex;}
+.po-statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.4rem .9rem;background:#0d0d1a;
+  font-size:.7rem;color:#888;border-bottom:1px solid #1a1530;
+}
+.po-body{flex:1;overflow-y:auto;padding:.8rem;}
+.po-actions{
+  padding:.6rem .8rem;background:#0d0d1a;border-top:1px solid #1a1530;
+  display:flex;gap:.5rem;flex-wrap:wrap;
+}
+.po-btn{
+  padding:.4rem .8rem;border-radius:.5rem;border:1px solid #2a2040;
+  background:#1a1530;color:#a088c0;cursor:pointer;font-size:.75rem;
+  transition:all .2s;font-family:monospace;
+}
+.po-btn:hover{border-color:#7860a8;color:#d0b8f0;}
+.po-close{
+  padding:.4rem .8rem;border-radius:.5rem;border:1px solid rgba(232,120,160,.3);
+  background:rgba(232,120,160,.1);color:var(--rose3);cursor:pointer;font-size:.75rem;
+  font-family:monospace;
+}
+.po-pre{white-space:pre-wrap;color:#c8c0e0;font-size:.78rem;line-height:1.75;}
+
+/* ── 載入遮罩 ── */
+#loading-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(8,5,16,.92);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;
+}
+#loading-overlay.show{display:flex;}
+.lo-ring{
+  width:44px;height:44px;border-radius:50%;
+  border:3px solid var(--border);border-top-color:var(--rose);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.lo-text{font-size:.85rem;color:var(--text3);}
+
+/* ── Auth overlay ── */
+#auth-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(8,5,16,.97);
+  display:none;align-items:center;justify-content:center;
+}
+#auth-overlay.show{display:flex;}
+.auth-box{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:1.2rem;padding:2rem;max-width:340px;width:90%;text-align:center;
+}
+.auth-title{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:var(--rose3);margin-bottom:.5rem;}
+.auth-sub{font-size:.82rem;color:var(--text3);margin-bottom:1.5rem;line-height:1.6;}
+.auth-btn{
+  display:flex;align-items:center;justify-content:center;gap:.6rem;
+  width:100%;padding:.8rem;border-radius:.8rem;
+  background:#fff;color:#333;font-size:.9rem;font-weight:500;
+  border:none;cursor:pointer;transition:opacity .2s;margin-bottom:.8rem;
+  font-family:'Noto Sans TC',sans-serif;
+}
+.auth-btn:hover{opacity:.9;}
+.auth-btn img{width:20px;height:20px;}
+.auth-skip{font-size:.75rem;color:var(--text3);cursor:pointer;text-decoration:underline;}
+.auth-skip:hover{color:var(--text2);}
+
+/* ── 儲存狀態 ── */
+.save-indicator{
+  font-size:.68rem;color:var(--green);opacity:0;
+  transition:opacity .3s;letter-spacing:.05em;
+}
+.save-indicator.show{opacity:1;}
+
+/* ── 響應式 ── */
+@media(min-width:768px){
+  .story-panel{padding:1.5rem 2rem;}
+  .options-panel{padding:1rem 2rem 1.2rem;}
+  .story-msg{font-size:.95rem;}
+  .opt-btn{font-size:.88rem;}
+}
+@media(min-width:1024px){
+  .game-body{max-width:800px;margin:0 auto;width:100%;}
+  #screen-game{align-items:center;}
+  #screen-game .game-header{width:100%;max-width:800px;}
+}
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ════ SPLASH ════ -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-deco deco1"></div>
+  <div class="splash-deco deco2"></div>
+  <div class="splash-wrap">
+    <span class="splash-icon">💗</span>
+    <h1 class="splash-title">秘密嫂子</h1>
+    <p class="splash-sub">韓娛戀愛養成模擬器</p>
+    <div class="splash-btn-row">
+      <button class="btn btn-primary" onclick="startNewGame()">✨ 開始新遊戲</button>
+      <button class="btn" onclick="continueGame()">📖 繼續遊戲</button>
+    </div>
+    <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
+  </div>
+</div>
+
+<!-- ════ AUTH ════ -->
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-title">💗 歡迎</div>
+    <p class="auth-sub">登入 Google 帳號<br>即可在所有裝置自動同步存檔</p>
+    <button class="auth-btn" onclick="signInWithGoogle()">
+      <img src="https://www.google.com/favicon.ico" alt="Google">
+      使用 Google 帳號登入
+    </button>
+    <div class="auth-skip" onclick="skipAuth()">暫時不登入（存檔僅限此裝置）</div>
+  </div>
+</div>
+
+<!-- ════ SETTINGS ════ -->
+<div id="screen-settings" class="screen">
+  <div class="settings-inner">
+    <div class="settings-title">💗 遊戲設定</div>
+    <p class="settings-sub">填寫你的角色資訊，開始你的韓娛戀愛故事</p>
+
+    <hr class="s-divider">
+    <div class="s-section-title">🤖 AI 模型設定</div>
+
+    <div class="s-section">
+      <span class="s-label">選擇 AI 服務商</span>
+      <div class="model-grid">
+        <div class="model-opt" data-provider="openrouter" onclick="selectProvider(this)">
+          🌐 OpenRouter<br><small style="color:var(--green)">有免費模型</small>
+        </div>
+        <div class="model-opt" data-provider="openai" onclick="selectProvider(this)">
+          💠 OpenAI<br><small>GPT-4o 等</small>
+        </div>
+        <div class="model-opt" data-provider="google" onclick="selectProvider(this)">
+          🔵 Google Gemini
+        </div>
+        <div class="model-opt" data-provider="anthropic" onclick="selectProvider(this)">
+          🟠 Anthropic Claude
+        </div>
+      </div>
+    </div>
+
+    <div class="s-section" id="model-section" style="display:none;">
+      <span class="s-label" id="model-label">模型名稱</span>
+      <input class="s-input" id="input-model" placeholder="輸入模型名稱">
+      <p class="s-note" id="model-hint"></p>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">API Key</span>
+      <input class="s-input" id="input-apikey" type="password" placeholder="貼上你的 API Key">
+      <p class="s-note" id="apikey-note">API Key 僅存於你的瀏覽器，不會上傳至伺服器。</p>
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">👤 玩家角色</div>
+
+    <div class="s-row">
+      <div class="s-section">
+        <span class="s-label">你的姓名</span>
+        <input class="s-input" id="input-name" placeholder="角色姓名">
+      </div>
+      <div class="s-section">
+        <span class="s-label">年齡</span>
+        <input class="s-input" id="input-age" placeholder="例：24" type="number" min="18" max="35">
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">國籍</span>
+      <input class="s-input" id="input-nationality" placeholder="例：台灣、中國、日本、美國...">
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">身份（選擇或自填）</span>
+      <div class="identity-grid" id="identity-grid">
+        <div class="identity-opt" onclick="selectIdentity(this,'粉絲')">🎀 粉絲</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'經紀人')">💼 經紀人</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'演員/歌手')">🎬 演員/歌手</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'造型師')">✂️ 造型師</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'練習生')">🎤 練習生</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'製作人')">🎵 製作人</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'財閥千金')">💎 財閥千金</div>
+        <div class="identity-opt" onclick="selectIdentity(this,'素人')">🌸 素人</div>
+      </div>
+      <input class="s-input" id="input-identity" placeholder="或自填身份..." style="margin-top:.5rem;">
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">💕 男友設定</div>
+
+    <div class="s-section">
+      <span class="s-label">男友姓名（現實韓國男明星）</span>
+      <input class="s-input" id="input-bf-name" placeholder="例：金碩珍、朴志訓...">
+      <p class="s-note">系統將根據該明星的公開形象、性格與演藝經歷構建人設。</p>
+    </div>
+
+    <div class="s-row">
+      <div class="s-section">
+        <span class="s-label">你對男友的愛稱</span>
+        <input class="s-input" id="input-my-pet" placeholder="例：歐巴、寶貝...">
+      </div>
+      <div class="s-section">
+        <span class="s-label">男友對你的愛稱</span>
+        <input class="s-input" id="input-bf-pet" placeholder="例：寶貝、親愛的...">
+      </div>
+    </div>
+
+    <div id="msg-settings"></div>
+    <div class="settings-footer">
+      <button class="btn" id="btn-back-splash" onclick="showScreen('screen-splash')">← 返回主頁</button>
+      <button class="btn" id="btn-back-game" onclick="showScreen('screen-game')" style="display:none;">← 返回遊戲</button>
+      <button class="btn btn-primary" id="btn-start-game" onclick="confirmSettings()">開始遊戲 ✨</button>
+      <button class="btn btn-primary" id="btn-save-settings" onclick="saveSettingsOnly()" style="display:none;">儲存設定 ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ GAME ════ -->
+<div id="screen-game" class="screen">
+  <div class="game-header">
+    <div class="gh-left">
+      <span class="gh-title">💗 秘密嫂子</span>
+      <span class="gh-round" id="gh-round">第 1 回合</span>
+      <span class="gh-time" id="gh-time"></span>
+    </div>
+    <div class="gh-right">
+      <span class="save-indicator" id="save-indicator">✓ 已同步</span>
+      <button class="gh-btn" onclick="openPhoneOverlay('home')">📱 手機</button>
+      <button class="gh-btn" onclick="showSettingsFromGame()">⚙️ 設定</button>
+      <button class="gh-btn" onclick="signOutUser()" style="color:var(--rose2);">登出</button>
+    </div>
+  </div>
+
+  <div class="game-body">
+    <div class="story-panel" id="story-panel"></div>
+  </div>
+
+  <div class="options-panel" id="options-panel">
+    <div class="options-title">▸ 選擇你的行動</div>
+    <div class="options-grid" id="options-grid"></div>
+  </div>
+</div>
+
+<!-- ════ PHONE OVERLAY ════ -->
+<div id="phone-overlay">
+  <div class="po-statusbar">
+    <span id="po-time">14:25</span>
+    <span>📶 🔋 <span id="po-battery">82%</span></span>
+  </div>
+  <div class="po-body" id="po-body">
+    <pre class="po-pre" id="po-content"></pre>
+  </div>
+  <div class="po-actions" id="po-actions"></div>
+</div>
+
+<!-- ════ LOADING ════ -->
+<div id="loading-overlay">
+  <div class="lo-ring"></div>
+  <div class="lo-text" id="lo-text">AI 正在生成劇情…</div>
+</div>
+
+<!-- ════ FIREBASE + APP ════ -->
+<script type="module">
+// ── Firebase ──
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc }
+  from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB-2MED5FYZSHImk9EbVOsGcugoj9A26Es",
+  authDomain: "kpop-game-2b35c.firebaseapp.com",
+  projectId: "kpop-game-2b35c",
+  storageBucket: "kpop-game-2b35c.firebasestorage.app",
+  messagingSenderId: "760430510342",
+  appId: "1:760430510342:web:ce38a418555d1569da9e87"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+// ── 全域狀態 ──
+let currentUser = null;
+let gameState = {
+  round: 1,
+  time: "2025年3月，首爾",
+  playerName: "",
+  playerAge: "",
+  playerNation: "",
+  playerIdentity: "",
+  bfName: "",
+  myPet: "",
+  bfPet: "",
+  apiProvider: "",
+  apiModel: "",
+  history: [], // {role, content}
+  storyLog: [], // 前端顯示用
+  phoneData: {
+    ins: { posts: [], dms: [] },
+    kakao: { chats: {} },
+    weverse: { posts: [] },
+    notifs: []
+  },
+  initialized: false
+};
+
+// ── 粒子 ──
+(function createParticles(){
+  const container = document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className = 'pt';
+    const size = Math.random()*6+3;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      animation-duration:${Math.random()*12+8}s;
+      animation-delay:${Math.random()*8}s;
+      background:radial-gradient(circle,rgba(${Math.random()>0.5?'232,120,160':'168,120,224'},.5),transparent);
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ── 畫面切換 ──
+window.showScreen = function(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+};
+
+// ── Auth ──
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  if(user){
+    document.getElementById('auth-overlay').classList.remove('show');
+    loadCloudSave();
+  }
+});
+
+window.signInWithGoogle = async function(){
+  try{
+    await signInWithPopup(auth, provider);
+  }catch(e){ console.error(e); }
+};
+
+window.skipAuth = function(){
+  document.getElementById('auth-overlay').classList.remove('show');
+};
+
+// ── 存檔 ──
+async function saveGame(){
+  // 本地
+  try{ localStorage.setItem('kpop_save', JSON.stringify(gameState)); }catch(e){}
+  // 雲端
+  if(currentUser){
+    try{
+      await setDoc(doc(db,'saves',currentUser.uid,'data','main'), {
+        state: JSON.stringify(gameState),
+        updatedAt: Date.now()
+      });
+      flashSave();
+    }catch(e){ console.error('雲端存檔失敗',e); }
+  }
+}
+
+async function loadCloudSave(){
+  if(!currentUser) return;
+  try{
+    const snap = await getDoc(doc(db,'saves',currentUser.uid,'data','main'));
+    if(snap.exists()){
+      const data = snap.data();
+      if(data.state){
+        const saved = JSON.parse(data.state);
+        if(saved.initialized){
+          gameState = saved;
+          return true;
+        }
+      }
+    }
+  }catch(e){ console.error(e); }
+  return false;
+}
+
+function flashSave(){
+  const el = document.getElementById('save-indicator');
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2000);
+}
+
+// ── Splash 按鈕 ──
+window.startNewGame = function(){
+  // 清除舊存檔
+  gameState = {
+    round:1, time:"", playerName:"",playerAge:"",playerNation:"",
+    playerIdentity:"",bfName:"",myPet:"",bfPet:"",
+    apiProvider:"", apiModel:"",
+    history:[], storyLog:[],
+    phoneData:{ ins:{posts:[],dms:[]},kakao:{chats:{}},weverse:{posts:[]},notifs:[] },
+    initialized:false
+  };
+  // 恢復上次的 API 設定
+  const savedProvider = localStorage.getItem('kpop_provider')||'';
+  const savedModel = localStorage.getItem('kpop_model')||'';
+  const savedKey = localStorage.getItem('kpop_apikey')||'';
+  if(savedProvider) selectProviderById(savedProvider);
+  if(savedModel) document.getElementById('input-model').value = savedModel;
+  if(savedKey) document.getElementById('input-apikey').value = savedKey;
+
+  if(!currentUser) document.getElementById('auth-overlay').classList.add('show');
+  // 重置設定頁按鈕為「新遊戲」模式
+  document.getElementById('btn-back-splash').style.display = '';
+  document.getElementById('btn-back-game').style.display = 'none';
+  document.getElementById('btn-start-game').style.display = '';
+  document.getElementById('btn-save-settings').style.display = 'none';
+  document.getElementById('msg-settings').textContent = '';
+  showScreen('screen-settings');
+};
+
+window.continueGame = async function(){
+  showLoading('讀取存檔中…');
+  let loaded = false;
+  if(currentUser) loaded = await loadCloudSave();
+  if(!loaded){
+    try{
+      const local = localStorage.getItem('kpop_save');
+      if(local){ gameState = JSON.parse(local); loaded = gameState.initialized; }
+    }catch(e){}
+  }
+  hideLoading();
+  if(loaded){
+    // 恢復 api key
+    const savedKey = localStorage.getItem('kpop_apikey')||'';
+    gameState.apiKey = savedKey;
+    initGameScreen();
+    showScreen('screen-game');
+    renderAllStory();
+    updateHeader();
+  } else {
+    alert('找不到存檔，請開始新遊戲。');
+  }
+};
+
+// ── Settings ──
+let selectedProvider = '';
+window.selectProvider = function(el){
+  document.querySelectorAll('.model-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedProvider = el.dataset.provider;
+  updateProviderHints();
+};
+function selectProviderById(id){
+  const el = document.querySelector(`[data-provider="${id}"]`);
+  if(el) selectProvider(el);
+}
+function updateProviderHints(){
+  const sec = document.getElementById('model-section');
+  const lbl = document.getElementById('model-label');
+  const hint = document.getElementById('model-hint');
+  const modelInput = document.getElementById('input-model');
+  sec.style.display = 'block';
+  const hints = {
+    openrouter: { label:'OpenRouter 模型', hint:'免費模型推薦：google/gemma-3-27b-it:free  或  meta-llama/llama-3.3-70b-instruct:free', default:'google/gemma-3-27b-it:free' },
+    openai: { label:'OpenAI 模型', hint:'推薦：gpt-4o 或 gpt-4o-mini（較便宜）', default:'gpt-4o-mini' },
+    google: { label:'Gemini 模型', hint:'推薦：gemini-2.0-flash-exp（免費）或 gemini-1.5-pro', default:'gemini-2.0-flash-exp' },
+    anthropic: { label:'Claude 模型', hint:'推薦：claude-sonnet-4-20250514 或 claude-haiku-4-5-20251001（較便宜）', default:'claude-sonnet-4-20250514' },
+  };
+  const h = hints[selectedProvider]||{label:'模型',hint:'',default:''};
+  lbl.textContent = h.label;
+  hint.textContent = h.hint;
+  if(!modelInput.value) modelInput.value = h.default;
+}
+
+let selectedIdentity = '';
+window.selectIdentity = function(el, val){
+  document.querySelectorAll('.identity-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedIdentity = val;
+  document.getElementById('input-identity').value = val;
+};
+
+window.confirmSettings = function(){
+  const apikey = document.getElementById('input-apikey').value.trim();
+  const model = document.getElementById('input-model').value.trim();
+  const name = document.getElementById('input-name').value.trim();
+  const age = document.getElementById('input-age').value.trim();
+  const nation = document.getElementById('input-nationality').value.trim();
+  const identity = document.getElementById('input-identity').value.trim();
+  const bfName = document.getElementById('input-bf-name').value.trim();
+  const myPet = document.getElementById('input-my-pet').value.trim();
+  const bfPet = document.getElementById('input-bf-pet').value.trim();
+  const msg = document.getElementById('msg-settings');
+
+  if(!selectedProvider){ msg.textContent='請選擇 AI 服務商'; return; }
+  if(!apikey){ msg.textContent='請填入 API Key'; return; }
+  if(!name){ msg.textContent='請填入你的姓名'; return; }
+  if(!bfName){ msg.textContent='請填入男友姓名'; return; }
+
+  msg.textContent = '';
+
+  // 儲存 api 設定到 localStorage（不進雲端）
+  localStorage.setItem('kpop_provider', selectedProvider);
+  localStorage.setItem('kpop_model', model);
+  localStorage.setItem('kpop_apikey', apikey);
+
+  gameState.apiProvider = selectedProvider;
+  gameState.apiModel = model;
+  gameState.apiKey = apikey;
+  gameState.playerName = name;
+  gameState.playerAge = age || '24';
+  gameState.playerNation = nation || '台灣';
+  gameState.playerIdentity = identity || '素人';
+  gameState.bfName = bfName;
+  gameState.myPet = myPet || '歐巴';
+  gameState.bfPet = bfPet || '寶貝';
+  gameState.initialized = true;
+
+  initGameScreen();
+  showScreen('screen-game');
+  startGame();
+};
+
+window.showSettingsFromGame = function(){
+  // 切換按鈕：顯示「返回遊戲」和「儲存設定」
+  document.getElementById('btn-back-splash').style.display = 'none';
+  document.getElementById('btn-back-game').style.display = '';
+  document.getElementById('btn-start-game').style.display = 'none';
+  document.getElementById('btn-save-settings').style.display = '';
+
+  // 恢復已有設定
+  const savedProvider = localStorage.getItem('kpop_provider')||gameState.apiProvider||'';
+  const savedModel = localStorage.getItem('kpop_model')||gameState.apiModel||'';
+  const savedKey = localStorage.getItem('kpop_apikey')||'';
+  if(savedProvider) selectProviderById(savedProvider);
+  if(savedModel) document.getElementById('input-model').value = savedModel;
+  if(savedKey) document.getElementById('input-apikey').value = savedKey;
+  if(gameState.playerName) document.getElementById('input-name').value = gameState.playerName;
+  if(gameState.playerAge) document.getElementById('input-age').value = gameState.playerAge;
+  if(gameState.playerNation) document.getElementById('input-nationality').value = gameState.playerNation;
+  if(gameState.playerIdentity) document.getElementById('input-identity').value = gameState.playerIdentity;
+  if(gameState.bfName) document.getElementById('input-bf-name').value = gameState.bfName;
+  if(gameState.myPet) document.getElementById('input-my-pet').value = gameState.myPet;
+  if(gameState.bfPet) document.getElementById('input-bf-pet').value = gameState.bfPet;
+  showScreen('screen-settings');
+};
+
+// 從遊戲內儲存設定（不重啟遊戲）
+window.saveSettingsOnly = function(){
+  const apikey = document.getElementById('input-apikey').value.trim();
+  const model = document.getElementById('input-model').value.trim();
+  if(!selectedProvider){ document.getElementById('msg-settings').textContent='請選擇 AI 服務商'; return; }
+  if(!apikey){ document.getElementById('msg-settings').textContent='請填入 API Key'; return; }
+  localStorage.setItem('kpop_provider', selectedProvider);
+  localStorage.setItem('kpop_model', model);
+  localStorage.setItem('kpop_apikey', apikey);
+  gameState.apiProvider = selectedProvider;
+  gameState.apiModel = model;
+  gameState.apiKey = apikey;
+  document.getElementById('msg-settings').style.color = 'var(--green)';
+  document.getElementById('msg-settings').textContent = '✓ 設定已儲存';
+  setTimeout(()=>{
+    document.getElementById('msg-settings').textContent = '';
+    document.getElementById('msg-settings').style.color = '';
+    showScreen('screen-game');
+  }, 1200);
+};
+
+window.signOutUser = async function(){
+  if(confirm('確定要登出嗎？登出後存檔仍保留在雲端。')){
+    try{ await signOut(auth); }catch(e){}
+    currentUser = null;
+    showScreen('screen-splash');
+  }
+};
+
+// ── Loading ──
+function showLoading(txt='AI 正在生成劇情…'){
+  document.getElementById('lo-text').textContent = txt;
+  document.getElementById('loading-overlay').classList.add('show');
+}
+function hideLoading(){
+  document.getElementById('loading-overlay').classList.remove('show');
+}
+
+// ── Game Init ──
+function initGameScreen(){
+  document.getElementById('story-panel').innerHTML = '';
+}
+
+function updateHeader(){
+  document.getElementById('gh-round').textContent = `第 ${gameState.round} 回合`;
+  document.getElementById('gh-time').textContent = gameState.time||'';
+}
+
+// ── AI 呼叫 ──
+async function callAI(userMessage){
+  const p = gameState.apiProvider;
+  const model = gameState.apiModel;
+  const key = gameState.apiKey || localStorage.getItem('kpop_apikey') || '';
+  if(!key) throw new Error('缺少 API Key');
+
+  const msgs = [...gameState.history, { role:'user', content: userMessage }];
+
+  if(p === 'anthropic'){
+    // Anthropic
+    const sysPrompt = buildSystemPrompt();
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body: JSON.stringify({
+        model: model || 'claude-haiku-4-5-20251001',
+        max_tokens: 2000,
+        system: sysPrompt,
+        messages: msgs
+      })
+    });
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    return data.content[0].text;
+
+  } else if(p === 'google'){
+    // Gemini via REST
+    const sysPrompt = buildSystemPrompt();
+    const geminiMsgs = msgs.map(m=>({
+      role: m.role==='assistant'?'model':'user',
+      parts:[{text: m.content}]
+    }));
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model||'gemini-2.0-flash-exp'}:generateContent?key=${key}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system_instruction:{parts:[{text:sysPrompt}]},
+        contents: geminiMsgs,
+        generationConfig:{ maxOutputTokens:2000, temperature:0.9 }
+      })
+    });
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    return data.candidates[0].content.parts[0].text;
+
+  } else {
+    // OpenAI-compatible (openai / openrouter)
+    const endpoint = p==='openrouter'
+      ? 'https://openrouter.ai/api/v1/chat/completions'
+      : 'https://api.openai.com/v1/chat/completions';
+    const sysPrompt = buildSystemPrompt();
+    const allMsgs = [{ role:'system', content: sysPrompt }, ...msgs];
+    const headers = {
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${key}`,
+    };
+    if(p==='openrouter'){
+      headers['HTTP-Referer'] = 'https://kpop-romance-game.github.io';
+      headers['X-Title'] = '秘密嫂子';
+    }
+    const res = await fetch(endpoint,{
+      method:'POST',
+      headers,
+      body: JSON.stringify({
+        model: model || (p==='openrouter'?'google/gemma-3-27b-it:free':'gpt-4o-mini'),
+        max_tokens: 2000,
+        messages: allMsgs,
+        temperature: 0.9
+      })
+    });
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message||JSON.stringify(data.error));
+    return data.choices[0].message.content;
+  }
+}
+
+function buildSystemPrompt(){
+  return `你是一個沉浸式文字戀愛養成遊戲的GM（遊戲主持人），主題為「韓娛嫂子模擬器」。
+
+【玩家資料】
+- 玩家姓名：${gameState.playerName}
+- 年齡：${gameState.playerAge}歲
+- 國籍：${gameState.playerNation}
+- 身份：${gameState.playerIdentity}
+- 男友姓名：${gameState.bfName}
+- 玩家對男友的愛稱：${gameState.myPet}
+- 男友對玩家的愛稱：${gameState.bfPet}
+
+【遊戲規則】
+1. 全程使用繁體中文，禁止任何外語（包括韓文、英文）
+2. 遊戲背景為2025年現代首爾，禁止超自然、古代、血腥元素
+3. 嚴格根據${gameState.bfName}的真實公開形象、性格、演藝經歷構建人設，不可OOC
+4. 玩家沒有上帝視角，只有主視角；不顯示任何數值
+5. 男友的隱藏缺點在20回合後才逐漸透過劇情細節顯現，不單獨提示
+6. 每4回合提供一次同房機會
+7. 所有事件生成需真實模擬韓國娛樂圈、飯圈、現代生活
+8. 事件描寫不包含預告、提示或任何人的心理活動
+9. 使用豐富emoji、分段排版，每行不超過30字
+10. 韓劇小說式敘事風格，文筆細膩
+
+【每回合格式】
+每回合必須包含以下結構，以JSON回覆：
+
+{
+  "time": "具體時間描述（如：2025年3月15日 週六 下午3:22）",
+  "notifications": [{"app":"應用名","content":"推送內容"}],
+  "narration": "場景敘述文字（豐富emoji+細膩描寫）",
+  "event": "本回合主要事件詳細描述",
+  "options": [
+    {"label":"A","text":"選項內容（只含玩家行動/對話，無提示）"},
+    {"label":"B","text":"選項內容"},
+    {"label":"C","text":"選項內容"},
+    {"label":"D","text":"選項內容（自定義）"}
+  ],
+  "includePhone": true或false,
+  "phoneUpdate": "手機相關更新描述（若includePhone為true）"
+}
+
+每個選項只描述玩家的對話、行動或反應，絕不包含任何括號說明或後果提示。
+必須包含【手機】選項（可加在options裡作為額外選項）。
+選項D固定為「自定義（玩家自行輸入）」。`;
+}
+
+// ── 開始遊戲 ──
+async function startGame(){
+  showLoading('生成初始劇情中…');
+  addSystemMsg('⏳ 正在根據你的設定生成專屬劇情…');
+
+  const prompt = `請為我生成第一回合的前置劇情。
+
+這是${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerNation}人，身份：${gameState.playerIdentity}）
+與韓國男明星${gameState.bfName}的秘密戀情模擬遊戲。
+
+請先生成：
+1. 玩家的背景介紹（工作、生活環境、性格）
+2. 與${gameState.bfName}相遇並墜入愛河的前置劇情（200-300字，韓劇風格）
+3. 目前關係狀態說明
+4. 為什麼不能公開戀情的原因（隨機生成，需符合韓娛生態）
+5. 然後進入第一回合的遊戲流程
+
+同時決定男友的隱藏感情基礎（真心/各取所需/利益交換/欺騙）和隱藏缺點，
+但不要在回覆中透露，只需在後續劇情中逐步顯現。
+
+請以JSON格式回覆。`;
+
+  try {
+    const response = await callAI(prompt);
+    gameState.history.push({ role:'user', content: prompt });
+    gameState.history.push({ role:'assistant', content: response });
+    processAIResponse(response, true);
+    await saveGame();
+  } catch(e){
+    hideLoading();
+    addSystemMsg(`❌ AI 連線失敗：${e.message}。請檢查 API Key 是否正確。`);
+  }
+  hideLoading();
+}
+
+// ── 解析 AI 回應 ──
+function processAIResponse(raw, isFirst=false){
+  let data;
+  try {
+    const cleaned = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    // 嘗試找 JSON
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if(match) data = JSON.parse(match[0]);
+    else data = JSON.parse(cleaned);
+  } catch(e) {
+    // 若解析失敗，直接顯示文字
+    addEventMsg(raw);
+    renderOptions([
+      {label:'A',text:'繼續'},
+      {label:'D',text:'自定義（玩家自行輸入）'}
+    ]);
+    return;
+  }
+
+  // 更新時間
+  if(data.time){
+    gameState.time = data.time;
+    updateHeader();
+  }
+
+  // 通知
+  if(data.notifications && data.notifications.length){
+    data.notifications.forEach(n=>{
+      showNotifToast(n.app, n.content);
+      // 也加入手機通知列表
+      gameState.phoneData.notifs.unshift({app:n.app, content:n.content, time:data.time||''});
+    });
+  }
+
+  // 敘述
+  if(data.narration) addNarrationMsg(data.narration);
+
+  // 事件
+  if(data.event) addEventMsg(data.event);
+
+  // 選項（加入手機選項）
+  let opts = data.options || [];
+  if(!opts.find(o=>o.text&&o.text.includes('手機'))){
+    opts = [...opts, {label:'📱', text:'查看手機'}];
+  }
+  renderOptions(opts);
+}
+
+// ── 訊息渲染 ──
+function addNarrationMsg(text){
+  const div = document.createElement('div');
+  div.className = 'story-msg narration';
+  div.textContent = text;
+  appendMsg(div);
+  gameState.storyLog.push({type:'narration',text});
+}
+function addEventMsg(text){
+  const div = document.createElement('div');
+  div.className = 'story-msg event';
+  div.innerHTML = `<div class="ev-tag">✦ 事件</div><div>${escapeHtml(text)}</div>`;
+  appendMsg(div);
+  gameState.storyLog.push({type:'event',text});
+}
+function addSystemMsg(text){
+  const div = document.createElement('div');
+  div.className = 'story-msg system';
+  div.textContent = text;
+  appendMsg(div);
+}
+function addChoiceMsg(text){
+  const div = document.createElement('div');
+  div.className = 'story-msg choice-made';
+  div.textContent = '▸ ' + text;
+  appendMsg(div);
+  gameState.storyLog.push({type:'choice',text});
+}
+function appendMsg(el){
+  const panel = document.getElementById('story-panel');
+  panel.appendChild(el);
+  panel.scrollTop = panel.scrollHeight;
+}
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+function renderAllStory(){
+  const panel = document.getElementById('story-panel');
+  panel.innerHTML = '';
+  gameState.storyLog.forEach(item=>{
+    if(item.type==='narration') addNarrationMsg(item.text);
+    else if(item.type==='event') addEventMsg(item.text);
+    else if(item.type==='choice') addChoiceMsg(item.text);
+  });
+}
+
+// ── 通知 Toast ──
+let toastTimeout;
+function showNotifToast(app, content){
+  let toast = document.querySelector('.notif-toast');
+  if(!toast){ toast = document.createElement('div'); toast.className='notif-toast'; document.body.appendChild(toast); }
+  toast.innerHTML = `<div class="nt-app">📲 ${escapeHtml(app)}</div><div class="nt-msg">${escapeHtml(content)}</div>`;
+  toast.style.display='block';
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(()=>{ toast.style.display='none'; }, 4000);
+}
+
+// ── 選項渲染 ──
+function renderOptions(opts){
+  const grid = document.getElementById('options-grid');
+  const panel = document.getElementById('options-panel');
+  grid.innerHTML = '';
+  panel.classList.remove('disabled');
+
+  opts.forEach(opt=>{
+    if(opt.label==='D' || opt.text==='自定義（玩家自行輸入）'){
+      // 自定義輸入
+      const row = document.createElement('div');
+      row.className = 'custom-input-row';
+      row.innerHTML = `
+        <input class="custom-input" id="custom-input" placeholder="✏️ 自定義行動或對話…">
+        <button class="custom-send" onclick="submitCustom()">送出</button>
+      `;
+      grid.appendChild(row);
+    } else if(opt.text==='查看手機' || opt.label==='📱'){
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn phone-opt';
+      btn.innerHTML = `<span class="opt-label">📱</span><span class="opt-text">查看手機</span>`;
+      btn.onclick = ()=>openPhoneOverlay('home');
+      grid.appendChild(btn);
+    } else {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerHTML = `<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      btn.onclick = ()=>chooseOption(opt.text, btn);
+      grid.appendChild(btn);
+    }
+  });
+}
+
+// ── 選擇選項 ──
+window.chooseOption = async function(text, btn){
+  disableOptions();
+  addChoiceMsg(text);
+  await nextRound(text);
+};
+
+window.submitCustom = async function(){
+  const input = document.getElementById('custom-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  disableOptions();
+  addChoiceMsg(text);
+  await nextRound(text);
+};
+
+function disableOptions(){
+  document.getElementById('options-panel').classList.add('disabled');
+}
+
+// ── 下一回合 ──
+async function nextRound(playerChoice){
+  gameState.round++;
+  updateHeader();
+  showLoading('生成下一回合…');
+
+  // 顯示 typing
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'typing-indicator';
+  typingDiv.innerHTML = `<span>劇情生成中</span><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  document.getElementById('story-panel').appendChild(typingDiv);
+  document.getElementById('story-panel').scrollTop = 99999;
+
+  const prompt = `玩家在第${gameState.round-1}回合選擇了：「${playerChoice}」
+
+請繼續生成第${gameState.round}回合的劇情。
+要求：
+- 根據玩家選擇自然推進劇情
+- 觸發本回合的隨機事件（與韓娛圈、粉絲文化、日常生活相關）
+- 若到第${gameState.round}回合是4的倍數（${gameState.round%4===0?'是':'否'}），${gameState.round%4===0?'請自然安排同房情節':'不安排同房'}
+- 若超過20回合，可在劇情細節中非常細微地透露男友隱藏缺點
+- 手機通知要真實模擬（INS熱搜、KakaoTalk、Weverse等）
+- 請以JSON格式回覆`;
+
+  try {
+    const response = await callAI(prompt);
+    gameState.history.push({ role:'user', content: prompt });
+    gameState.history.push({ role:'assistant', content: response });
+    // 保持 history 不超過30條（節省 token）
+    if(gameState.history.length > 30){
+      gameState.history = gameState.history.slice(-28);
+    }
+    typingDiv.remove();
+    processAIResponse(response);
+    await saveGame();
+  } catch(e){
+    typingDiv.remove();
+    addSystemMsg(`❌ AI 錯誤：${e.message}`);
+    renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);
+  }
+  hideLoading();
+}
+
+// ════════════════ 手機系統 ════════════════
+
+window.openPhoneOverlay = async function(page){
+  const overlay = document.getElementById('phone-overlay');
+  overlay.classList.add('open');
+  updatePhoneClock();
+  await renderPhonePage(page);
+};
+
+function closePhone(){
+  document.getElementById('phone-overlay').classList.remove('open');
+}
+
+function updatePhoneClock(){
+  const now = new Date();
+  document.getElementById('po-time').textContent =
+    `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('po-battery').textContent =
+    Math.floor(Math.random()*30+60)+'%';
+}
+
+async function renderPhonePage(page){
+  const content = document.getElementById('po-content');
+  const actions = document.getElementById('po-actions');
+
+  const notifCount = gameState.phoneData.notifs.length;
+
+  if(page==='home'){
+    const timeStr = document.getElementById('po-time').textContent;
+    content.textContent = `
+╔══════════════════════╗
+  ${timeStr}         📶 🔋 ${document.getElementById('po-battery').textContent}
+╚══════════════════════╝
+
+[ Instagram ]  [ KakaoTalk ]
+[ YouTube   ]  [ Weverse   ]
+[ 通知中心  ]${notifCount>0?` (${notifCount})`:''}
+
+──────────────────────
+ 操作：點選下方按鈕進入應用
+──────────────────────`;
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('ins')">📸 Instagram</button>
+      <button class="po-btn" onclick="renderPhonePage('kakao')">💬 KakaoTalk</button>
+      <button class="po-btn" onclick="renderPhonePage('weverse')">🌟 Weverse</button>
+      <button class="po-btn" onclick="renderPhonePage('youtube')">▶️ YouTube</button>
+      <button class="po-btn" onclick="renderPhonePage('notifs')">🔔 通知${notifCount>0?`(${notifCount})`:''}</button>
+      <button class="po-close" onclick="closePhone()">關閉手機 [繼續]</button>`;
+
+  } else if(page==='ins'){
+    content.textContent = await getINSContent();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('ins-bf')">👤 ${gameState.bfName}主頁</button>
+      <button class="po-btn" onclick="renderPhonePage('ins-mypage')">👤 我的主頁</button>
+      <button class="po-btn" onclick="renderPhonePage('ins-dm')">💌 私信</button>
+      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='ins-bf'){
+    content.textContent = await getBFInsPage();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='ins-mypage'){
+    content.textContent = getMyInsPage();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='ins-dm'){
+    content.textContent = getInsDM();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='kakao'){
+    content.textContent = getKakaoMain();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('kakao-bf')">💕 與${gameState.myPet==='歐巴'?gameState.bfName:gameState.bfName}聊天</button>
+      <button class="po-btn" onclick="renderPhonePage('kakao-friends')">👥 好友列表</button>
+      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='kakao-bf'){
+    content.textContent = getKakaoBFChat();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="sendKakaoMsg()">✏️ 發送訊息</button>
+      <button class="po-btn" onclick="renderPhonePage('kakao')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='kakao-friends'){
+    content.textContent = getKakaoFriends();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('kakao')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='weverse'){
+    content.textContent = await getWeverseContent();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='youtube'){
+    content.textContent = getYoutubeContent();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
+  } else if(page==='notifs'){
+    content.textContent = getNotifContent();
+    actions.innerHTML = `
+      <button class="po-btn" onclick="clearNotifs()">🗑️ 清除通知</button>
+      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+  }
+}
+
+// ── 手機內容生成 ──
+async function getINSContent(){
+  const trending = [
+    `#${gameState.bfName}_新專輯`, `#韓娛圈熱搜`, `#首爾時裝週`,
+    `#${gameState.bfName}_機場時尚`, `#某偶像_緋聞`, `#MAMA頒獎典禮`
+  ];
+  return `
+╔══════════════════════╗
+   📸  Instagram
+╚══════════════════════╝
+
+🔥 探索
+
+📈 熱門話題：
+  ${trending[Math.floor(Math.random()*3)]}
+  ${trending[Math.floor(Math.random()*3)+3]}
+
+👤 @${gameState.bfName.replace(/\s/g,'_').toLowerCase()}
+   剛發佈了新動態！ 🌟
+
+📢 你有 ${Math.floor(Math.random()*5)+1} 條未讀通知
+
+──────────────────────
+ 操作：選擇下方功能
+──────────────────────`;
+}
+
+async function getBFInsPage(){
+  // 呼叫 AI 生成男友 INS 頁面
+  try {
+    showLoading('載入主頁…');
+    const prompt = `請以JSON回覆，生成${gameState.bfName}的Instagram主頁內容：
+{
+  "followers": "粉絲數（如1.2M）",
+  "following": "關注數",
+  "posts_count": "帖子數",
+  "bio": "簡介（一句話，符合人設）",
+  "recent_posts": [
+    {"time":"時間","content":"帖子摘要"},
+    {"time":"時間","content":"帖子摘要"},
+    {"time":"時間","content":"帖子摘要"}
+  ]
+}`;
+    const res = await callAI(prompt);
+    hideLoading();
+    let data;
+    try{
+      const m = res.match(/\{[\s\S]*\}/);
+      data = JSON.parse(m?m[0]:res);
+    }catch(e){ data = null; }
+    if(!data) return `載入失敗，請重試。`;
+
+    return `
+╔══════════════════════╗
+  👤 @${gameState.bfName.replace(/\s/g,'_').toLowerCase()}
+     ✅ 認證帳號
+╚══════════════════════╝
+
+⭐ 粉絲：${data.followers}
+   關注：${data.following}
+   帖子：${data.posts_count}
+
+簡介：${data.bio}
+
+── 最新帖子 ──
+
+${data.recent_posts.map(p=>`⏰ ${p.time}\n   ${p.content}`).join('\n\n')}
+
+──────────────────────
+ ❤️ 已追蹤`;
+  } catch(e){
+    hideLoading();
+    return `無法載入，請檢查網路。`;
+  }
+}
+
+function getMyInsPage(){
+  return `
+╔══════════════════════╗
+  👤 我的 Instagram
+╚══════════════════════╝
+
+⭐ 粉絲：${Math.floor(Math.random()*500)+200}
+   關注：${Math.floor(Math.random()*300)+100}
+   帖子：${Math.floor(Math.random()*50)+10}
+
+簡介：普通女孩的日常生活 ✨
+
+── 最新帖子 ──
+
+⏰ 2天前
+   咖啡廳的下午 ☕ #首爾日常
+
+⏰ 5天前
+   週末放鬆中 🌸
+
+⏰ 1週前
+   工作加油！💪
+
+──────────────────────`;
+}
+
+function getInsDM(){
+  const notifs = gameState.phoneData.notifs.filter(n=>n.app==='Instagram'||n.app==='INS');
+  return `
+╔══════════════════════╗
+  💌 Instagram 私信
+╚══════════════════════╝
+
+── 私信 ──
+
+💬 陌生人A：哇你好漂亮！ (未讀)
+💬 朋友小敏：週末有空嗎？ (已讀)
+💬 同事智妍：謝謝你上次... (已讀)
+
+── 通知 ──
+
+${notifs.length>0 ? notifs.slice(0,3).map(n=>`📢 ${n.content}`).join('\n') : '暫無新通知'}
+
+──────────────────────`;
+}
+
+function getKakaoMain(){
+  const lastMsg = gameState.history.length > 0 ? '…' : '你好😊';
+  return `
+╔══════════════════════╗
+   💬  KakaoTalk
+╚══════════════════════╝
+
+── 聊天列表 ──
+
+💕 ${gameState.bfName}
+   [最後訊息…] (今天)
+
+💬 閨蜜小敏
+   오늘... 아 저기, 中文：
+   「妳今天怎麼樣？」(昨天)
+
+💬 同事群組
+   「明天記得開會！」(昨天)
+
+💬 家人群
+   「最近好嗎寶貝」(2天前)
+
+──────────────────────
+ 👤好友 | 💬聊天 | ⋯更多
+──────────────────────`;
+}
+
+function getKakaoBFChat(){
+  const msgs = gameState.phoneData.kakao.chats[gameState.bfName] || [
+    { from: gameState.bfName, text: `${gameState.bfPet}，今天還好嗎？`, time:'上午10:30' },
+    { from: 'me', text: '還好，你呢？', time:'上午10:35' },
+    { from: gameState.bfName, text: '排練很累，想你了 💙', time:'上午10:40' },
+  ];
+  const chatLines = msgs.slice(-8).map(m=>{
+    const isMe = m.from==='me';
+    return `${m.time} ${isMe?'我':'💕 '+m.from}：${m.text}`;
+  }).join('\n');
+  return `
+╔══════════════════════╗
+  💕 ${gameState.bfName}
+     ● 在線
+╚══════════════════════╝
+
+── 聊天記錄 ──
+
+${chatLines}
+
+──────────────────────
+  ✏️ [輸入訊息...]
+──────────────────────`;
+}
+
+function getKakaoFriends(){
+  return `
+╔══════════════════════╗
+  👥 KakaoTalk 好友
+╚══════════════════════╝
+
+── 常用聯繫人 ──
+
+💕 ${gameState.bfName} ● 在線
+
+── ⭐ 星標好友 ──
+
+👤 閨蜜小敏
+👤 同事智妍
+
+── 👥 朋友 ──
+
+👤 大學同學珮珊
+👤 健身房朋友秀英
+👤 前同事建宇
+👤 鄰居阿姨
+
+── 家人 ──
+
+👪 媽媽
+👪 爸爸
+
+──────────────────────`;
+}
+
+async function getWeverseContent(){
+  return `
+╔══════════════════════╗
+   🌟  Weverse
+╚══════════════════════╝
+
+── 社區列表 ──
+
+🎤 ${gameState.bfName.split(/\s/)[0]} Official  🔥
+
+── 最新動態 ──
+
+📢 [官方] 新專輯發售公告 (NEW)
+
+🌟 ${gameState.bfName} 發佈了新帖子
+   「今天排練很充實！大家
+    期待嗎？」
+
+❤️ 粉絲B：歐巴我愛你！！！
+💬 粉絲C：什麼時候回台灣啊
+
+📣 直播通知：
+   明日晚上9點直播 (LIVE)
+
+──────────────────────`;
+}
+
+function getYoutubeContent(){
+  return `
+╔══════════════════════╗
+   ▶️  YouTube
+╚══════════════════════╝
+
+── 推薦 ──
+
+🎵 [${gameState.bfName}] 新專輯
+   主打歌 Official M/V
+   播放量：1,240,582 次
+
+📺 [${gameState.bfName}] 直拍合集
+   最新直拍超好看！
+
+📰 [Dispatch] 韓娛最新動態
+   某偶像緋聞分析…
+
+🎬 韓綜精彩片段集錦
+
+──────────────────────
+ 🔍 搜索 | 📺 訂閱內容
+──────────────────────`;
+}
+
+function getNotifContent(){
+  const notifs = gameState.phoneData.notifs;
+  const notifLines = notifs.length > 0
+    ? notifs.slice(0,8).map(n=>`📲 [${n.app}] ${n.content}`).join('\n\n')
+    : '暫無通知';
+  return `
+╔══════════════════════╗
+   🔔  通知中心
+╚══════════════════════╝
+
+${notifLines}
+
+──────────────────────`;
+}
+
+function clearNotifs(){
+  gameState.phoneData.notifs = [];
+  renderPhonePage('notifs');
+}
+
+async function sendKakaoMsg(){
+  const text = prompt('輸入要傳給'+gameState.bfName+'的訊息：');
+  if(!text) return;
+  const msgs = gameState.phoneData.kakao.chats[gameState.bfName] || [];
+  const now = new Date();
+  msgs.push({ from:'me', text, time:`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}` });
+  gameState.phoneData.kakao.chats[gameState.bfName] = msgs;
+  // 觸發 AI 回應
+  showLoading('等待回覆…');
+  try {
+    const reply = await callAI(`玩家透過KakaoTalk傳訊息給${gameState.bfName}：「${text}」
+請以${gameState.bfName}的口吻回覆一條KakaoTalk訊息（1-3句，符合其人設，純文字，不需JSON）。`);
+    const cleanReply = reply.replace(/```[\s\S]*?```/g,'').trim();
+    msgs.push({ from: gameState.bfName, text: cleanReply, time:`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()+1).padStart(2,'0')}` });
+    gameState.phoneData.kakao.chats[gameState.bfName] = msgs;
+  } catch(e){}
+  hideLoading();
+  renderPhonePage('kakao-bf');
+}
+
+// ── 全域暴露 ──
+window.renderPhonePage = renderPhonePage;
+window.closePhone = closePhone;
+window.clearNotifs = clearNotifs;
+window.sendKakaoMsg = sendKakaoMsg;
+
+</script>
+</body>
+</html>
