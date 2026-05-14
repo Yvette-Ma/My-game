@@ -804,7 +804,8 @@ window.loadModels = async function(){
       if(m.recommended) opt.selected = true;
       sel.appendChild(opt);
     });
-    document.getElementById('model-hint').textContent = `已載入 ${models.length} 個模型`;
+    const freeCount = models.filter(m=>m.id.includes(':free')).length;
+    document.getElementById('model-hint').textContent = `已載入 ${models.length} 個可用模型（含 ${freeCount} 個免費）`;
     document.getElementById('btn-test-model').style.display = '';
   } catch(e) {
     sel.innerHTML = '<option value="">— 載入失敗，請手動輸入 —</option>';
@@ -815,14 +816,25 @@ window.loadModels = async function(){
 
 async function fetchModelList(provider, key){
   if(provider === 'openrouter'){
-    const res = await fetch('https://openrouter.ai/api/v1/models', {
-      headers: { 'Authorization': 'Bearer ' + key }
-    });
-    const data = await res.json();
+    // 同時抓模型列表與各模型端點狀態
+    const [modelsRes, endpointsAvail] = await Promise.all([
+      fetch('https://openrouter.ai/api/v1/models', {
+        headers: { 'Authorization': 'Bearer ' + key }
+      }),
+      // 抓取有端點的模型清單（/api/v1/models?supported_parameters=max_tokens 可過濾可用的）
+      fetch('https://openrouter.ai/api/v1/models?supported_parameters=max_tokens', {
+        headers: { 'Authorization': 'Bearer ' + key }
+      })
+    ]);
+    const data = await modelsRes.json();
+    const dataAvail = await endpointsAvail.json();
     if(!data.data) throw new Error(data.error?.message || '無法取得模型');
-    // 排序：免費優先，再按名稱
+
+    // 建立「有可用端點」的模型 id Set
+    const availableIds = new Set((dataAvail.data || []).map(m => m.id));
+
     const models = data.data
-      .filter(m => m.id && m.name)
+      .filter(m => m.id && m.name && availableIds.has(m.id)) // 只保留有端點的
       .sort((a,b) => {
         const af = a.id.includes(':free');
         const bf = b.id.includes(':free');
@@ -833,9 +845,15 @@ async function fetchModelList(provider, key){
       .map(m => {
         const isFree = m.id.includes(':free');
         const price = m.pricing?.completion;
-        const isCheap = !isFree && price && parseFloat(price) < 0.000002;
+        const isCheap = !isFree && price && parseFloat(price) > 0 && parseFloat(price) < 0.000002;
         const tag = isFree ? ' [免費]' : (isCheap ? ' [低價]' : '');
-        const recommended = isFree && (m.id.includes('gemma') || m.id.includes('llama'));
+        // 推薦：免費且是知名模型
+        const recommended = isFree && (
+          m.id.includes('gemma-3-27b') ||
+          m.id.includes('llama-3.3-70b') ||
+          m.id.includes('mistral-7b') ||
+          m.id.includes('deepseek')
+        );
         return { id: m.id, label: m.name + tag, recommended };
       });
     return models;
