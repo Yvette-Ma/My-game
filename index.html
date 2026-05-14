@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>秘密嫂子</title>
+<title>日記</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -322,6 +322,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 }
 .save-indicator.show{opacity:1;}
 
+/* ── 模型下拉 ── */
+.model-tag{
+  display:inline-block;padding:.15rem .45rem;border-radius:.3rem;
+  font-size:.65rem;margin-left:.3rem;vertical-align:middle;
+}
+.tag-free{background:rgba(136,168,144,.2);color:var(--green);}
+.tag-cheap{background:rgba(136,152,168,.2);color:var(--blue);}
+.tag-paid{background:rgba(168,136,120,.2);color:var(--rose3);}
+#model-test-result.ok{color:var(--green);}
+#model-test-result.err{color:#c87878;}
+#model-test-result.loading{color:var(--text3);}
+
 /* ── 響應式 ── */
 @media(min-width:768px){
   .story-panel{padding:1.5rem 2rem;}
@@ -345,9 +357,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   <div class="splash-deco deco1"></div>
   <div class="splash-deco deco2"></div>
   <div class="splash-wrap">
-    <span class="splash-icon">💗</span>
+    
     <h1 class="splash-title">秘密嫂子</h1>
-    <p class="splash-sub">韓娛戀愛養成模擬器</p>
+    <p class="splash-sub">私人日記</p>
     <div class="splash-btn-row">
       <button class="btn btn-primary" onclick="startNewGame()">✨ 開始新遊戲</button>
       <button class="btn" onclick="continueGame()">📖 繼續遊戲</button>
@@ -396,16 +408,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       </div>
     </div>
 
-    <div class="s-section" id="model-section" style="display:none;">
-      <span class="s-label" id="model-label">模型名稱</span>
-      <input class="s-input" id="input-model" placeholder="輸入模型名稱">
-      <p class="s-note" id="model-hint"></p>
-    </div>
-
     <div class="s-section">
       <span class="s-label">API Key</span>
-      <input class="s-input" id="input-apikey" type="password" placeholder="貼上你的 API Key">
-      <p class="s-note" id="apikey-note">API Key 僅存於你的瀏覽器，不會上傳至伺服器。</p>
+      <div style="display:flex;gap:.5rem;">
+        <input class="s-input" id="input-apikey" type="password" placeholder="貼上你的 API Key" style="flex:1;" oninput="onApiKeyInput()">
+        <button class="btn btn-sm" id="btn-load-models" onclick="loadModels()" style="display:none;white-space:nowrap;">載入模型</button>
+      </div>
+      <p class="s-note">API Key 僅存於你的瀏覽器，不會上傳至伺服器。</p>
+    </div>
+
+    <div class="s-section" id="model-section" style="display:none;">
+      <span class="s-label" id="model-label">選擇模型</span>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <select class="s-input s-select" id="input-model" style="flex:1;" onchange="onModelChange()">
+          <option value="">— 請先載入模型列表 —</option>
+        </select>
+        <button class="btn btn-sm" id="btn-test-model" onclick="testModel()" style="display:none;white-space:nowrap;">測試</button>
+      </div>
+      <input class="s-input" id="input-model-manual" placeholder="或手動輸入模型名稱（選填）" style="margin-top:.4rem;font-size:.8rem;">
+      <div id="model-test-result" style="font-size:.75rem;margin-top:.4rem;min-height:1rem;"></div>
+      <p class="s-note" id="model-hint" style="margin-top:.2rem;"></p>
     </div>
 
     <hr class="s-divider">
@@ -446,19 +468,36 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <div class="s-section-title">💕 男友設定</div>
 
     <div class="s-section">
-      <span class="s-label">男友姓名（現實韓國男明星）</span>
-      <input class="s-input" id="input-bf-name" placeholder="例：金碩珍、朴志訓...">
-      <p class="s-note">系統將根據該明星的公開形象、性格與演藝經歷構建人設。</p>
+      <span class="s-label">指定男友（可留空）</span>
+      <input class="s-input" id="input-bf-name" placeholder="例：金碩珍、朴志訓… 或留空自動配對">
+      <p class="s-note">填入現實明星姓名，系統將根據其公開形象構建人設。<br>留空則可在下方指定條件，由 AI 自動選角。</p>
+    </div>
+
+    <div class="s-section" id="bf-condition-section">
+      <span class="s-label">自動配對條件（留空男友時使用）</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">
+        <div class="identity-opt" onclick="toggleBfCond(this,'SM娛樂')">SM娛樂</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'HYBE')">HYBE</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'JYP娛樂')">JYP娛樂</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'YG娛樂')">YG娛樂</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'溫柔體貼型')">溫柔體貼型</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'高冷霸道型')">高冷霸道型</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'陽光開朗型')">陽光開朗型</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'神秘內斂型')">神秘內斂型</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'偶像歌手')">偶像歌手</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'演員')">演員</div>
+      </div>
+      <input class="s-input" id="input-bf-condition" placeholder="或自由描述：例如「暖男型、擅長寫歌的偶像」">
     </div>
 
     <div class="s-row">
       <div class="s-section">
-        <span class="s-label">你對男友的愛稱</span>
-        <input class="s-input" id="input-my-pet" placeholder="例：歐巴、寶貝...">
+        <span class="s-label">你對男友的愛稱（可留空自動）</span>
+        <input class="s-input" id="input-my-pet" placeholder="留空則依人物性格自動帶入">
       </div>
       <div class="s-section">
-        <span class="s-label">男友對你的愛稱</span>
-        <input class="s-input" id="input-bf-pet" placeholder="例：寶貝、親愛的...">
+        <span class="s-label">男友對你的愛稱（可留空自動）</span>
+        <input class="s-input" id="input-bf-pet" placeholder="留空則依人物性格自動帶入">
       </div>
     </div>
 
@@ -476,7 +515,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <div id="screen-game" class="screen">
   <div class="game-header">
     <div class="gh-left">
-      <span class="gh-title">💗 秘密嫂子</span>
+      
       <span class="gh-round" id="gh-round">第 1 回合</span>
       <span class="gh-time" id="gh-time"></span>
     </div>
@@ -663,7 +702,13 @@ window.startNewGame = function(){
   const savedModel = localStorage.getItem('kpop_model')||'';
   const savedKey = localStorage.getItem('kpop_apikey')||'';
   if(savedProvider) selectProviderById(savedProvider);
-  if(savedModel) document.getElementById('input-model').value = savedModel;
+  if(savedModel){
+    // 嘗試設定 select，若選項不存在則填入 manual
+    const sel = document.getElementById('input-model');
+    const opt = [...sel.options].find(o => o.value === savedModel);
+    if(opt){ sel.value = savedModel; }
+    else { document.getElementById('input-model-manual').value = savedModel; }
+  }
   if(savedKey) document.getElementById('input-apikey').value = savedKey;
 
   if(!currentUser) document.getElementById('auth-overlay').classList.add('show');
@@ -714,23 +759,189 @@ function selectProviderById(id){
 }
 function updateProviderHints(){
   const sec = document.getElementById('model-section');
-  const lbl = document.getElementById('model-label');
-  const hint = document.getElementById('model-hint');
-  const modelInput = document.getElementById('input-model');
+  document.getElementById('btn-load-models').style.display = '';
   sec.style.display = 'block';
+  // 重置選單
+  const sel = document.getElementById('input-model');
+  sel.innerHTML = '<option value="">— 輸入 API Key 後點「載入模型」—</option>';
+  document.getElementById('btn-test-model').style.display = 'none';
+  document.getElementById('model-test-result').textContent = '';
+  document.getElementById('model-test-result').className = '';
   const hints = {
-    openrouter: { label:'OpenRouter 模型', hint:'免費模型推薦：google/gemma-3-27b-it:free  或  meta-llama/llama-3.3-70b-instruct:free', default:'google/gemma-3-27b-it:free' },
-    openai: { label:'OpenAI 模型', hint:'推薦：gpt-4o 或 gpt-4o-mini（較便宜）', default:'gpt-4o-mini' },
-    google: { label:'Gemini 模型', hint:'推薦：gemini-2.0-flash-exp（免費）或 gemini-1.5-pro', default:'gemini-2.0-flash-exp' },
-    anthropic: { label:'Claude 模型', hint:'推薦：claude-sonnet-4-20250514 或 claude-haiku-4-5-20251001（較便宜）', default:'claude-sonnet-4-20250514' },
+    openrouter: '輸入 Key 後點「載入模型」可看到所有可用模型（含免費標示）',
+    openai:     '輸入 Key 後點「載入模型」列出可用 GPT 模型',
+    google:     '輸入 Key 後點「載入模型」列出可用 Gemini 模型',
+    anthropic:  '輸入 Key 後點「載入模型」列出可用 Claude 模型',
   };
-  const h = hints[selectedProvider]||{label:'模型',hint:'',default:''};
-  lbl.textContent = h.label;
-  hint.textContent = h.hint;
-  if(!modelInput.value) modelInput.value = h.default;
+  document.getElementById('model-hint').textContent = hints[selectedProvider] || '';
 }
 
+window.onApiKeyInput = function(){
+  const key = document.getElementById('input-apikey').value.trim();
+  document.getElementById('btn-load-models').style.display = (key && selectedProvider) ? '' : 'none';
+};
+
+window.loadModels = async function(){
+  const key = document.getElementById('input-apikey').value.trim();
+  if(!key){ alert('請先填入 API Key'); return; }
+  const sel = document.getElementById('input-model');
+  sel.innerHTML = '<option value="">載入中…</option>';
+  document.getElementById('model-hint').textContent = '載入模型列表中…';
+  document.getElementById('btn-test-model').style.display = 'none';
+
+  try {
+    const models = await fetchModelList(selectedProvider, key);
+    sel.innerHTML = '';
+    if(!models.length){
+      sel.innerHTML = '<option value="">— 無法取得模型列表，請手動輸入 —</option>';
+      document.getElementById('model-hint').textContent = '請在下方手動輸入模型名稱';
+      return;
+    }
+    models.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = m.label;
+      if(m.recommended) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    document.getElementById('model-hint').textContent = `已載入 ${models.length} 個模型`;
+    document.getElementById('btn-test-model').style.display = '';
+  } catch(e) {
+    sel.innerHTML = '<option value="">— 載入失敗，請手動輸入 —</option>';
+    document.getElementById('model-hint').textContent = '錯誤：' + e.message;
+    document.getElementById('model-hint').style.color = '#c87878';
+  }
+};
+
+async function fetchModelList(provider, key){
+  if(provider === 'openrouter'){
+    const res = await fetch('https://openrouter.ai/api/v1/models', {
+      headers: { 'Authorization': 'Bearer ' + key }
+    });
+    const data = await res.json();
+    if(!data.data) throw new Error(data.error?.message || '無法取得模型');
+    // 排序：免費優先，再按名稱
+    const models = data.data
+      .filter(m => m.id && m.name)
+      .sort((a,b) => {
+        const af = a.id.includes(':free');
+        const bf = b.id.includes(':free');
+        if(af && !bf) return -1;
+        if(!af && bf) return 1;
+        return a.name.localeCompare(b.name);
+      })
+      .map(m => {
+        const isFree = m.id.includes(':free');
+        const price = m.pricing?.completion;
+        const isCheap = !isFree && price && parseFloat(price) < 0.000002;
+        const tag = isFree ? ' [免費]' : (isCheap ? ' [低價]' : '');
+        const recommended = isFree && (m.id.includes('gemma') || m.id.includes('llama'));
+        return { id: m.id, label: m.name + tag, recommended };
+      });
+    return models;
+
+  } else if(provider === 'openai'){
+    const res = await fetch('https://api.openai.com/v1/models', {
+      headers: { 'Authorization': 'Bearer ' + key }
+    });
+    const data = await res.json();
+    if(!data.data) throw new Error(data.error?.message || '無法取得模型');
+    const chatModels = data.data
+      .filter(m => m.id.startsWith('gpt-') || m.id.startsWith('o1') || m.id.startsWith('o3'))
+      .sort((a,b) => b.id.localeCompare(a.id))
+      .map(m => ({
+        id: m.id,
+        label: m.id,
+        recommended: m.id === 'gpt-4o-mini'
+      }));
+    return chatModels;
+
+  } else if(provider === 'google'){
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`
+    );
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    const models = (data.models || [])
+      .filter(m => m.supportedGenerationMethods?.includes('generateContent'))
+      .map(m => {
+        const id = m.name.replace('models/', '');
+        const isFree = id.includes('flash') || id.includes('exp');
+        return {
+          id,
+          label: (m.displayName || id) + (isFree ? ' [免費額度]' : ''),
+          recommended: id.includes('2.5-flash') || id.includes('2.0-flash')
+        };
+      })
+      .sort((a,b) => a.id.localeCompare(b.id));
+    return models;
+
+  } else if(provider === 'anthropic'){
+    // Anthropic 沒有公開的列出模型 API，使用已知清單
+    return [
+      { id:'claude-opus-4-5-20251001',    label:'Claude Opus 4.5（最強）',         recommended:false },
+      { id:'claude-sonnet-4-20250514',     label:'Claude Sonnet 4（均衡推薦）',     recommended:true  },
+      { id:'claude-haiku-4-5-20251001',    label:'Claude Haiku 4.5（快速低價）',    recommended:false },
+      { id:'claude-opus-4-20250514',       label:'Claude Opus 4',                   recommended:false },
+      { id:'claude-3-7-sonnet-20250219',   label:'Claude 3.7 Sonnet',              recommended:false },
+      { id:'claude-3-5-haiku-20241022',    label:'Claude 3.5 Haiku（最便宜）',     recommended:false },
+    ];
+  }
+  return [];
+}
+
+window.onModelChange = function(){
+  const sel = document.getElementById('input-model');
+  if(sel.value) document.getElementById('btn-test-model').style.display = '';
+};
+
+window.testModel = async function(){
+  const sel = document.getElementById('input-model');
+  const manual = document.getElementById('input-model-manual').value.trim();
+  const modelId = manual || sel.value;
+  const key = document.getElementById('input-apikey').value.trim();
+  const result = document.getElementById('model-test-result');
+
+  if(!modelId){ result.className='err'; result.textContent='請選擇或輸入模型'; return; }
+  if(!key){ result.className='err'; result.textContent='請填入 API Key'; return; }
+
+  result.className='loading'; result.textContent='⏳ 測試中…';
+
+  // 暫存測試用
+  const origProvider = gameState.apiProvider;
+  const origModel = gameState.apiModel;
+  const origKey = gameState.apiKey;
+  gameState.apiProvider = selectedProvider;
+  gameState.apiModel = modelId;
+  gameState.apiKey = key;
+
+  try {
+    const testMsg = '請回覆「測試成功」三個字，不要說其他內容。';
+    const origHistory = gameState.history;
+    gameState.history = [];
+    const resp = await callAI(testMsg);
+    gameState.history = origHistory;
+    result.className='ok';
+    result.textContent = '✓ 連線成功！模型回應正常';
+    // 正式儲存設定
+    localStorage.setItem('kpop_provider', selectedProvider);
+    localStorage.setItem('kpop_model', modelId);
+    localStorage.setItem('kpop_apikey', key);
+  } catch(e) {
+    result.className='err';
+    result.textContent = '✗ 失敗：' + e.message;
+    // 還原
+    gameState.apiProvider = origProvider;
+    gameState.apiModel = origModel;
+    gameState.apiKey = origKey;
+  }
+};
+
 let selectedIdentity = '';
+window.toggleBfCond = function(el){
+  el.classList.toggle('selected');
+};
+
 window.selectIdentity = function(el, val){
   document.querySelectorAll('.identity-opt').forEach(e=>e.classList.remove('selected'));
   el.classList.add('selected');
@@ -740,7 +951,9 @@ window.selectIdentity = function(el, val){
 
 window.confirmSettings = function(){
   const apikey = document.getElementById('input-apikey').value.trim();
-  const model = document.getElementById('input-model').value.trim();
+  const _selModel = document.getElementById('input-model').value.trim();
+  const _manModel = document.getElementById('input-model-manual').value.trim();
+  const model = _manModel || _selModel;
   const name = document.getElementById('input-name').value.trim();
   const age = document.getElementById('input-age').value.trim();
   const nation = document.getElementById('input-nationality').value.trim();
@@ -753,7 +966,6 @@ window.confirmSettings = function(){
   if(!selectedProvider){ msg.textContent='請選擇 AI 服務商'; return; }
   if(!apikey){ msg.textContent='請填入 API Key'; return; }
   if(!name){ msg.textContent='請填入你的姓名'; return; }
-  if(!bfName){ msg.textContent='請填入男友姓名'; return; }
 
   msg.textContent = '';
 
@@ -769,9 +981,13 @@ window.confirmSettings = function(){
   gameState.playerAge = age || '24';
   gameState.playerNation = nation || '台灣';
   gameState.playerIdentity = identity || '素人';
-  gameState.bfName = bfName;
-  gameState.myPet = myPet || '歐巴';
-  gameState.bfPet = bfPet || '寶貝';
+  // bfName 留空時存入條件，讓 AI 自動選角
+  const bfCondition = document.getElementById('input-bf-condition').value.trim();
+  const selectedConds = [...document.querySelectorAll('#bf-condition-section .identity-opt.selected')].map(e=>e.textContent.trim()).join('、');
+  gameState.bfName = bfName || ''; // 空字串表示讓AI決定
+  gameState.bfCondition = bfName ? '' : (selectedConds ? selectedConds + (bfCondition?'、'+bfCondition:'') : bfCondition);
+  gameState.myPet = myPet || ''; // 空字串表示讓AI依性格決定
+  gameState.bfPet = bfPet || '';
   gameState.initialized = true;
 
   initGameScreen();
@@ -791,7 +1007,13 @@ window.showSettingsFromGame = function(){
   const savedModel = localStorage.getItem('kpop_model')||gameState.apiModel||'';
   const savedKey = localStorage.getItem('kpop_apikey')||'';
   if(savedProvider) selectProviderById(savedProvider);
-  if(savedModel) document.getElementById('input-model').value = savedModel;
+  if(savedModel){
+    // 嘗試設定 select，若選項不存在則填入 manual
+    const sel = document.getElementById('input-model');
+    const opt = [...sel.options].find(o => o.value === savedModel);
+    if(opt){ sel.value = savedModel; }
+    else { document.getElementById('input-model-manual').value = savedModel; }
+  }
   if(savedKey) document.getElementById('input-apikey').value = savedKey;
   if(gameState.playerName) document.getElementById('input-name').value = gameState.playerName;
   if(gameState.playerAge) document.getElementById('input-age').value = gameState.playerAge;
@@ -806,7 +1028,9 @@ window.showSettingsFromGame = function(){
 // 從遊戲內儲存設定（不重啟遊戲）
 window.saveSettingsOnly = function(){
   const apikey = document.getElementById('input-apikey').value.trim();
-  const model = document.getElementById('input-model').value.trim();
+  const _selModel = document.getElementById('input-model').value.trim();
+  const _manModel = document.getElementById('input-model-manual').value.trim();
+  const model = _manModel || _selModel;
   if(!selectedProvider){ document.getElementById('msg-settings').textContent='請選擇 AI 服務商'; return; }
   if(!apikey){ document.getElementById('msg-settings').textContent='請填入 API Key'; return; }
   localStorage.setItem('kpop_provider', selectedProvider);
@@ -855,7 +1079,8 @@ function updateHeader(){
 async function callAI(userMessage){
   const p = gameState.apiProvider;
   const model = gameState.apiModel;
-  const key = gameState.apiKey || localStorage.getItem('kpop_apikey') || '';
+  // 永遠優先讀 localStorage 最新的 key，確保更換後立即生效
+  const key = localStorage.getItem('kpop_apikey') || gameState.apiKey || '';
   if(!key) throw new Error('缺少 API Key');
 
   const msgs = [...gameState.history, { role:'user', content: userMessage }];
@@ -941,14 +1166,15 @@ function buildSystemPrompt(){
 - 年齡：${gameState.playerAge}歲
 - 國籍：${gameState.playerNation}
 - 身份：${gameState.playerIdentity}
-- 男友姓名：${gameState.bfName}
-- 玩家對男友的愛稱：${gameState.myPet}
-- 男友對玩家的愛稱：${gameState.bfPet}
+- 男友姓名：${gameState.bfName || '（由AI根據條件決定）'}
+- 男友選角條件：${gameState.bfCondition || '（無特別指定）'}
+- 玩家對男友的愛稱：${gameState.myPet || '（由AI根據人物性格自然帶入，不強制）'}
+- 男友對玩家的愛稱：${gameState.bfPet || '（由AI根據人物性格自然帶入，不強制）'}
 
 【遊戲規則】
 1. 全程使用繁體中文，禁止任何外語（包括韓文、英文）
 2. 遊戲背景為2025年現代首爾，禁止超自然、古代、血腥元素
-3. 嚴格根據${gameState.bfName}的真實公開形象、性格、演藝經歷構建人設，不可OOC
+3. 若男友姓名有指定，嚴格根據該明星真實公開形象構建人設，不可OOC；若未指定，根據選角條件從現實韓國男明星中自行選定一位，選定後全程一致
 4. 玩家沒有上帝視角，只有主視角；不顯示任何數值
 5. 男友的隱藏缺點在20回合後才逐漸透過劇情細節顯現，不單獨提示
 6. 每4回合提供一次同房機會
@@ -985,14 +1211,25 @@ async function startGame(){
   showLoading('生成初始劇情中…');
   addSystemMsg('⏳ 正在根據你的設定生成專屬劇情…');
 
+  // 動態產生男友描述
+  const bfDesc = gameState.bfName
+    ? `韓國男明星${gameState.bfName}`
+    : `一位符合以下條件的韓國男明星（請自行選定並在劇情中揭示姓名）：${gameState.bfCondition || '無特別限制，請自由選擇'}`;
+
+  // 動態產生愛稱說明
+  const petDesc = (gameState.myPet || gameState.bfPet)
+    ? `玩家對男友愛稱：${gameState.myPet||'請依人物性格自然帶入'}；男友對玩家愛稱：${gameState.bfPet||'請依人物性格自然帶入'}`
+    : '雙方愛稱請根據男友性格與兩人關係自然帶入，不要刻意說明';
+
   const prompt = `請為我生成第一回合的前置劇情。
 
 這是${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerNation}人，身份：${gameState.playerIdentity}）
-與韓國男明星${gameState.bfName}的秘密戀情模擬遊戲。
+與${bfDesc}的秘密戀情模擬遊戲。
+${petDesc}
 
 請先生成：
 1. 玩家的背景介紹（工作、生活環境、性格）
-2. 與${gameState.bfName}相遇並墜入愛河的前置劇情（200-300字，韓劇風格）
+2. 與男友相遇並墜入愛河的前置劇情（200-300字，韓劇風格）
 3. 目前關係狀態說明
 4. 為什麼不能公開戀情的原因（隨機生成，需符合韓娛生態）
 5. 然後進入第一回合的遊戲流程
