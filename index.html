@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r19</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r21</p>
   </div>
 </div>
 
@@ -1140,7 +1140,7 @@ async function runCasting(){
     ? `【玩家指定的範圍或對象】${bfInput}（可能是具體人名、團體名、公司、類型描述等，請據此推薦符合條件的人選）`
     : '';
 
-  const prompt = `根據以下玩家資料，從現實韓國男明星中推薦6位最適合的攻略對象。
+  const castingPrompt = `根據以下玩家資料，從現實韓國男明星中推薦6位最適合的攻略對象。
 ${bfInputNote}
 
 【玩家資料】
@@ -1176,7 +1176,7 @@ ${bfInputNote}
 請推薦6位人選，每位風格、職業、性格盡量多元，不要重複類型。`;
 
   try {
-    const resp = await callAI(prompt);
+    const resp = await callAI(castingPrompt);
     loadEl.style.display = 'none';
     const cleaned = resp.split('```json').join('').split('```').join('').trim();
     const match = cleaned.match(/\{[\s\S]*\}/);
@@ -1265,15 +1265,57 @@ ${bfInputNote}
       listEl.appendChild(card);
     });
 
-    // 加入「自行輸入」按鈕
+    // 確認按鈕
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'btn btn-primary';
+    confirmBtn.style.cssText = 'width:100%;margin-top:.8rem;';
+    confirmBtn.textContent = '確認選角，開始故事';
+    confirmBtn.onclick = ()=>{
+      const mainCards = [...listEl.querySelectorAll('[data-role="main"]')];
+      const sideCards = [...listEl.querySelectorAll('[data-role="side"]')];
+      const allCards = [...listEl.querySelectorAll('[data-name]')];
+
+      if(castMode === 'pick' && mainCards.length === 0){
+        alert('請至少點選一位候選人，或切換為「不指定主角」模式');
+        return;
+      }
+
+      const mainNames = mainCards.map(el=>el.dataset.name).filter(Boolean);
+      const sideNames = sideCards.map(el=>el.dataset.name).filter(Boolean);
+      const allNames = allCards.map(el=>el.dataset.name).filter(Boolean);
+
+      if(castMode === 'auto'){
+        gameState.bfName = '';
+        gameState.bfCandidates = allNames;
+        gameState.castMode = 'auto';
+      } else {
+        gameState.bfName = mainNames[0] || '';
+        gameState.bfCandidates = mainNames;
+        gameState.castMode = 'pick';
+      }
+
+      const existingSide = gameState.sideChars ? gameState.sideChars.split('，').filter(Boolean) : [];
+      const extraMain = castMode==='pick' ? mainNames.slice(1) : [];
+      const allSide = [...new Set([...existingSide, ...sideNames, ...extraMain])];
+      gameState.sideChars = allSide.join('，');
+
+      initGameScreen();
+      showScreen('screen-game');
+      startGame();
+    };
+    listEl.appendChild(confirmBtn);
+
+    // 自行輸入姓名
     const manualBtn = document.createElement('button');
     manualBtn.className = 'btn';
-    manualBtn.style.cssText = 'width:100%;margin-top:.3rem;font-size:.8rem;';
-    manualBtn.textContent = '自行輸入姓名';
+    manualBtn.style.cssText = 'width:100%;margin-top:.4rem;font-size:.78rem;color:var(--text3);';
+    manualBtn.textContent = '直接輸入姓名';
     manualBtn.onclick = ()=>{
-      const name = prompt('請輸入韓國男明星姓名：');
+      const name = window.prompt('請輸入韓國男明星姓名：');
       if(name && name.trim()){
         gameState.bfName = name.trim();
+        gameState.bfCandidates = [name.trim()];
+        gameState.castMode = 'pick';
         initGameScreen();
         showScreen('screen-game');
         startGame();
@@ -2190,7 +2232,7 @@ async function startGame(){
     '素人':       '相遇方式：日常生活中真正的意外相遇，反而更珍貴稀有，如何讓這次相遇可信是關鍵',
   }[gameState.playerIdentity] || '相遇方式需符合玩家身份，自然合理';
 
-  const prompt = `請為我生成第一回合的前置劇情。
+  const startPrompt = `請為我生成第一回合的前置劇情。
 
 這是${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerNation}人，身份：${gameState.playerIdentity}）
 與${bfDesc}的秘密戀情模擬遊戲。
@@ -2233,8 +2275,8 @@ ${meetingHint}
 請以完整 JSON 格式回覆，不得截斷。`;
 
   try {
-    const response = await callAI(prompt);
-    gameState.history.push({ role:'user', content: prompt });
+    const response = await callAI(startPrompt);
+    gameState.history.push({ role:'user', content: startPrompt });
     gameState.history.push({ role:'assistant', content: response });
     if(loadingMsgEl) loadingMsgEl.remove();
     processAIResponse(response, true);
@@ -2749,7 +2791,7 @@ async function nextRound(playerChoice){
     ? '本回合可以有與男友相關的互動，但保持真實節奏'
     : '本回合可以有一個稍微重要的情節推進，符合目前的關係階段';
 
-  const prompt = `玩家剛才結束了一個場景（最後行動：「${playerChoice}」），請生成第${gameState.round}回合的新場景。
+  const roundPrompt = `玩家剛才結束了一個場景（最後行動：「${playerChoice}」），請生成第${gameState.round}回合的新場景。
 
 注意：這是一個全新的場景，有新的時間點、地點或情境轉換。
 不要複述上一個場景的內容，直接帶入新場景。
@@ -2776,8 +2818,8 @@ ${twistNote ? '- '+twistNote : ''}
 - 請以完整 JSON 格式回覆，不得截斷`;
 
   try {
-    const response = await callAI(prompt);
-    gameState.history.push({ role:'user', content: prompt });
+    const response = await callAI(roundPrompt);
+    gameState.history.push({ role:'user', content: roundPrompt });
     gameState.history.push({ role:'assistant', content: response });
     // 保持 history 不超過30條（節省 token）
     if(gameState.history.length > 30){
@@ -3065,7 +3107,7 @@ async function getBFInsPage(){
   // 呼叫 AI 生成男友 INS 頁面
   try {
     showLoading('載入主頁…');
-    const prompt = `請以JSON回覆，生成${gameState.bfName}的Instagram主頁內容：
+    const insPrompt = `請以JSON回覆，生成${gameState.bfName}的Instagram主頁內容：
 {
   "followers": "粉絲數（如1.2M）",
   "following": "關注數",
@@ -3321,7 +3363,7 @@ function clearNotifs(){
 }
 
 async function sendKakaoMsg(){
-  const text = prompt('輸入要傳給'+gameState.bfName+'的訊息：');
+  const text = window.prompt('輸入要傳給'+gameState.bfName+'的訊息：');
   if(!text) return;
   const msgs = gameState.phoneData.kakao.chats[gameState.bfName] || [];
   const now = new Date();
@@ -3460,7 +3502,7 @@ window.randomizeProfile = async function(){
   const btn = document.querySelector('[onclick="randomizeProfile()"]');
   if(btn){ btn.textContent='⏳ 生成中…'; btn.disabled=true; }
 
-  const prompt = `請隨機生成一個有趣的韓娛戀愛遊戲女主角設定，以JSON回覆：
+  const randPrompt = `請隨機生成一個有趣的韓娛戀愛遊戲女主角設定，以JSON回覆：
 {
   "name": "中文名字（台灣/中國/韓/日常見名）",
   "age": 數字(22-30),
@@ -3478,7 +3520,7 @@ window.randomizeProfile = async function(){
 }`;
 
   try {
-    const resp = await callAI(prompt);
+    const resp = await callAI(randPrompt);
     const cleaned = resp.split('```json').join('').split('```').join('').trim();
     const m = cleaned.match(/\{[\s\S]*\}/);
     const p = JSON.parse(m?m[0]:cleaned);
@@ -3533,15 +3575,15 @@ window.doContact = async function(type){
   let userInput = '';
 
   if(type==='msg'){
-    userInput = prompt(`傳訊息給 ${bfName}：`);
+    userInput = window.prompt(`傳訊息給 ${bfName}：`);
     if(!userInput) return;
   } else if(type==='call'){
     userInput = '打電話給他';
   } else if(type==='ins'){
-    userInput = prompt(`在 Instagram 上對 ${bfName} 的貼文留言：`);
+    userInput = window.prompt(`在 Instagram 上對 ${bfName} 的貼文留言：`);
     if(!userInput) return;
   } else if(type==='weverse'){
-    userInput = prompt(`在 Weverse 上留言：`);
+    userInput = window.prompt(`在 Weverse 上留言：`);
     if(!userInput) return;
   }
 
