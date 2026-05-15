@@ -834,9 +834,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 window.onerror = function(msg, src, line, col, err){
   document.title = 'ERR:' + line + ' ' + msg.slice(0,30);
   var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:8px;z-index:99999;font-size:12px;word-break:break-all;';
-  d.textContent = 'JS Error line:'+line+' '+msg;
+  d.style.cssText = 'position:fixed;bottom:24px;right:10px;background:rgba(40,20,20,.85);color:#c08080;padding:4px 8px;z-index:99999;font-size:.6rem;border-radius:4px;max-width:260px;word-break:break-all;pointer-events:none;';
+  d.textContent = 'err:'+line+' '+msg.slice(0,60);
   document.body && document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 8000);
   return false;
 };
 
@@ -994,14 +995,7 @@ window.showScreen = function(id){
   document.getElementById(id).classList.add('active');
 };
 
-// ── Auth ──
-auth.onAuthStateChanged(user => {
-  currentUser = user;
-  if(user){
-    document.getElementById('auth-overlay').classList.remove('show');
-    loadCloudSave();
-  }
-});
+// ── Auth：在 loadFirebase() 完成後才呼叫，這裡不執行 ──
 
 window.signInWithGoogle = async function(){
   try{
@@ -3504,6 +3498,6 @@ window.sendKakaoMsg = sendKakaoMsg;
 // ── 安卓相容性（已由 compat SDK 解決）──
 
 </script>
-  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r7</div>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r8</div>
 </body>
 </html>
