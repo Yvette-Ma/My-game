@@ -334,6 +334,62 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 #model-test-result.err{color:#c87878;}
 #model-test-result.loading{color:var(--text3);}
 
+/* ── 手機 App UI ── */
+.phone-app-header{
+  background:#111118;padding:.6rem .9rem;
+  display:flex;align-items:center;gap:.6rem;
+  border-bottom:1px solid #222230;font-size:.82rem;color:#aaa;
+}
+.phone-app-header .app-icon{font-size:1rem;}
+.phone-app-header .app-name{font-weight:500;color:#ccc;}
+.phone-app-header .back-btn{
+  margin-left:auto;font-size:.72rem;color:#888;
+  cursor:pointer;padding:.2rem .5rem;border-radius:.3rem;
+  border:1px solid #333;background:none;
+}
+.ins-post{padding:.7rem .8rem;border-bottom:1px solid #1a1a24;}
+.ins-post .post-user{font-size:.72rem;color:#a0a0c0;margin-bottom:.3rem;}
+.ins-post .post-content{font-size:.8rem;color:#c0c0d8;line-height:1.6;}
+.ins-post .post-stats{font-size:.68rem;color:#666;margin-top:.3rem;}
+.kakao-msg-wrap{padding:.4rem .8rem;display:flex;flex-direction:column;}
+.kakao-msg{
+  max-width:75%;padding:.45rem .7rem;border-radius:.8rem;
+  font-size:.78rem;line-height:1.5;margin:.2rem 0;
+}
+.kakao-msg.from-bf{
+  background:#2a2a3a;color:#c8c8e0;align-self:flex-start;
+  border-bottom-left-radius:.2rem;
+}
+.kakao-msg.from-me{
+  background:#4a4030;color:#e0d8c0;align-self:flex-end;
+  border-bottom-right-radius:.2rem;
+}
+.kakao-time{font-size:.6rem;color:#555;margin:.1rem .3rem;}
+.kakao-name{font-size:.65rem;color:#888;margin-bottom:.1rem;}
+.weverse-post{padding:.7rem .8rem;border-bottom:1px solid #1a1a24;}
+.weverse-post .wv-user{font-size:.72rem;color:#9090c0;margin-bottom:.25rem;display:flex;align-items:center;gap:.4rem;}
+.weverse-post .wv-badge{font-size:.6rem;background:#2a2a4a;color:#8080c0;padding:.1rem .3rem;border-radius:.2rem;}
+.weverse-post .wv-content{font-size:.8rem;color:#c0c0d8;line-height:1.6;}
+.weverse-post .wv-stats{font-size:.68rem;color:#555;margin-top:.3rem;}
+.notif-item{padding:.5rem .8rem;border-bottom:1px solid #1a1a24;display:flex;gap:.6rem;}
+.notif-item .ni-icon{font-size:1rem;flex-shrink:0;}
+.notif-item .ni-body{flex:1;}
+.notif-item .ni-app{font-size:.65rem;color:#666;margin-bottom:.15rem;}
+.notif-item .ni-msg{font-size:.78rem;color:#b0b0c8;line-height:1.4;}
+.notif-item .ni-time{font-size:.62rem;color:#555;margin-top:.1rem;}
+.home-app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;padding:1rem .6rem;}
+.home-app{display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;}
+.home-app .app-ico{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+}
+.home-app .app-lbl{font-size:.58rem;color:#888;}
+.home-app .app-badge{
+  font-size:.55rem;background:#c05050;color:#fff;
+  border-radius:1rem;padding:.05rem .3rem;position:absolute;top:-4px;right:-4px;
+}
+.home-app-wrap{position:relative;display:inline-block;}
+
 /* ── 響應式 ── */
 @media(min-width:768px){
   .story-panel{padding:1.5rem 2rem;}
@@ -527,39 +583,37 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     </div>
 
     <hr class="s-divider">
-    <div class="s-section-title">⭐ 男友設定</div>
+    <div class="s-section-title">⭐ 戀愛對象</div>
 
     <div class="s-section">
-      <span class="s-label">指定男友（可留空自動配對）</span>
-      <input class="s-input" id="input-bf-name" placeholder="例：金碩珍、朴志訓… 或留空自動配對">
-      <p class="s-note">填入現實明星姓名，系統將根據其公開形象構建人設。<br>留空則可在下方指定條件，由 AI 自動選角。</p>
+      <span class="s-label">指定對象（知道想攻略誰就直接填）</span>
+      <input class="s-input" id="input-bf-name" placeholder="填入韓國男明星姓名，留空則進行選角">
+      <p class="s-note">留空時，遊戲開始前會根據你的所有設定推薦候選人，由你選擇。</p>
     </div>
 
-    <div class="s-section" id="bf-condition-section">
-      <span class="s-label">配對條件（留空男友時使用）</span>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;">
-        <div class="identity-opt" onclick="toggleBfCond(this,'SM娛樂')">SM娛樂</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'HYBE')">HYBE</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'JYP娛樂')">JYP娛樂</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'YG娛樂')">YG娛樂</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'溫柔體貼型')">溫柔體貼型</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'高冷霸道型')">高冷霸道型</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'陽光開朗型')">陽光開朗型</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'神秘內斂型')">神秘內斂型</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'偶像歌手')">偶像歌手</div>
-        <div class="identity-opt" onclick="toggleBfCond(this,'演員')">演員</div>
+    <div class="s-section">
+      <span class="s-label">你喜歡的類型（選角參考，可多選）</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;" id="type-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">溫柔體貼</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">高冷霸道</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">陽光開朗</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘內斂</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">成熟穩重</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">幼稚可愛</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">才華橫溢</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">話少深情</div>
       </div>
-      <input class="s-input" id="input-bf-condition" placeholder="或自由描述：例如「暖男型、擅長寫歌的偶像」">
+      <input class="s-input" id="input-bf-condition" placeholder="補充說明：例如「年紀比我大、擅長寫歌」">
     </div>
 
     <div class="s-row">
       <div class="s-section">
-        <span class="s-label">你對男友的愛稱（可留空自動）</span>
-        <input class="s-input" id="input-my-pet" placeholder="留空則依人物性格自動帶入">
+        <span class="s-label">你對他的稱呼（可留空）</span>
+        <input class="s-input" id="input-my-pet" placeholder="留空則依關係自然帶入">
       </div>
       <div class="s-section">
-        <span class="s-label">男友對你的愛稱（可留空自動）</span>
-        <input class="s-input" id="input-bf-pet" placeholder="留空則依人物性格自動帶入">
+        <span class="s-label">他對你的稱呼（可留空）</span>
+        <input class="s-input" id="input-bf-pet" placeholder="留空則依性格自然帶入">
       </div>
     </div>
 
@@ -570,6 +624,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-primary" id="btn-start-game" onclick="confirmSettings()">開始遊戲 ✨</button>
       <button class="btn btn-primary" id="btn-save-settings" onclick="saveSettingsOnly()" style="display:none;">儲存設定 ✓</button>
     </div>
+  </div>
+</div>
+
+<!-- ════ CASTING ════ -->
+<div id="screen-casting" class="screen" style="background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;">
+  <div style="width:100%;max-width:520px;margin:0 auto;">
+    <div style="font-size:1.1rem;color:var(--text2);margin-bottom:.3rem;">選擇你的故事對象</div>
+    <p style="font-size:.8rem;color:var(--text3);margin-bottom:1.5rem;">根據你的設定，以下是幾位可能與你產生交集的對象。選擇一位，故事就從他開始。</p>
+    <div id="casting-list" style="display:flex;flex-direction:column;gap:.8rem;"></div>
+    <div id="casting-loading" style="text-align:center;color:var(--text3);font-size:.85rem;padding:2rem;">
+      <div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--text3);animation:spin .8s linear infinite;margin:0 auto 1rem;"></div>
+      正在根據你的設定尋找合適的對象…
+    </div>
+    <div id="casting-error" style="display:none;color:var(--rose2);font-size:.82rem;text-align:center;padding:1rem;"></div>
   </div>
 </div>
 
@@ -607,7 +675,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <span>📶 🔋 <span id="po-battery">82%</span></span>
   </div>
   <div class="po-body" id="po-body">
-    <pre class="po-pre" id="po-content"></pre>
+    <div id="po-content"></div>
   </div>
   <div class="po-actions" id="po-actions"></div>
 </div>
@@ -803,6 +871,110 @@ function flashSave(){
 }
 
 // ── Splash 按鈕 ──
+// ── 選角流程 ──
+async function runCasting(){
+  const listEl = document.getElementById('casting-list');
+  const loadEl = document.getElementById('casting-loading');
+  const errEl = document.getElementById('casting-error');
+  listEl.innerHTML = '';
+  loadEl.style.display = 'block';
+  errEl.style.display = 'none';
+
+  const prompt = `根據以下玩家資料，從現實韓國男明星中推薦3位最適合的攻略對象。
+
+【玩家資料】
+- 姓名：${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerNation}人）
+- 身份：${gameState.playerIdentity}
+- 個性：${gameState.traits || '未指定'}
+- 才能：${gameState.talents || '未指定'}
+- 背景：${gameState.background || '無'}
+- 喜歡的類型：${gameState.bfCondition || '無特別要求'}
+- 劇情起點：${gameState.storyStart || '初次相遇'}
+
+選角標準：
+1. 與玩家身份有合理的相遇可能性
+2. 與玩家個性有真實的化學反應（互補或相似但有說服力）
+3. 人設真實，符合該明星公開形象
+4. 三位各有不同風格，讓玩家有選擇空間
+
+請以JSON回覆（不要任何其他文字）：
+{
+  "candidates": [
+    {
+      "name": "姓名",
+      "group": "所屬團體或公司",
+      "age": 年齡數字,
+      "personality": "2-3個性格關鍵詞",
+      "why": "為什麼適合這位玩家（1句話，20字內）",
+      "meetingWay": "兩人可能的相遇方式（1句話，25字內）",
+      "vibe": "這段感情的整體氛圍（如：拉鋸感十足的相愛相殺）"
+    }
+  ]
+}`;
+
+  try {
+    const resp = await callAI(prompt);
+    loadEl.style.display = 'none';
+    const cleaned = resp.replace(/\`\`\`json
+?/g,'').replace(/\`\`\`
+?/g,'').trim();
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    const data = JSON.parse(match ? match[0] : cleaned);
+    const candidates = data.candidates || [];
+
+    if(!candidates.length){ throw new Error('未取得候選人'); }
+
+    candidates.forEach((c, i) => {
+      const card = document.createElement('div');
+      card.style.cssText = 'background:var(--bg3);border:1px solid var(--border);border-radius:.9rem;padding:1rem 1.1rem;cursor:pointer;transition:border-color .2s;';
+      card.onmouseenter = ()=>card.style.borderColor='var(--border2)';
+      card.onmouseleave = ()=>card.style.borderColor='var(--border)';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+          <div>
+            <span style="font-size:.98rem;color:var(--text);">${c.name}</span>
+            <span style="font-size:.72rem;color:var(--text3);margin-left:.5rem;">${c.group || ''} · ${c.age || ''}歲</span>
+          </div>
+          <span style="font-size:.7rem;color:var(--text3);background:var(--bg2);padding:.15rem .4rem;border-radius:.3rem;">${c.personality || ''}</span>
+        </div>
+        <div style="font-size:.78rem;color:var(--text2);margin-bottom:.3rem;">💡 ${c.why || ''}</div>
+        <div style="font-size:.75rem;color:var(--text3);margin-bottom:.3rem;">🤝 ${c.meetingWay || ''}</div>
+        <div style="font-size:.75rem;color:var(--rose3);font-style:italic;">✨ ${c.vibe || ''}</div>
+      `;
+      card.onclick = ()=>{
+        gameState.bfName = c.name;
+        gameState.bfCastingMeetingWay = c.meetingWay;
+        gameState.bfCastingVibe = c.vibe;
+        initGameScreen();
+        showScreen('screen-game');
+        startGame();
+      };
+      listEl.appendChild(card);
+    });
+
+    // 加入「自行輸入」按鈕
+    const manualBtn = document.createElement('button');
+    manualBtn.className = 'btn';
+    manualBtn.style.cssText = 'width:100%;margin-top:.3rem;font-size:.8rem;';
+    manualBtn.textContent = '✏️ 我要自己輸入姓名';
+    manualBtn.onclick = ()=>{
+      const name = prompt('請輸入韓國男明星姓名：');
+      if(name && name.trim()){
+        gameState.bfName = name.trim();
+        initGameScreen();
+        showScreen('screen-game');
+        startGame();
+      }
+    };
+    listEl.appendChild(manualBtn);
+
+  } catch(e){
+    loadEl.style.display = 'none';
+    errEl.style.display = 'block';
+    errEl.innerHTML = `選角失敗：${e.message}<br><br><button class="btn btn-sm" onclick="runCasting()">重試</button>`;
+  }
+}
+
 window.startNewGame = function(){
   // 清除舊存檔
   gameState = {
@@ -1149,8 +1321,12 @@ window.confirmSettings = function(){
   // bfName 留空時存入條件，讓 AI 自動選角
   const bfCondition = document.getElementById('input-bf-condition').value.trim();
   const selectedConds = [...document.querySelectorAll('#bf-condition-section .identity-opt.selected')].map(e=>e.textContent.trim()).join('、');
+  // 收集喜好類型
+  const likedTypes = [...document.querySelectorAll('#type-grid .identity-opt.selected')]
+    .map(e=>e.textContent.trim()).join('、');
+
   gameState.bfName = bfName || '';
-  gameState.bfCondition = bfName ? '' : (selectedConds ? selectedConds + (bfCondition?'、'+bfCondition:'') : bfCondition);
+  gameState.bfCondition = [likedTypes, bfCondition].filter(Boolean).join('、');
   gameState.myPet = myPet || '';
   gameState.bfPet = bfPet || '';
   gameState.appearance = appearance;
@@ -1162,8 +1338,14 @@ window.confirmSettings = function(){
   gameState.initialized = true;
 
   initGameScreen();
-  showScreen('screen-game');
-  startGame();
+  if(!bfName){
+    // 未指定男友：先跳選角畫面
+    showScreen('screen-casting');
+    runCasting();
+  } else {
+    showScreen('screen-game');
+    startGame();
+  }
 };
 
 window.showSettingsFromGame = function(){
@@ -1545,6 +1727,13 @@ ${meetingHint}
     gameState.history.push({ role:'assistant', content: response });
     if(loadingMsgEl) loadingMsgEl.remove();
     processAIResponse(response, true);
+    // 把開場事件加入 INS 貼文
+    if(gameState.phoneData.ins.posts.length === 0 && gameState.bfName){
+      gameState.phoneData.ins.posts.unshift({
+        content: `剛結束了行程，累但值得 🌙`,
+        time: '剛剛'
+      });
+    }
     await saveGame();
   } catch(e){
     hideLoading();
@@ -1808,7 +1997,8 @@ function renderOptions(opts){
 window.chooseOption = async function(text, btn){
   disableOptions();
   addChoiceMsg(text);
-  await nextRound(text);
+  await reactToChoice(text);   // 先延續當前場景
+  await nextRound(text);       // 再進入下一回合
 };
 
 window.submitCustom = async function(){
@@ -1818,11 +2008,45 @@ window.submitCustom = async function(){
   input.value = '';
   disableOptions();
   addChoiceMsg(text);
+  await reactToChoice(text);
   await nextRound(text);
 };
 
 function disableOptions(){
   document.getElementById('options-panel').classList.add('disabled');
+}
+
+// ── 即時反應：選擇後延續當前場景，再進入下一回合 ──
+async function reactToChoice(playerChoice){
+  // 顯示短暫的思考動畫
+  const reactionDiv = document.createElement('div');
+  reactionDiv.className = 'story-msg narration';
+  reactionDiv.style.cssText = 'opacity:.5;font-style:italic;font-size:.8rem;';
+  reactionDiv.textContent = '…';
+  document.getElementById('story-panel').appendChild(reactionDiv);
+  document.getElementById('story-panel').scrollTop = 99999;
+
+  const prompt = `玩家剛才的行動/對話：「${playerChoice}」
+
+請以1-3句話延續這個當下的場景反應（不要開啟新情節，只是這個行動/對話的即時延續）。
+例如：她說了什麼、空氣的變化、對方的表情、玩家的內心感受。
+風格：沉浸式言情小說，細膩但簡短。
+只回覆純文字，不要JSON，不要標題，不要說明。`;
+
+  try {
+    // 使用輕量版呼叫（不加入 history，只是氛圍延續）
+    const origHistory = gameState.history;
+    const shortHistory = gameState.history.slice(-4); // 只保留最近4條
+    gameState.history = shortHistory;
+    const resp = await callAI(prompt);
+    gameState.history = origHistory;
+    const cleaned = cleanMarkdown(resp.replace(/```[\s\S]*?```/g,'').trim());
+    reactionDiv.style.cssText = '';
+    reactionDiv.textContent = cleaned;
+  } catch(e){
+    reactionDiv.remove(); // 失敗就靜默移除，不影響流程
+  }
+  document.getElementById('story-panel').scrollTop = 99999;
 }
 
 // ── 下一回合 ──
@@ -1939,30 +2163,52 @@ async function renderPhonePage(page){
 
   if(page==='home'){
     const timeStr = document.getElementById('po-time').textContent;
-    content.textContent = `
-╔══════════════════════╗
-  ${timeStr}         📶 🔋 ${document.getElementById('po-battery').textContent}
-╚══════════════════════╝
-
-[ Instagram ]  [ KakaoTalk ]
-[ YouTube   ]  [ Weverse   ]
-[ 通知中心  ]${notifCount>0?` (${notifCount})`:''}
-
-──────────────────────
- 操作：點選下方按鈕進入應用
-──────────────────────`;
-    actions.innerHTML = `
-      <button class="po-btn" onclick="renderPhonePage('ins')">📸 Instagram</button>
-      <button class="po-btn" onclick="renderPhonePage('kakao')">💬 KakaoTalk</button>
-      <button class="po-btn" onclick="renderPhonePage('weverse')">🌟 Weverse</button>
-      <button class="po-btn" onclick="renderPhonePage('youtube')">▶️ YouTube</button>
-      <button class="po-btn" onclick="renderPhonePage('notifs')">🔔 通知${notifCount>0?`(${notifCount})`:''}</button>
-      <button class="po-close" onclick="closePhone()">關閉手機 [繼續]</button>`;
+    const battStr = document.getElementById('po-battery').textContent;
+    content.innerHTML = `
+      <div style="padding:.8rem;text-align:center;border-bottom:1px solid #1a1a24;">
+        <div style="font-size:1.6rem;font-weight:300;color:#ddd;letter-spacing:.05em;">${timeStr}</div>
+        <div style="font-size:.65rem;color:#555;margin-top:.2rem;">📶 🔋 ${battStr}</div>
+      </div>
+      <div class="home-app-grid">
+        <div class="home-app" onclick="renderPhonePage('ins')">
+          <div class="home-app-wrap">
+            <div class="app-ico" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);">📸</div>
+          </div>
+          <span class="app-lbl">Instagram</span>
+        </div>
+        <div class="home-app" onclick="renderPhonePage('kakao')">
+          <div class="home-app-wrap">
+            <div class="app-ico" style="background:#fae100;">💬</div>
+            ${(gameState.phoneData.kakao.chats[gameState.bfName]||[]).filter(m=>m.from!=='me').length > 0 ? '<span class="app-badge">New</span>' : ''}
+          </div>
+          <span class="app-lbl">KakaoTalk</span>
+        </div>
+        <div class="home-app" onclick="renderPhonePage('weverse')">
+          <div class="home-app-wrap">
+            <div class="app-ico" style="background:#1c1c2e;">🌟</div>
+          </div>
+          <span class="app-lbl">Weverse</span>
+        </div>
+        <div class="home-app" onclick="renderPhonePage('youtube')">
+          <div class="home-app-wrap">
+            <div class="app-ico" style="background:#ff0000;">▶️</div>
+          </div>
+          <span class="app-lbl">YouTube</span>
+        </div>
+        <div class="home-app" onclick="renderPhonePage('notifs')">
+          <div class="home-app-wrap">
+            <div class="app-ico" style="background:#2a2a3a;">🔔</div>
+            ${notifCount>0?`<span class="app-badge">${notifCount}</span>`:''}
+          </div>
+          <span class="app-lbl">通知</span>
+        </div>
+      </div>`;
+    actions.innerHTML = `<button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins'){
-    content.textContent = await getINSContent();
+    content.innerHTML = renderINSHome();
     actions.innerHTML = `
-      <button class="po-btn" onclick="renderPhonePage('ins-bf')">👤 ${gameState.bfName}主頁</button>
+      <button class="po-btn" onclick="renderPhonePage('ins-bf')">👤 ${gameState.bfName||'他'}的主頁</button>
       <button class="po-btn" onclick="renderPhonePage('ins-mypage')">👤 我的主頁</button>
       <button class="po-btn" onclick="renderPhonePage('ins-dm')">💌 私信</button>
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
@@ -1995,9 +2241,29 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='kakao-bf'){
-    content.textContent = getKakaoBFChat();
+    const bfName = gameState.bfName || '他';
+    const msgs = gameState.phoneData.kakao.chats[bfName] || [
+      { from: bfName, text: `${gameState.bfPet||''}…`, time:'--:--' }
+    ];
+    content.innerHTML = `
+      <div class="phone-app-header">
+        <button class="back-btn" onclick="renderPhonePage('kakao')">← </button>
+        <span class="app-icon">💛</span>
+        <span class="app-name">${bfName}</span>
+        <span style="font-size:.65rem;color:#6a6;margin-left:.3rem;">● 線上</span>
+      </div>
+      <div class="kakao-msg-wrap" style="padding:.6rem .5rem;">
+        ${msgs.slice(-12).map(m=>{
+          const isMe = m.from==='me';
+          return `<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'};">
+            ${!isMe?`<div class="kakao-name">${m.from}</div>`:''}
+            <div class="kakao-msg ${isMe?'from-me':'from-bf'}">${m.text}</div>
+            <div class="kakao-time">${m.time}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
     actions.innerHTML = `
-      <button class="po-btn" onclick="sendKakaoMsg()">✏️ 發送訊息</button>
+      <button class="po-btn" onclick="sendKakaoMsg()">✏️ 傳訊息</button>
       <button class="po-btn" onclick="renderPhonePage('kakao')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
@@ -2008,7 +2274,34 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='weverse'){
-    content.textContent = await getWeverseContent();
+    const bfName = gameState.bfName || '他';
+    const wvPosts = gameState.phoneData.weverse.posts;
+    content.innerHTML = `
+      <div class="phone-app-header">
+        <span class="app-icon">🌟</span><span class="app-name">Weverse</span>
+      </div>
+      <div style="padding:.5rem .8rem;font-size:.68rem;color:#555;border-bottom:1px solid #1a1a24;">
+        ${bfName} 官方社群
+      </div>
+      ${wvPosts.length ? wvPosts.slice(0,3).map(p=>`
+        <div class="weverse-post">
+          <div class="wv-user">
+            <span>${bfName}</span>
+            <span class="wv-badge">藝人</span>
+          </div>
+          <div class="wv-content">${p.content||''}</div>
+          <div class="wv-stats">❤️ ${Math.floor(Math.random()*100000+50000).toLocaleString()}  💬 ${Math.floor(Math.random()*5000+1000).toLocaleString()}</div>
+        </div>`).join('') : `
+        <div class="weverse-post">
+          <div class="wv-user"><span>${bfName}</span><span class="wv-badge">藝人</span></div>
+          <div class="wv-content">오늘도 열심히 💪<br>（今天也很努力～感謝大家的支持）</div>
+          <div class="wv-stats">❤️ 128,492  💬 4,231</div>
+        </div>
+        <div class="weverse-post">
+          <div class="wv-user"><span style="color:#6060a0;">粉絲 A</span></div>
+          <div class="wv-content">歐巴今天的表演太帥了😭❤️</div>
+          <div class="wv-stats">❤️ 2,103</div>
+        </div>`}`;
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
@@ -2020,9 +2313,29 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='notifs'){
-    content.textContent = getNotifContent();
+    const notifs = gameState.phoneData.notifs;
+    content.innerHTML = `
+      <div class="phone-app-header">
+        <span class="app-icon">🔔</span><span class="app-name">通知中心</span>
+      </div>
+      ${notifs.length ? notifs.slice(0,10).map(n=>`
+        <div class="notif-item">
+          <div class="ni-icon">${
+            n.app.includes('Kakao')?'💛':
+            n.app.includes('INS')||n.app.includes('Instagram')?'📸':
+            n.app.includes('Weverse')?'🌟':
+            n.app.includes('回憶')?'📖':'📲'
+          }</div>
+          <div class="ni-body">
+            <div class="ni-app">${n.app}</div>
+            <div class="ni-msg">${n.content}</div>
+            <div class="ni-time">${n.time||''}</div>
+          </div>
+        </div>`).join('') :
+        '<div style="text-align:center;color:var(--text3);font-size:.8rem;padding:2rem;">沒有新通知</div>'
+      }`;
     actions.innerHTML = `
-      <button class="po-btn" onclick="clearNotifs()">🗑️ 清除通知</button>
+      <button class="po-btn" onclick="clearNotifs();renderPhonePage('notifs')">🗑️ 清除</button>
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
   }
