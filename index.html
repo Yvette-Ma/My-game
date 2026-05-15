@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r18</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r19</p>
   </div>
 </div>
 
@@ -700,8 +700,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 
     <div class="s-section">
       <span class="s-label">指定對象（選填）</span>
-      <input class="s-input" id="input-bf-name" placeholder="知道要攻略誰就填，留空則進入選角流程">
-      <p class="s-note">填入後直接開始，不需要選角。</p>
+      <input class="s-input" id="input-bf-name" placeholder="可填人名、團體、公司或類型描述，都會進入選角確認">
+      <p class="s-note">不論填什麼都會進入選角流程，AI 根據你的輸入推薦具體人選由你確認。</p>
     </div>
 
     <div class="s-section">
@@ -1134,7 +1134,14 @@ async function runCasting(){
   loadEl.style.display = 'block';
   errEl.style.display = 'none';
 
-  const prompt = `根據以下玩家資料，從現實韓國男明星中推薦3位最適合的攻略對象。
+  // 把指定對象欄位當作條件（可能是人名、團體、範圍）
+  const bfInput = gameState.bfName || '';
+  const bfInputNote = bfInput
+    ? `【玩家指定的範圍或對象】${bfInput}（可能是具體人名、團體名、公司、類型描述等，請據此推薦符合條件的人選）`
+    : '';
+
+  const prompt = `根據以下玩家資料，從現實韓國男明星中推薦6位最適合的攻略對象。
+${bfInputNote}
 
 【玩家資料】
 - 姓名：${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerNation}人）
@@ -1662,15 +1669,10 @@ window.confirmSettings = function(){
   gameState.storyStart = selectedStoryStart || '剛確認交往關係，甜蜜期';
   gameState.initialized = true;
 
+  // 不管輸入什麼都進選角流程，讓 AI 根據條件推薦具體人選
   initGameScreen();
-  if(!bfName){
-    // 未指定男友：先跳選角畫面
-    showScreen('screen-casting');
-    runCasting();
-  } else {
-    showScreen('screen-game');
-    startGame();
-  }
+  showScreen('screen-casting');
+  runCasting();
 };
 
 window.showSettingsFromGame = function(){
