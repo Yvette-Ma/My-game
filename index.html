@@ -2708,10 +2708,10 @@ async function nextRound(playerChoice){
   // 特殊事件指示
   // 扭轉提示
   const twistNote = gameState.pendingTwistHint
-  const twistNote = gameState.pendingTwistHint
     ? '【玩家要求調整方向】'+gameState.pendingTwistHint+'\n請在保留故事脈絡的前提下，將本回合劇情往這個方向調整，自然融入不突兀。\n無論如何必須以完整 JSON 格式回覆，不得回傳純文字。'
-       無論如何必須以完整 JSON 格式回覆，不得回傳純文字。'
     : '';
+
+
 
   const ev = gameState.pendingSpecialEvent;
   const specialEventNote = ev
@@ -3781,6 +3781,6 @@ window.sendKakaoMsg = sendKakaoMsg;
 // ── 安卓相容性（已由 compat SDK 解決）──
 
 </script>
-  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r16</div>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.6rem;color:#888;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r18</div>
 </body>
 </html>
