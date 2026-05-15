@@ -695,27 +695,55 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     </div>
 
     <hr class="s-divider">
-    <div class="s-section-title">戀愛對象</div>
+    <div class="s-section-title">角色設定</div>
 
     <div class="s-section">
-      <span class="s-label">指定對象（知道想攻略誰就直接填）</span>
-      <input class="s-input" id="input-bf-name" placeholder="填入韓國男明星姓名，留空則進行選角">
-      <p class="s-note">留空時，遊戲開始前會根據你的所有設定推薦候選人，由你選擇。</p>
+      <span class="s-label">指定對象（選填）</span>
+      <input class="s-input" id="input-bf-name" placeholder="知道要攻略誰就填，留空則進入選角流程">
+      <p class="s-note">填入後直接開始，不需要選角。</p>
     </div>
 
     <div class="s-section">
-      <span class="s-label">你喜歡的類型（選角參考，可多選）</span>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem;" id="type-grid">
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">溫柔體貼</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">高冷霸道</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">陽光開朗</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘內斂</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">成熟穩重</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">幼稚可愛</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">才華橫溢</div>
-        <div class="identity-opt" onclick="this.classList.toggle('selected')">話少深情</div>
+      <span class="s-label">重點配角（選填，最多3位，逗號分隔）</span>
+      <input class="s-input" id="input-side-chars" placeholder="例：崔宇植、朴志訓、某閨蜜（可填明星名或虛構角色）">
+      <p class="s-note">這些角色會在劇情中固定出現，但不一定是主要對象。</p>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">職業偏好（可多選，選角時 AI 會優先考慮）</span>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.6rem;" id="type-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">偶像歌手</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">演員</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">製作人</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">運動員</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">模特兒</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">主持人</div>
       </div>
-      <input class="s-input" id="input-bf-condition" placeholder="補充說明：例如「年紀比我大、擅長寫歌」">
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">性格偏好（可多選）</span>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.6rem;" id="vibe-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">溫柔</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">高冷</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">陽光</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">成熟</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">可愛</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">才華型</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">話少</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">公司偏好（選填）</span>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.5rem;">
+        <div class="identity-opt" onclick="toggleBfCond(this,'SM')">SM</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'HYBE')">HYBE</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'JYP')">JYP</div>
+        <div class="identity-opt" onclick="toggleBfCond(this,'YG')">YG</div>
+      </div>
+      <input class="s-input" id="input-bf-condition" placeholder="其他條件：例如「1990年代生、已出道10年以上」">
     </div>
 
     <div class="s-row">
@@ -743,8 +771,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <!-- ════ CASTING ════ -->
 <div id="screen-casting" class="screen" style="background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;">
   <div style="width:100%;max-width:520px;margin:0 auto;">
-    <div style="font-size:1.1rem;color:var(--text2);margin-bottom:.3rem;">選擇你的故事對象</div>
-    <p style="font-size:.8rem;color:var(--text3);margin-bottom:1.5rem;">根據你的設定，以下是幾位可能與你產生交集的對象。選擇一位，故事就從他開始。</p>
+    <div style="font-size:1.1rem;color:var(--text2);margin-bottom:.3rem;">選角</div>
+    <p style="font-size:.8rem;color:var(--text3);margin-bottom:.8rem;line-height:1.6;">
+      根據你的條件推薦了以下人選，選擇你想要的角色定位。
+    </p>
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div id="cast-mode-auto" class="identity-opt selected" onclick="setCastMode('auto')"
+        style="flex:1;text-align:center;min-width:120px;padding:.5rem;">
+        不指定主角<br><span style="font-size:.65rem;color:var(--text3);">由劇情隨機決定</span>
+      </div>
+      <div id="cast-mode-pick" class="identity-opt" onclick="setCastMode('pick')"
+        style="flex:1;text-align:center;min-width:120px;padding:.5rem;">
+        指定候選人<br><span style="font-size:.65rem;color:var(--text3);">點選後優先發展</span>
+      </div>
+    </div>
+    <div style="font-size:.72rem;color:var(--text3);margin-bottom:.8rem;padding:.4rem .6rem;background:var(--bg3);border-radius:.4rem;border:1px solid var(--border);" id="cast-hint">
+      所有人都可能與你發生故事，由劇情自然決定走向。長按任一人設為重點配角（固定出現）。
+    </div>
     <div id="casting-list" style="display:flex;flex-direction:column;gap:.8rem;"></div>
     <div id="casting-loading" style="text-align:center;color:var(--text3);font-size:.85rem;padding:2rem;">
       <div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--text3);animation:spin .8s linear infinite;margin:0 auto 1rem;"></div>
@@ -982,6 +1025,9 @@ let gameState = {
   npcs: {},                // {name: {role, relationship, lastSeen}}
   // ── 玩家情緒狀態 ──
   playerMood: 'normal',    // happy/normal/anxious/sad/angry
+  sideChars: '',          // 重點配角（逗號分隔）
+  bfCandidates: [],        // 所有候選人（可多位）
+  castMode: 'pick',         // 'auto'=劇情隨機 | 'pick'=指定候選人
   // ── 本回合待處理的男友主動訊息 ──
   pendingBfMsg: null,
   // ── 男友性格檔案（第一回合建立後固定）──
@@ -1114,10 +1160,12 @@ async function runCasting(){
       "personality": "2-3個性格關鍵詞",
       "why": "為什麼適合這位玩家（1句話，20字內）",
       "meetingWay": "兩人可能的相遇方式（1句話，25字內）",
-      "vibe": "這段感情的整體氛圍（如：拉鋸感十足的相愛相殺）"
+      "vibe": "這段感情的整體氛圍"
     }
   ]
-}`;
+}
+
+請推薦6位人選，每位風格、職業、性格盡量多元，不要重複類型。`;
 
   try {
     const resp = await callAI(prompt);
@@ -1146,14 +1194,66 @@ async function runCasting(){
         <div style="font-size:.75rem;color:var(--text3);margin-bottom:.3rem;">相遇方式：${c.meetingWay || ''}</div>
         <div style="font-size:.75rem;color:var(--rose3);font-style:italic;">${c.vibe || ''}</div>
       `;
-      card.onclick = ()=>{
-        gameState.bfName = c.name;
-        gameState.bfCastingMeetingWay = c.meetingWay;
-        gameState.bfCastingVibe = c.vibe;
-        initGameScreen();
-        showScreen('screen-game');
-        startGame();
+      card.dataset.name = c.name;
+      card.dataset.role = ''; // '' | 'main' | 'side'
+
+      const roleTag = document.createElement('div');
+      roleTag.style.cssText = 'font-size:.65rem;margin-top:.5rem;min-height:.9rem;';
+      card.appendChild(roleTag);
+
+      function updateCardStyle(){
+        const role = card.dataset.role;
+        if(role === 'main'){
+          card.style.borderColor = 'var(--text2)';
+          card.style.background = 'rgba(180,160,140,.08)';
+          roleTag.textContent = '候選人';
+          roleTag.style.color = 'var(--text2)';
+        } else if(role === 'side'){
+          card.style.borderColor = 'var(--border)';
+          card.style.background = 'rgba(100,100,120,.06)';
+          roleTag.textContent = '重點配角';
+          roleTag.style.color = 'var(--text3)';
+        } else {
+          card.style.borderColor = 'var(--border)';
+          card.style.background = 'var(--bg3)';
+          roleTag.textContent = '';
+        }
+      }
+
+      card._updateStyle = updateCardStyle;
+
+      // 點選：auto模式只能設配角；pick模式可設候選人
+      card.onclick = (e)=>{
+        if(card._longPressed){ card._longPressed=false; return; }
+        if(castMode === 'pick'){
+          if(card.dataset.role === '') card.dataset.role = 'main';
+          else if(card.dataset.role === 'main') card.dataset.role = '';
+          // side狀態需長按取消
+        } else {
+          // auto模式：點選提示只能長按設配角
+          if(card.dataset.role === '' || card.dataset.role === 'main'){
+            // 不做任何事，提示用
+          }
+        }
+        updateCardStyle();
       };
+
+      // 長按：設為/取消重點配角
+      let pressTimer;
+      card.addEventListener('pointerdown', ()=>{
+        pressTimer = setTimeout(()=>{
+          card._longPressed = true;
+          if(card.dataset.role === 'side'){
+            card.dataset.role = '';
+          } else if(card.dataset.role === ''){
+            card.dataset.role = 'side';
+          }
+          updateCardStyle();
+        }, 500);
+      });
+      card.addEventListener('pointerup', ()=>clearTimeout(pressTimer));
+      card.addEventListener('pointercancel', ()=>clearTimeout(pressTimer));
+
       listEl.appendChild(card);
     });
 
@@ -1497,6 +1597,7 @@ window.confirmSettings = function(){
   const nation = document.getElementById('input-nationality').value.trim();
   const identity = document.getElementById('input-identity').value.trim();
   const bfName = document.getElementById('input-bf-name').value.trim();
+  const sideChars = document.getElementById('input-side-chars')?.value.trim() || '';
   const myPet = document.getElementById('input-my-pet').value.trim();
   const bfPet = document.getElementById('input-bf-pet').value.trim();
   const appBody  = document.getElementById('input-app-body')?.value.trim()||'';
@@ -1535,12 +1636,16 @@ window.confirmSettings = function(){
   // bfName 留空時存入條件，讓 AI 自動選角
   const bfCondition = document.getElementById('input-bf-condition').value.trim();
   const selectedConds = [...document.querySelectorAll('#bf-condition-section .identity-opt.selected')].map(e=>e.textContent.trim()).join('、');
-  // 收集喜好類型
+  // 收集職業類型
   const likedTypes = [...document.querySelectorAll('#type-grid .identity-opt.selected')]
+    .map(e=>e.textContent.trim()).join('、');
+  // 收集性格偏好
+  const likedVibes = [...document.querySelectorAll('#vibe-grid .identity-opt.selected')]
     .map(e=>e.textContent.trim()).join('、');
 
   gameState.bfName = bfName || '';
-  gameState.bfCondition = [likedTypes, bfCondition].filter(Boolean).join('、');
+  gameState.sideChars = sideChars;
+  gameState.bfCondition = [likedTypes, likedVibes, bfCondition].filter(Boolean).join('、');
   gameState.myPet = myPet || '';
   gameState.bfPet = bfPet || '';
   gameState.appearance = appearance;
@@ -1639,29 +1744,33 @@ window.saveSettingsOnly = function(){
 // ── 重玩此回合 ──
 window.replayRound = async function(){
   if(!confirm('重新生成這一回合的劇情？')) return;
-
-  // 回退一回合
-  gameState.round = Math.max(1, gameState.round - 1);
-  updateHeader();
-
-  // 移除最後一段故事（本回合的敘事）
-  const panel = document.getElementById('story-panel');
-  // 移除最後幾個 narration/event/choice 直到上一個 system 訊息
-  const msgs = [...panel.children];
-  let removed = 0;
-  for(let i = msgs.length - 1; i >= 0 && removed < 6; i--){
-    const el = msgs[i];
-    if(el.classList.contains('system') && removed > 0) break;
-    el.remove();
-    removed++;
+  if(gameState.round <= 1){
+    alert('第一回合無法重玩，請使用「扭轉」功能調整方向。');
+    return;
   }
 
-  // 移除最後兩條 AI history（上回合的問答）
+  gameState.round = Math.max(2, gameState.round - 1);
+  updateHeader();
+
+  // 移除最後N個訊息（本回合的內容）
+  const panel = document.getElementById('story-panel');
+  const msgs = [...panel.children];
+  // 從後往前移除，直到碰到 choice-made（上一個選擇）為止
+  let removed = 0;
+  for(let i = msgs.length - 1; i >= 0; i--){
+    const el = msgs[i];
+    // 碰到選項面板的選擇訊息就停
+    if(el.classList.contains('choice-made') && removed > 0) break;
+    el.remove();
+    removed++;
+    if(removed > 8) break; // 最多移除8個
+  }
+
+  // 移除最後兩條 AI history
   if(gameState.history.length >= 2){
     gameState.history = gameState.history.slice(0, -2);
   }
 
-  // 重新生成
   await nextRound(gameState.lastChoiceText || '繼續');
 };
 
@@ -1677,20 +1786,22 @@ window.applyTwist = async function(){
   document.getElementById('twist-panel').style.display = 'none';
 
   // 回退並以扭轉提示重新生成
-  gameState.round = Math.max(1, gameState.round - 1);
-  updateHeader();
-
-  const panel = document.getElementById('story-panel');
-  const msgs = [...panel.children];
-  let removed = 0;
-  for(let i = msgs.length - 1; i >= 0 && removed < 6; i--){
-    if(msgs[i].classList.contains('system') && removed > 0) break;
-    msgs[i].remove();
-    removed++;
-  }
-
-  if(gameState.history.length >= 2){
-    gameState.history = gameState.history.slice(0, -2);
+  const isFirstRound = gameState.round <= 1;
+  if(!isFirstRound){
+    gameState.round = Math.max(2, gameState.round - 1);
+    updateHeader();
+    const panel = document.getElementById('story-panel');
+    const msgs = [...panel.children];
+    let removed = 0;
+    for(let i = msgs.length - 1; i >= 0; i--){
+      if(msgs[i].classList.contains('choice-made') && removed > 0) break;
+      msgs[i].remove();
+      removed++;
+      if(removed > 8) break;
+    }
+    if(gameState.history.length >= 2){
+      gameState.history = gameState.history.slice(0, -2);
+    }
   }
 
   addSystemMsg(`調整方向：${hint}`);
@@ -1699,6 +1810,25 @@ window.applyTwist = async function(){
   gameState.pendingTwistHint = hint;
   await nextRound(gameState.lastChoiceText || '繼續');
   gameState.pendingTwistHint = null;
+};
+
+// ── 選角模式切換 ──
+let castMode = 'auto'; // 'auto' | 'pick'
+window.setCastMode = function(mode){
+  castMode = mode;
+  document.getElementById('cast-mode-auto').classList.toggle('selected', mode==='auto');
+  document.getElementById('cast-mode-pick').classList.toggle('selected', mode==='pick');
+  const hint = document.getElementById('cast-hint');
+  if(mode==='auto'){
+    hint.textContent = '所有人都可能與你發生故事，由劇情自然決定走向。長按任一人設為重點配角（固定出現）。';
+    // 清除所有候選人標記，保留配角
+    document.querySelectorAll('#casting-list [data-role="main"]').forEach(el=>{
+      el.dataset.role = '';
+      el._updateStyle && el._updateStyle();
+    });
+  } else {
+    hint.textContent = '點選 = 候選人（優先感情線）｜長按 = 重點配角｜再次點選 = 取消';
+  }
 };
 
 window.exitGame = function(){
@@ -1861,7 +1991,12 @@ function buildSystemPrompt(){
 - 其他背景：${gameState.background || '無'}
 - 劇情起點：${gameState.storyStart || '剛確認交往關係'}
 - 既往設定：${gameState.backstory || '無'}
-- 男友姓名：${gameState.bfName || '（由AI根據條件決定）'}
+- 選角模式：${gameState.castMode === 'auto' ? '自由發展（不指定主角）' : '指定候選人'}
+- 主要對象：${gameState.castMode === 'auto' ? '未指定，由劇情自然發展' : (gameState.bfName || '未指定')}
+- 候選人池：${gameState.bfCandidates && gameState.bfCandidates.length ? gameState.bfCandidates.join('、') : '未指定'}
+${gameState.castMode === 'auto'
+  ? '【自由發展模式】候選人池中的人物都可能出現並與玩家發生故事，AI 自由安排接觸機會和感情發展，不預設誰是最終對象。感情可以是多線並行，也可以自然收斂到一人。'
+  : '【指定模式】主要感情線圍繞指定候選人發展，其他人作為配角出現。'}
 - 男友選角條件：${gameState.bfCondition || '（無特別指定）'}
 - 玩家對男友的愛稱：${gameState.myPet || '（由AI根據人物性格自然帶入）'}
 - 男友對玩家的愛稱：${gameState.bfPet || '（由AI根據人物性格自然帶入）'}
@@ -1875,6 +2010,8 @@ function buildSystemPrompt(){
 - 已觸發旗標：${Object.entries(gameState.flags||{}).filter(([k,v])=>v).map(([k])=>k).join('、')||'無'}
 - 結局走向：${gameState.endingPath||'未定'}
 - 固定NPC：${Object.keys(gameState.npcs||{}).join('、')||'尚未建立'}
+- 重點配角（必須在劇情中自然出現）：${gameState.sideChars||'無'}
+  配角可以是現實明星（保持其真實人設）或虛構角色，與玩家有固定關係，但主要對象是 ${gameState.bfName||'主角'}
 
 【男友性格檔案】（嚴格遵守，不可OOC）
 ${gameState.bfProfile ? `
@@ -2573,8 +2710,9 @@ async function nextRound(playerChoice){
   // 特殊事件指示
   // 扭轉提示
   const twistNote = gameState.pendingTwistHint
-    ? `【玩家要求調整方向】${gameState.pendingTwistHint}
-       請在保留故事脈絡的前提下，將本回合劇情往這個方向調整，自然融入不突兀。`
+    ? '【玩家要求調整方向】'+gameState.pendingTwistHint+'
+       請在保留故事脈絡的前提下，將本回合劇情往這個方向調整，自然融入不突兀。
+       無論如何必須以完整 JSON 格式回覆，不得回傳純文字。'
     : '';
 
   const ev = gameState.pendingSpecialEvent;
@@ -3645,6 +3783,6 @@ window.sendKakaoMsg = sendKakaoMsg;
 // ── 安卓相容性（已由 compat SDK 解決）──
 
 </script>
-  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r11</div>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r15</div>
 </body>
 </html>
