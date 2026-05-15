@@ -424,21 +424,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .ins-post .post-user{font-size:.72rem;color:#a0a0c0;margin-bottom:.3rem;}
 .ins-post .post-content{font-size:.8rem;color:#c0c0d8;line-height:1.6;}
 .ins-post .post-stats{font-size:.68rem;color:#666;margin-top:.3rem;}
-.kakao-msg-wrap{padding:.4rem .8rem;display:flex;flex-direction:column;}
+.kakao-msg-wrap{padding:.6rem .8rem;display:flex;flex-direction:column;gap:.4rem;}
+.kakao-bubble-row{display:flex;flex-direction:column;}
+.kakao-bubble-row.me{align-items:flex-end;}
+.kakao-bubble-row.bf{align-items:flex-start;}
+.kakao-name{font-size:.62rem;color:#666;margin-bottom:.15rem;padding:0 .2rem;}
 .kakao-msg{
-  max-width:75%;padding:.45rem .7rem;border-radius:.8rem;
-  font-size:.78rem;line-height:1.5;margin:.2rem 0;
+  max-width:78%;padding:.5rem .75rem;border-radius:.9rem;
+  font-size:.8rem;line-height:1.55;word-break:break-word;
 }
 .kakao-msg.from-bf{
-  background:#2a2a3a;color:#c8c8e0;align-self:flex-start;
-  border-bottom-left-radius:.2rem;
+  background:#2a2a3c;color:#c8c8e0;
+  border-bottom-left-radius:.25rem;
 }
 .kakao-msg.from-me{
-  background:#4a4030;color:#e0d8c0;align-self:flex-end;
-  border-bottom-right-radius:.2rem;
+  background:#3d3520;color:#e0d8b8;
+  border-bottom-right-radius:.25rem;
 }
-.kakao-time{font-size:.6rem;color:#555;margin:.1rem .3rem;}
-.kakao-name{font-size:.65rem;color:#888;margin-bottom:.1rem;}
+.kakao-time{font-size:.58rem;color:#555;margin-top:.1rem;padding:0 .2rem;}
 .weverse-post{padding:.7rem .8rem;border-bottom:1px solid #1a1a24;}
 .weverse-post .wv-user{font-size:.72rem;color:#9090c0;margin-bottom:.25rem;display:flex;align-items:center;gap:.4rem;}
 .weverse-post .wv-badge{font-size:.6rem;background:#2a2a4a;color:#8080c0;padding:.1rem .3rem;border-radius:.2rem;}
@@ -765,6 +768,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="gh-btn" onclick="openPhoneOverlay('home')">手機</button>
       <button class="gh-btn" onclick="openMemories()">回憶</button>
       <button class="gh-btn" onclick="showSettingsFromGame()">設定</button>
+      <button class="gh-btn" onclick="replayRound()">重玩</button>
+      <button class="gh-btn" onclick="openTwist()">扭轉</button>
+      <button class="gh-btn" onclick="exitGame()">退出</button>
       <button class="gh-btn" onclick="signOutUser()" style="color:var(--rose2);">登出</button>
     </div>
   </div>
@@ -806,6 +812,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   </div>
 </div>
 <div class="ending-aura aura-unknown" id="ending-aura"></div>
+
+<!-- 扭轉劇情面板 -->
+<div id="twist-panel" style="
+  position:fixed;inset:0;z-index:70;
+  background:rgba(28,28,28,.96);
+  display:none;align-items:center;justify-content:center;
+">
+  <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:1.2rem;padding:1.5rem;max-width:380px;width:90%;">
+    <div style="font-size:.88rem;color:var(--text2);margin-bottom:.4rem;">扭轉劇情</div>
+    <p style="font-size:.75rem;color:var(--text3);margin-bottom:.9rem;line-height:1.6;">
+      告訴 AI 你想要的方向，它會重新生成當前回合，保留之前的故事脈絡。
+    </p>
+    <textarea id="twist-input"
+      style="width:100%;padding:.7rem;background:var(--bg2);border:1px solid var(--border);
+             color:var(--text);border-radius:.7rem;font-size:.82rem;line-height:1.6;
+             resize:none;outline:none;font-family:inherit;"
+      rows="3" placeholder="例如：讓他主動道歉、讓這個場景更甜蜜、加入一個意外的插曲…"></textarea>
+    <div style="display:flex;gap:.5rem;margin-top:.8rem;justify-content:flex-end;">
+      <button onclick="document.getElementById('twist-panel').style.display='none'"
+        style="padding:.5rem 1rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.6rem;cursor:pointer;font-size:.8rem;">取消</button>
+      <button onclick="applyTwist()"
+        style="padding:.5rem 1rem;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:.6rem;cursor:pointer;font-size:.8rem;">套用</button>
+    </div>
+  </div>
+</div>
 
 <!-- ════ MEMORIES OVERLAY ════ -->
 <div id="memories-overlay" style="
@@ -1605,6 +1636,77 @@ window.saveSettingsOnly = function(){
   }, 1200);
 };
 
+// ── 重玩此回合 ──
+window.replayRound = async function(){
+  if(!confirm('重新生成這一回合的劇情？')) return;
+
+  // 回退一回合
+  gameState.round = Math.max(1, gameState.round - 1);
+  updateHeader();
+
+  // 移除最後一段故事（本回合的敘事）
+  const panel = document.getElementById('story-panel');
+  // 移除最後幾個 narration/event/choice 直到上一個 system 訊息
+  const msgs = [...panel.children];
+  let removed = 0;
+  for(let i = msgs.length - 1; i >= 0 && removed < 6; i--){
+    const el = msgs[i];
+    if(el.classList.contains('system') && removed > 0) break;
+    el.remove();
+    removed++;
+  }
+
+  // 移除最後兩條 AI history（上回合的問答）
+  if(gameState.history.length >= 2){
+    gameState.history = gameState.history.slice(0, -2);
+  }
+
+  // 重新生成
+  await nextRound(gameState.lastChoiceText || '繼續');
+};
+
+// ── 扭轉劇情 ──
+window.openTwist = function(){
+  document.getElementById('twist-input').value = '';
+  document.getElementById('twist-panel').style.display = 'flex';
+};
+
+window.applyTwist = async function(){
+  const hint = document.getElementById('twist-input').value.trim();
+  if(!hint){ alert('請輸入想要的方向'); return; }
+  document.getElementById('twist-panel').style.display = 'none';
+
+  // 回退並以扭轉提示重新生成
+  gameState.round = Math.max(1, gameState.round - 1);
+  updateHeader();
+
+  const panel = document.getElementById('story-panel');
+  const msgs = [...panel.children];
+  let removed = 0;
+  for(let i = msgs.length - 1; i >= 0 && removed < 6; i--){
+    if(msgs[i].classList.contains('system') && removed > 0) break;
+    msgs[i].remove();
+    removed++;
+  }
+
+  if(gameState.history.length >= 2){
+    gameState.history = gameState.history.slice(0, -2);
+  }
+
+  addSystemMsg(`調整方向：${hint}`);
+
+  // 把扭轉提示加進下一回合的 prompt
+  gameState.pendingTwistHint = hint;
+  await nextRound(gameState.lastChoiceText || '繼續');
+  gameState.pendingTwistHint = null;
+};
+
+window.exitGame = function(){
+  if(confirm('退出當前遊戲？進度已自動儲存，下次可從「繼續遊戲」回來。')){
+    showScreen('screen-splash');
+  }
+};
+
 window.signOutUser = async function(){
   if(confirm('確定要登出嗎？登出後存檔仍保留在雲端。')){
     try{ if(firebaseReady) await auth.signOut(); }catch(e){}
@@ -1905,7 +2007,16 @@ sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，
 
 // ── 開始遊戲 ──
 async function startGame(){
-  gameState.round = 1; // 確保從第1回合開始
+  gameState.round = 1;
+  gameState.memories = [];        // 新遊戲清空回憶
+  gameState.storyLog = [];        // 清空故事紀錄
+  gameState.history = [];         // 清空 AI history
+  gameState.phoneData = {         // 清空手機資料
+    ins: { posts: [], dms: [] },
+    kakao: { chats: {} },
+    weverse: { posts: [] },
+    notifs: []
+  };
   updateHeader();
   showLoading('生成初始劇情中…');
   const loadingMsgEl = addSystemMsgRemovable('⏳ 正在根據你的設定生成專屬劇情…');
@@ -1990,13 +2101,7 @@ ${meetingHint}
     if(loadingMsgEl) loadingMsgEl.remove();
     processAIResponse(response, true);
     // startGame 的回合為第一個場景，不需要額外設定
-    // 把開場事件加入 INS 貼文
-    if(gameState.phoneData.ins.posts.length === 0 && gameState.bfName){
-      gameState.phoneData.ins.posts.unshift({
-        content: `剛結束了行程，累但值得 🌙`,
-        time: '剛剛'
-      });
-    }
+    // INS 貼文由劇情推進中自然產生，不預設內容
     await saveGame();
   } catch(e){
     hideLoading();
@@ -2466,6 +2571,12 @@ async function nextRound(playerChoice){
   // 決定本回合節奏類型
   const roundMod = gameState.round % 6;
   // 特殊事件指示
+  // 扭轉提示
+  const twistNote = gameState.pendingTwistHint
+    ? `【玩家要求調整方向】${gameState.pendingTwistHint}
+       請在保留故事脈絡的前提下，將本回合劇情往這個方向調整，自然融入不突兀。`
+    : '';
+
   const ev = gameState.pendingSpecialEvent;
   const specialEventNote = ev
     ? `【本回合必須發生的事件】${ev.desc || ev.id}
@@ -2521,6 +2632,7 @@ ${intimateNote}
 - 手機通知真實模擬（INS熱搜、Weverse動態、新聞推送等）
 ${specialEventNote ? '- '+specialEventNote : ''}
 ${endingHintNote ? '- '+endingHintNote : ''}
+${twistNote ? '- '+twistNote : ''}
 - BE警告層級目前為 ${gameState.beWarning||0}，若達3請必須觸發重大危機前置事件
 - 請以完整 JSON 格式回覆，不得截斷`;
 
@@ -2632,7 +2744,9 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins-bf'){
-    content.textContent = await getBFInsPage();
+    content.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.8rem;">載入中…</div>';
+    const bfPageHtml = await getBFInsPage();
+    content.innerHTML = bfPageHtml;
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
@@ -2669,14 +2783,14 @@ async function renderPhonePage(page){
         <span class="app-name">${bfName}</span>
         <span style="font-size:.65rem;color:#6a6;margin-left:.3rem;">● 線上</span>
       </div>
-      <div class="kakao-msg-wrap" style="padding:.6rem .5rem;">
+      <div class="kakao-msg-wrap">
         ${msgs.slice(-12).map(m=>{
           const isMe = m.from==='me';
-          return `<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'};">
-            ${!isMe?`<div class="kakao-name">${m.from}</div>`:''}
-            <div class="kakao-msg ${isMe?'from-me':'from-bf'}">${m.text}</div>
-            <div class="kakao-time">${m.time}</div>
-          </div>`;
+          return '<div class="kakao-bubble-row '+(isMe?'me':'bf')+'">'
+            +(!isMe?'<div class="kakao-name">'+m.from+'</div>':'')
+            +'<div class="kakao-msg '+(isMe?'from-me':'from-bf')+'">'+m.text+'</div>'
+            +'<div class="kakao-time">'+m.time+'</div>'
+            +'</div>';
         }).join('')}
       </div>`;
     actions.innerHTML = `
@@ -2724,7 +2838,30 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='youtube'){
-    content.textContent = getYoutubeContent();
+    const bfName = gameState.bfName || '他';
+    content.innerHTML = `
+      <div class="phone-app-header">
+        <span class="app-icon" style="background:#f00;border-radius:4px;padding:2px 4px;font-size:.7rem;color:#fff;">▶</span>
+        <span class="app-name" style="margin-left:.3rem;">YouTube</span>
+      </div>
+      <div style="padding:.5rem .8rem;">
+        <div style="font-size:.68rem;color:#555;margin-bottom:.6rem;">為你推薦</div>
+        <div class="ins-post">
+          <div class="post-user">${bfName} Official</div>
+          <div class="post-content" style="color:#a0a8c0;">[MV] 最新主打歌 Official Music Video</div>
+          <div class="post-stats">觀看次數 ${Math.floor(Math.random()*5000+500).toLocaleString()}萬次</div>
+        </div>
+        <div class="ins-post">
+          <div class="post-user">${bfName} Official</div>
+          <div class="post-content" style="color:#a0a8c0;">[LIVE] 粉絲見面會精華</div>
+          <div class="post-stats">觀看次數 ${Math.floor(Math.random()*500+100).toLocaleString()}萬次</div>
+        </div>
+        <div class="ins-post">
+          <div class="post-user">韓娛新聞</div>
+          <div class="post-content" style="color:#a0a8c0;">最新韓流動態整理</div>
+          <div class="post-stats">觀看次數 ${Math.floor(Math.random()*100+20).toLocaleString()}萬次</div>
+        </div>
+      </div>`;
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
@@ -2810,24 +2947,34 @@ async function getBFInsPage(){
     }catch(e){ data = null; }
     if(!data) return `載入失敗，請重試。`;
 
+    const bfHandle = '@'+(gameState.bfName||'').replace(/\s/g,'_').toLowerCase();
+    const postsHtml = (data.recent_posts||[]).map(p=>`
+      <div class="ins-post">
+        <div class="post-user">${bfHandle} · ${p.time||''}</div>
+        <div class="post-content">${p.content||''}</div>
+        <div class="post-stats">❤️ ${Math.floor(Math.random()*200000+50000).toLocaleString()}  💬 ${Math.floor(Math.random()*5000+500).toLocaleString()}</div>
+      </div>`).join('');
     return `
-╔══════════════════════╗
-  👤 @${gameState.bfName.replace(/\s/g,'_').toLowerCase()}
-     ✅ 認證帳號
-╚══════════════════════╝
-
-⭐ 粉絲：${data.followers}
-   關注：${data.following}
-   帖子：${data.posts_count}
-
-簡介：${data.bio}
-
-── 最新帖子 ──
-
-${data.recent_posts.map(p=>`⏰ ${p.time}\n   ${p.content}`).join('\n\n')}
-
-──────────────────────
- ❤️ 已追蹤`;
+      <div class="phone-app-header">
+        <button class="back-btn" onclick="renderPhonePage('ins')">←</button>
+        <span class="app-name">${bfHandle}</span>
+        <span style="font-size:.65rem;color:#8888aa;margin-left:.3rem;">✓ 認證</span>
+      </div>
+      <div style="padding:.8rem;border-bottom:1px solid #1a1a24;">
+        <div style="display:flex;gap:1rem;align-items:center;margin-bottom:.5rem;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#2a2040;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">★</div>
+          <div>
+            <div style="font-size:.85rem;color:var(--text);">${gameState.bfName||''}</div>
+            <div style="font-size:.7rem;color:#666;">${data.bio||''}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:1.5rem;font-size:.72rem;color:#888;">
+          <span><b style="color:var(--text2);">${data.posts_count||0}</b> 貼文</span>
+          <span><b style="color:var(--text2);">${data.followers||0}</b> 粉絲</span>
+          <span><b style="color:var(--text2);">${data.following||0}</b> 追蹤中</span>
+        </div>
+      </div>
+      ${postsHtml}`;
   } catch(e){
     hideLoading();
     return `無法載入，請檢查網路。`;
@@ -3498,6 +3645,6 @@ window.sendKakaoMsg = sendKakaoMsg;
 // ── 安卓相容性（已由 compat SDK 解決）──
 
 </script>
-  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r8</div>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r11</div>
 </body>
 </html>
