@@ -3293,8 +3293,7 @@ window.doContact = async function(type){
       const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       chats.push({from:'me', text:userInput, time:timeStr});
       // 從回應中提取他說的話加入聊天
-      const bfReply = resp.split(/[。！？
-]/)[0];
+      const bfReply = resp.split(/[。！？\n]/)[0];
       if(bfReply && bfReply.length < 60){
         chats.push({from:bfName, text:bfReply, time:timeStr});
       }
@@ -3505,6 +3504,6 @@ window.sendKakaoMsg = sendKakaoMsg;
 // ── 安卓相容性（已由 compat SDK 解決）──
 
 </script>
-  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r6</div>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r7</div>
 </body>
 </html>
