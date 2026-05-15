@@ -1994,9 +1994,7 @@ function buildSystemPrompt(){
 - 選角模式：${gameState.castMode === 'auto' ? '自由發展（不指定主角）' : '指定候選人'}
 - 主要對象：${gameState.castMode === 'auto' ? '未指定，由劇情自然發展' : (gameState.bfName || '未指定')}
 - 候選人池：${gameState.bfCandidates && gameState.bfCandidates.length ? gameState.bfCandidates.join('、') : '未指定'}
-${gameState.castMode === 'auto'
-  ? '【自由發展模式】候選人池中的人物都可能出現並與玩家發生故事，AI 自由安排接觸機會和感情發展，不預設誰是最終對象。感情可以是多線並行，也可以自然收斂到一人。'
-  : '【指定模式】主要感情線圍繞指定候選人發展，其他人作為配角出現。'}
+${gameState.castMode === 'auto' ? '【自由發展模式】候選人池中的人物都可能出現並與玩家發生故事，AI 自由安排接觸機會和感情發展，不預設誰是最終對象。感情可以是多線並行，也可以自然收斂到一人。' : '【指定模式】主要感情線圍繞指定候選人發展，其他人作為配角出現。'}
 - 男友選角條件：${gameState.bfCondition || '（無特別指定）'}
 - 玩家對男友的愛稱：${gameState.myPet || '（由AI根據人物性格自然帶入）'}
 - 男友對玩家的愛稱：${gameState.bfPet || '（由AI根據人物性格自然帶入）'}
@@ -2710,8 +2708,8 @@ async function nextRound(playerChoice){
   // 特殊事件指示
   // 扭轉提示
   const twistNote = gameState.pendingTwistHint
-    ? '【玩家要求調整方向】'+gameState.pendingTwistHint+'
-       請在保留故事脈絡的前提下，將本回合劇情往這個方向調整，自然融入不突兀。
+  const twistNote = gameState.pendingTwistHint
+    ? '【玩家要求調整方向】'+gameState.pendingTwistHint+'\n請在保留故事脈絡的前提下，將本回合劇情往這個方向調整，自然融入不突兀。\n無論如何必須以完整 JSON 格式回覆，不得回傳純文字。'
        無論如何必須以完整 JSON 格式回覆，不得回傳純文字。'
     : '';
 
@@ -3783,6 +3781,6 @@ window.sendKakaoMsg = sendKakaoMsg;
 // ── 安卓相容性（已由 compat SDK 解決）──
 
 </script>
-  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r15</div>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r16</div>
 </body>
 </html>
