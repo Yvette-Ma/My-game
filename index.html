@@ -489,7 +489,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     
     <h1 class="splash-title">秘密嫂子</h1>
     <p class="splash-sub">私人日記</p>
-    <p style="font-size:.6rem;color:var(--text3);margin-top:.3rem;letter-spacing:.05em;">v20260515-r6</p>
+
     <div class="splash-btn-row">
       <button class="btn btn-primary" onclick="startNewGame()">開始新遊戲</button>
       <button class="btn" onclick="continueGame()">繼續遊戲</button>
@@ -1791,8 +1791,7 @@ ${gameState.bfProfile ? `
 
 【玩家記憶庫】（他記得這些細節，在適當時機自然提起）
 ${gameState.playerMemory && gameState.playerMemory.length > 0
-  ? gameState.playerMemory.slice(-8).map(m=>`第${m.round}回合：${m.detail}`).join('
-')
+  ? gameState.playerMemory.slice(-8).map(m=>'第'+m.round+'回合：'+m.detail).join('\n')
   : '尚無記憶，在劇情中自然收集玩家透露的個人喜好/習慣/心事'}
 
 【玩家自身故事線】
@@ -3504,7 +3503,8 @@ window.clearNotifs = clearNotifs;
 window.sendKakaoMsg = sendKakaoMsg;
 
 // ── 安卓相容性（已由 compat SDK 解決）──
- 
+
 </script>
+  <div style="position:fixed;bottom:6px;right:10px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:1;letter-spacing:.03em;">v20260515-r6</div>
 </body>
 </html>
