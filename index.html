@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r21</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r24</p>
   </div>
 </div>
 
@@ -1126,7 +1126,7 @@ function flashSave(){
 
 // ── Splash 按鈕 ──
 // ── 選角流程 ──
-async function runCasting(){
+async function runCasting(keepCount){
   const listEl = document.getElementById('casting-list');
   const loadEl = document.getElementById('casting-loading');
   const errEl = document.getElementById('casting-error');
@@ -1137,11 +1137,16 @@ async function runCasting(){
   // 把指定對象欄位當作條件（可能是人名、團體、範圍）
   const bfInput = gameState.bfName || '';
   const bfInputNote = bfInput
-    ? `【玩家指定的範圍或對象】${bfInput}（可能是具體人名、團體名、公司、類型描述等，請據此推薦符合條件的人選）`
+    ? '【玩家指定的範圍或對象】' + bfInput + '（可能是具體人名、團體名、公司、類型描述等，請據此推薦符合條件的人選）'
+    : '';
+  const excluded = [...(gameState._castingExcluded||[]), ...(gameState._castingKeep||[])];
+  const excludeNote = excluded.length
+    ? '【請勿重複推薦以下已推薦過的人選】' + excluded.join('、')
     : '';
 
   const castingPrompt = `根據以下玩家資料，從現實韓國男明星中推薦6位最適合的攻略對象。
 ${bfInputNote}
+${excludeNote}
 
 【玩家資料】
 - 姓名：${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerNation}人）
@@ -1173,7 +1178,7 @@ ${bfInputNote}
   ]
 }
 
-請推薦6位人選，每位風格、職業、性格盡量多元，不要重複類型。`;
+請推薦${Math.max(1,6-(keepCount||0))}位人選，每位風格、職業、性格盡量多元，不要重複類型。`;
 
   try {
     const resp = await callAI(castingPrompt);
@@ -1305,6 +1310,52 @@ ${bfInputNote}
     };
     listEl.appendChild(confirmBtn);
 
+    // 重新推薦按鈕區
+    const recastWrap = document.createElement('div');
+    recastWrap.style.cssText = 'margin-top:.6rem;border-top:1px solid var(--border);padding-top:.6rem;display:flex;flex-direction:column;gap:.4rem;';
+
+    // 完全重新生成
+    const recastAllBtn = document.createElement('button');
+    recastAllBtn.className = 'btn';
+    recastAllBtn.style.cssText = 'width:100%;font-size:.78rem;';
+    recastAllBtn.textContent = '完全重新推薦（全部換掉）';
+    recastAllBtn.onclick = ()=>{
+      gameState._castingExcluded = [];
+      gameState._castingKeep = [];
+      listEl.innerHTML = '';
+      loadEl.style.display = 'block';
+      runCasting(0);
+    };
+    recastWrap.appendChild(recastAllBtn);
+
+    // 保留部分，其他重新推薦
+    const recastPartialBtn = document.createElement('button');
+    recastPartialBtn.className = 'btn';
+    recastPartialBtn.style.cssText = 'width:100%;font-size:.78rem;color:var(--text3);';
+    recastPartialBtn.textContent = '保留已選中的，其他重新推薦';
+    recastPartialBtn.onclick = ()=>{
+      const keepCards = [...listEl.querySelectorAll('[data-role="main"],[data-role="side"]')];
+      const allCards = [...listEl.querySelectorAll('[data-name]')];
+      const keepNames = keepCards.map(el=>el.dataset.name).filter(Boolean);
+      const excludeNames = allCards.map(el=>el.dataset.name).filter(function(n){ return !keepNames.includes(n); });
+      if(keepNames.length === 0){
+        alert('請先點選想保留的人員再點此按鈕。');
+        return;
+      }
+      gameState._castingKeep = keepNames;
+      gameState._castingExcluded = excludeNames;
+      allCards.forEach(function(card){
+        if(!keepNames.includes(card.dataset.name)) card.remove();
+      });
+      const remaining = keepNames.length;
+      recastWrap.remove();
+      confirmBtn.remove();
+      loadEl.style.display = 'block';
+      runCasting(remaining);
+    };
+    recastWrap.appendChild(recastPartialBtn);
+    listEl.appendChild(recastWrap);
+
     // 自行輸入姓名
     const manualBtn = document.createElement('button');
     manualBtn.className = 'btn';
@@ -1380,13 +1431,21 @@ window.continueGame = async function(){
   }
   hideLoading();
   if(loaded){
-    // 恢復 api key
     const savedKey = localStorage.getItem('kpop_apikey')||'';
     gameState.apiKey = savedKey;
     initGameScreen();
     showScreen('screen-game');
     renderAllStory();
     updateHeader();
+    // 讀取後提供繼續選項
+    const panel = document.getElementById('options-panel');
+    panel.classList.remove('disabled');
+    renderOptions([
+      {label:'A', text:'繼續故事'},
+      {label:'B', text:'回顧剛才發生的事，再繼續'},
+      {label:'D', text:'自定義（玩家自行輸入）'}
+    ]);
+    addSystemMsg('存檔讀取完成，從第 ' + gameState.round + ' 回合繼續。');
   } else {
     alert('找不到存檔，請開始新遊戲。');
   }
@@ -2626,95 +2685,89 @@ function disableOptions(){
 // 根據 sceneOver 決定是繼續對話還是推進回合
 // ══════════════════════════════════════════════════════
 async function handlePlayerAction(playerChoice){
-  showLoading('');
   const typingDiv = document.createElement('div');
   typingDiv.className = 'typing-indicator';
-  typingDiv.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+  typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
   document.getElementById('story-panel').appendChild(typingDiv);
   document.getElementById('story-panel').scrollTop = 99999;
 
-  // 場景內對話的 prompt（輕量，不加入主 history）
-  const scenePrompt = `當前場景背景：${gameState.currentSceneContext || '正在進行中的場景'}
-玩家剛才：「${playerChoice}」
+  // 場景內即時回應 prompt
+  const sceneP = '當前場景：' + (gameState.currentSceneContext || '正在進行中的場景') + '
+'
+    + '玩家剛才：「' + playerChoice + '」
 
-請以JSON回覆：
-{
-  "sceneResponse": "對玩家行動的即時回應（1-4句，沉浸式言情，只寫這一刻，不開啟新情節）",
-  "sceneOver": true或false,
-  "options": [
-    {"label":"A","text":"選項"},
-    {"label":"B","text":"選項"},
-    {"label":"C","text":"選項"},
-    {"label":"📱","text":"查看手機"},
-    {"label":"D","text":"自定義（玩家自行輸入）"}
-  ]
-}
+'
+    + '請以JSON回覆（不得回傳純文字）：
+'
+    + '{
+'
+    + '  "sceneResponse": "即時回應（1-4句，只寫這一刻，不開啟新情節）",
+'
+    + '  "sceneOver": false,
+'
+    + '  "continueToNext": false
+'
+    + '}
 
-判斷 sceneOver：
-- false：對話還在流動，有新的張力或回應需要處理
-- true：這個場景/對話自然結束了（話題收尾、兩人沉默、事件有了結果）
-
-選項規則：
-- sceneOver=false：選項是「接下來說什麼/做什麼回應」
-- sceneOver=true：選項是「接下來做什麼/去哪裡」，開啟下一個動線`;
-
-  const shortHistory = gameState.history.slice(-6);
+'
+    + 'sceneOver：若此刻對話/事件已完全結束設 true，否則設 false（預設 false）。
+'
+    + 'continueToNext：只有 sceneOver=true 且需要開啟全新場景時設 true，
+'
+    + '  否則設 false——大多數情況應設 false，讓玩家再做選擇。';
 
   try {
-    // 暫時用短 history 呼叫，不汙染主 history
     const origHistory = gameState.history;
-    gameState.history = shortHistory;
-    const resp = await callAI(scenePrompt);
+    gameState.history = gameState.history.slice(-6);
+    const resp = await callAI(sceneP);
     gameState.history = origHistory;
     typingDiv.remove();
-    hideLoading();
 
-    let data;
+    // 嘗試解析 JSON
+    let data = null;
     try {
       const cleaned = resp.split('```json').join('').split('```').join('').trim();
       const m = cleaned.match(/\{[\s\S]*\}/);
       data = JSON.parse(m ? m[0] : cleaned);
-    } catch(e) {
-      // 解析失敗：直接顯示文字，提供重試
-      addNarrationMsg(cleanMarkdown(resp));
-      renderOptions([
-        {label:'A', text:'繼續'},
-        {label:'D', text:'自定義（玩家自行輸入）'}
-      ]);
-      return;
-    }
+    } catch(e){ data = null; }
 
-    // 顯示場景回應
-    if(data.sceneResponse){
+    // 顯示回應文字
+    const responseText = data ? data.sceneResponse : cleanMarkdown(resp);
+    if(responseText && responseText.trim()){
       const el = document.createElement('div');
       el.className = 'story-msg narration scene-response';
-      el.textContent = cleanMarkdown(data.sceneResponse);
+      el.textContent = cleanMarkdown(responseText);
       document.getElementById('story-panel').appendChild(el);
       document.getElementById('story-panel').scrollTop = 99999;
-      gameState.storyLog.push({type:'narration', text: data.sceneResponse});
+      gameState.storyLog.push({type:'narration', text: responseText});
     }
 
-    if(data.sceneOver){
-      // 場景告一段落：推進新回合
+    // 決定下一步：只有明確設定 continueToNext=true 才推進回合
+    if(data && data.continueToNext === true && data.sceneOver === true){
       await nextRound(playerChoice);
     } else {
-      // 場景繼續：只更新選項，不推進回合
-      if(data.options) renderOptions(data.options);
-      else renderOptions([
-        {label:'A', text:'繼續說下去'},
-        {label:'D', text:'自定義（玩家自行輸入）'}
-      ]);
+      // 場景繼續，顯示選項讓玩家決定
+      if(data && data.options && data.options.length){
+        renderOptions(data.options);
+      } else {
+        renderOptions([
+          {label:'A', text:'繼續'},
+          {label:'B', text:'換個話題'},
+          {label:'📱', text:'查看手機'},
+          {label:'D', text:'自定義（玩家自行輸入）'}
+        ]);
+      }
     }
 
   } catch(e) {
     typingDiv.remove();
-    hideLoading();
-    addSystemMsg(`連線失敗：${e.message}`);
+    addSystemMsg('連線失敗：' + e.message);
     renderOptions([
       {label:'A', text:'重試'},
       {label:'D', text:'自定義（玩家自行輸入）'}
     ]);
   }
+  document.getElementById('options-panel').classList.remove('disabled');
 }
 
 // ── 下一回合 ──
@@ -2791,10 +2844,13 @@ async function nextRound(playerChoice){
     ? '本回合可以有與男友相關的互動，但保持真實節奏'
     : '本回合可以有一個稍微重要的情節推進，符合目前的關係階段';
 
-  const roundPrompt = `玩家剛才結束了一個場景（最後行動：「${playerChoice}」），請生成第${gameState.round}回合的新場景。
+  const lastSceneEnd = gameState.lastSceneEnd || '';
+  const roundPrompt = `玩家剛才的行動：「${playerChoice}」
+${lastSceneEnd ? '上一個場景的收尾：'+lastSceneEnd : ''}
 
-注意：這是一個全新的場景，有新的時間點、地點或情境轉換。
-不要複述上一個場景的內容，直接帶入新場景。
+請生成第${gameState.round}回合的新場景。
+注意：新場景必須從上一個場景的收尾自然延伸，情境轉換要有邏輯（例如：錄音完成→離開錄音室途中、練完舞→沖澡休息時）。
+不要無緣無故切換到完全不相關的場景，轉場需要有合理的時間/空間銜接。
 
 【當前狀態】
 - 關係階段：${currentRelation}
