@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r34</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r35</p>
   </div>
 </div>
 
@@ -3001,6 +3001,8 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins-bf'){
+    const bfForIns = getDisplayBfName();
+    if(!bfForIns){ content.innerHTML='<div style="text-align:center;padding:2rem;color:#555;font-size:.78rem;">尚未有追蹤的對象</div>'; actions.innerHTML='<button class="po-btn" onclick="renderPhonePage(\'ins\')">← 返回</button><button class="po-close" onclick="closePhone()">繼續遊戲</button>'; setTimeout(function(){ actions.querySelectorAll('button').forEach(function(btn){ var c=btn.getAttribute('onclick'); if(!c)return; btn.removeAttribute('onclick'); btn.addEventListener('click',function(){ try{new Function(c)();}catch(e){}; }); }); },0); return; }
     content.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:.8rem;">載入中…</div>';
     const bfPageHtml = await getBFInsPage();
     content.innerHTML = bfPageHtml;
@@ -3168,7 +3170,7 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='weverse'){
-    const bfName = gameState.bfName || '他';
+    const bfName = getDisplayBfName();
     const wvPosts = gameState.phoneData.weverse.posts;
     content.innerHTML = `
       <div class="phone-app-header">
@@ -3187,8 +3189,8 @@ async function renderPhonePage(page){
           <div class="wv-stats">❤️ ${Math.floor(Math.random()*100000+50000).toLocaleString()}  💬 ${Math.floor(Math.random()*5000+1000).toLocaleString()}</div>
         </div>`).join('') : `
         <div class="weverse-post">
-          <div class="wv-user"><span>${bfName}</span><span class="wv-badge">藝人</span></div>
-          <div class="wv-content">오늘도 열심히 💪<br>（今天也很努力～感謝大家的支持）</div>
+          <div class="wv-user"><span>${bfName||'（尚未追蹤的偶像）'}</span>${bfName?'<span class="wv-badge">藝人</span>':''}</div>
+          <div class="wv-content">${bfName?'오늘도 열심히 💪<br>（今天也很努力～感謝大家的支持）':'還沒有追蹤的對象，劇情推進後會出現動態。'}</div>
           <div class="wv-stats">❤️ 128,492  💬 4,231</div>
         </div>
         <div class="weverse-post">
@@ -3201,7 +3203,7 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='youtube'){
-    const bfName = gameState.bfName || '他';
+    const bfName = getDisplayBfName();
     content.innerHTML = `
       <div class="phone-app-header">
         <span class="app-icon" style="background:#f00;border-radius:4px;padding:2px 4px;font-size:.7rem;color:#fff;">▶</span>
