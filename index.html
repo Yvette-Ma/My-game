@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r38</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r40</p>
   </div>
 </div>
 
@@ -2394,19 +2394,30 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
     return;
   }
   try {
-    const cleaned = raw.split('```json').join('').split('```').join('').trim();
+    // 多重清理：移除 markdown 代碼塊、思考標籤等
+    let cleaned = raw;
+    cleaned = cleaned.split('```json').join('');
+    cleaned = cleaned.split('```').join('');
+    cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/g, '');
+    cleaned = cleaned.trim();
+    // 找 JSON 物件
     const match = cleaned.match(/\{[\s\S]*\}/);
     if(match) data = JSON.parse(match[0]);
     else data = JSON.parse(cleaned);
   } catch(e) {
-    // 解析失敗：若是第一回合，自動重試一次
-    if(isFirst){
+    // 解析失敗
+    if(isFirst && retryCount < 2){
       addSystemMsg('正在重新生成開場劇情…');
-      setTimeout(()=>startGame(), 1000);
+      setTimeout(()=>startGame(retryCount+1), 1200);
       return;
     }
-    // 非第一回合：純文字就直接顯示，像場景回應一樣
-    const cleanedRaw = cleanMarkdown(raw);
+    // 非第一回合或重試超過次數：顯示為純文字敘事
+    // 先清除 raw 裡的 JSON 語法殘留，避免顯示 ```json 等
+    const cleanedRaw = cleanMarkdown(raw
+      .split('```json').join('')
+      .split('```').join('')
+      .replace(/^\s*\{[\s\S]*\}\s*$/, '') // 若整個就是 JSON 就清空
+      .trim());
     if(cleanedRaw && cleanedRaw.length > 10){
       addNarrationMsg(cleanedRaw);
       renderOptions([
@@ -2416,10 +2427,7 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
         {label:'D', text:'自定義（玩家自行輸入）'}
       ]);
     } else {
-      renderOptions([
-        {label:'A', text:'重試'},
-        {label:'D', text:'自定義（玩家自行輸入）'}
-      ]);
+      renderOptions([{label:'A', text:'重試'},{label:'D', text:'自定義（玩家自行輸入）'}]);
     }
     return;
   }
@@ -2761,15 +2769,27 @@ async function handlePlayerAction(playerChoice){
       text: m[2].trim()
     }));
 
-    // 顯示回應
-    if(responseText && responseText.length > 5){
+    // 顯示回應（移除所有 [標記] 內部語法再顯示）
+    const cleanedResponse = responseText
+      ? responseText
+          .replace(/\[場景結束\]\s*[:：]\s*(是|否|true|false)/gi, '')
+          .replace(/\[回應\]/gi, '')
+          .replace(/\[下一步選項[ABC]\]\s*[:：][^
+]*/gi, '')
+          .replace(/\[continueToNext\][^
+]*/gi, '')
+          .replace(/\[sceneOver\][^
+]*/gi, '')
+          .trim()
+      : '';
+    if(cleanedResponse && cleanedResponse.length > 5){
       const el = document.createElement('div');
       el.className = 'story-msg narration scene-response';
-      el.textContent = responseText;
+      el.textContent = cleanedResponse;
       document.getElementById('story-panel').appendChild(el);
       document.getElementById('story-panel').scrollTop = 99999;
-      gameState.storyLog.push({type:'narration', text: responseText});
-      gameState.currentSceneContext = responseText.slice(0, 150);
+      gameState.storyLog.push({type:'narration', text: cleanedResponse});
+      gameState.currentSceneContext = cleanedResponse.slice(0, 150);
     }
 
     if(sceneOver){
