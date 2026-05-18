@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r32</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r34</p>
   </div>
 </div>
 
@@ -3021,7 +3021,49 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='kakao'){
-    content.textContent = getKakaoMain();
+    // 依劇情起點決定是否顯示男友
+    const bfNameK = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
+    const storyStart = gameState.storyStart || '';
+    const hasBfContact = bfNameK && !storyStart.includes('相識') && !storyStart.includes('初次');
+
+    // 從 phoneData 取出有記錄的聊天
+    const kakaoChats = gameState.phoneData.kakao.chats || {};
+    const chatEntries = Object.entries(kakaoChats).filter(([name, msgs]) => msgs && msgs.length > 0);
+
+    // 建立聊天列表 HTML
+    let chatListHtml = '';
+
+    // 若有男友且關係已建立
+    if(hasBfContact){
+      const bfMsgs = kakaoChats[bfNameK] || [];
+      const lastBfMsg = bfMsgs.slice(-1)[0];
+      chatListHtml += '<div class="ins-post" style="cursor:pointer;" onclick="renderPhonePage(\'kakao-bf\')">'
+        + '<div class="post-user" style="color:#e8b800;">' + bfNameK + ' <span style="font-size:.6rem;color:#4a4;">● 在線</span></div>'
+        + '<div class="post-content" style="color:#888;">' + (lastBfMsg ? lastBfMsg.text.slice(0,20) + (lastBfMsg.text.length>20?'…':'') : '點擊查看') + '</div>'
+        + '</div>';
+    }
+
+    // 其他有記錄的聊天（來自劇情推進）
+    chatEntries.forEach(function([name, msgs]){
+      if(name === bfNameK) return;
+      const last = msgs.slice(-1)[0];
+      chatListHtml += '<div class="ins-post">'
+        + '<div class="post-user">' + name + '</div>'
+        + '<div class="post-content" style="color:#888;">' + (last ? last.text.slice(0,20) + '…' : '') + '</div>'
+        + '</div>';
+    });
+
+    // 若沒有任何聊天記錄
+    if(!chatListHtml){
+      chatListHtml = '<div style="text-align:center;color:#444;font-size:.78rem;padding:1.5rem;">暫無對話記錄</div>';
+    }
+
+    content.innerHTML = '<div class="phone-app-header">'
+      + '<span class="app-name">KakaoTalk</span>'
+      + '</div>'
+      + '<div style="padding:.4rem 0;">'
+      + chatListHtml
+      + '</div>';
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('kakao-bf')">💕 與${gameState.myPet==='歐巴'?gameState.bfName:gameState.bfName}聊天</button>
       <button class="po-btn" onclick="renderPhonePage('kakao-friends')">👥 好友列表</button>
@@ -3029,7 +3071,21 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='kakao-bf'){
-    const bfName = gameState.bfName || '他';
+    const bfName = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
+    const storyStartBf = gameState.storyStart || '';
+    const canChatBf = bfName && !storyStartBf.includes('相識') && !storyStartBf.includes('初次');
+
+    if(!canChatBf){
+      content.innerHTML = '<div class="phone-app-header"><span class="app-name">KakaoTalk</span></div>'
+        + '<div style="text-align:center;color:#444;font-size:.78rem;padding:2rem 1rem;">'
+        + (bfName ? '還沒有和 ' + bfName + ' 交換聯絡方式' : '尚未有對象的聯絡方式')
+        + '</div>';
+      actions.innerHTML = '<button class="po-btn" onclick="renderPhonePage(\'kakao\')">← 返回</button>'
+        + '<button class="po-close" onclick="closePhone()">繼續遊戲</button>';
+      // 重新綁定
+      setTimeout(function(){ actions.querySelectorAll('button').forEach(function(btn){ var code=btn.getAttribute('onclick'); if(!code)return; btn.removeAttribute('onclick'); btn.addEventListener('click',function(){ try{new Function(code)();}catch(e){} }); }); }, 0);
+      return;
+    }
     const msgs = gameState.phoneData.kakao.chats[bfName] || [
       { from: bfName, text: `${gameState.bfPet||''}…`, time:'--:--' }
     ];
@@ -3056,7 +3112,57 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='kakao-friends'){
-    content.textContent = getKakaoFriends();
+    const bfNameF = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
+    const storyStartF = gameState.storyStart || '';
+    const hasBfF = bfNameF && !storyStartF.includes('相識') && !storyStartF.includes('初次');
+
+    // 從 NPC 資料取出已認識的人
+    const npcs = gameState.npcs || {};
+    const npcEntries = Object.entries(npcs);
+
+    // 從 kakao chats 取出有記錄的聯繫人
+    const kakaoChatsF = gameState.phoneData.kakao.chats || {};
+    const knownContacts = Object.keys(kakaoChatsF).filter(n => n !== bfNameF);
+
+    let friendHtml = '';
+
+    // 男友（若關係已建立）
+    if(hasBfF){
+      friendHtml += '<div style="font-size:.68rem;color:#555;padding:.3rem .8rem;">常用聯繫人</div>'
+        + '<div class="ins-post" style="cursor:pointer;" onclick="renderPhonePage(\'kakao-bf\')">'
+        + '<div class="post-user">' + bfNameF + ' <span style="font-size:.6rem;color:#4a4;">● 在線</span></div>'
+        + '</div>';
+    }
+
+    // 已認識的 NPC
+    if(npcEntries.length > 0){
+      friendHtml += '<div style="font-size:.68rem;color:#555;padding:.3rem .8rem;margin-top:.2rem;">認識的人</div>';
+      npcEntries.forEach(function([name, info]){
+        if(name === bfNameF) return;
+        friendHtml += '<div class="ins-post"><div class="post-user">' + name
+          + (info.role ? ' <span style="font-size:.62rem;color:#666;">(' + info.role + ')</span>' : '')
+          + '</div></div>';
+      });
+    }
+
+    // 其他有聊天記錄的聯繫人
+    if(knownContacts.length > 0){
+      knownContacts.forEach(function(name){
+        if(npcs[name]) return; // 已在 NPC 列表顯示
+        friendHtml += '<div class="ins-post"><div class="post-user">' + name + '</div></div>';
+      });
+    }
+
+    if(!friendHtml){
+      friendHtml = '<div style="text-align:center;color:#444;font-size:.78rem;padding:1.5rem;">通訊錄暫無聯繫人<br><span style="font-size:.68rem;">隨劇情推進會逐漸增加</span></div>';
+    }
+
+    content.innerHTML = '<div class="phone-app-header">'
+      + '<span class="app-name">KakaoTalk</span>'
+      + '</div>'
+      + '<div style="padding:.4rem 0;">'
+      + friendHtml
+      + '</div>';
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('kakao')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
