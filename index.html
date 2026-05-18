@@ -152,7 +152,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   font-size:clamp(.82rem,2.2vw,.95rem);line-height:1.9;
 }
 @keyframes msgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.story-msg.narration{color:var(--text2);}
+.story-msg.narration{color:var(--text2);font-size:.88rem;line-height:1.75;}
 .story-msg.scene-response{color:var(--text);border-left:2px solid var(--border);padding-left:.7rem;margin-left:.2rem;}
 .story-msg.event{
   background:var(--bg3);
@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r41</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r42</p>
   </div>
 </div>
 
@@ -2332,8 +2332,8 @@ ${meetingHint}
 - 「剛交往及以後」：從符合當前關係階段的日常場景切入，有生活感
 
 場景細節要求：
-- narration：具體場景，有時間地點天氣氣味聲音（150字內）
-- event：自然帶出玩家的生活背景，用細節說話（150字內）
+- narration：純粹的場景描寫，只有感官細節（時間/地點/氛圍/聲音/氣味），不包含任何對話或事件（100字內）
+- event：本回合發生的事件和對話，從narration結束的地方接續，不重複narration的場景描寫（150字內）
 - 選項：貼近玩家當下情境，有日常感
 
 【特別注意】若劇情起點是「初次相遇」或「曖昧期」，絕對不能一開始就把玩家當成跟蹤者或非法接觸者——兩人的關係必須從一開始就是合理、正當的接觸，哪怕只是遠遠看見。
@@ -2790,6 +2790,8 @@ async function handlePlayerAction(playerChoice){
     }
 
     if(sceneOver){
+      // 清除場景背景，避免下一回合重複敘述
+      gameState.currentSceneContext = '';
       await nextRound(playerChoice);
     } else {
       const opts = parsedOptions.length >= 2
