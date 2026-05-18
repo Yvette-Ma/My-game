@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r25</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r26</p>
   </div>
 </div>
 
@@ -2692,29 +2692,16 @@ async function handlePlayerAction(playerChoice){
   document.getElementById('story-panel').scrollTop = 99999;
 
   // 場景內即時回應 prompt
-  const sceneP = '當前場景：' + (gameState.currentSceneContext || '正在進行中的場景') + '
-'
-    + '玩家剛才：「' + playerChoice + '」
-
-'
-    + '請以JSON回覆（不得回傳純文字）：
-'
-    + '{
-'
-    + '  "sceneResponse": "即時回應（1-4句，只寫這一刻，不開啟新情節）",
-'
-    + '  "sceneOver": false,
-'
-    + '  "continueToNext": false
-'
-    + '}
-
-'
-    + 'sceneOver：若此刻對話/事件已完全結束設 true，否則設 false（預設 false）。
-'
-    + 'continueToNext：只有 sceneOver=true 且需要開啟全新場景時設 true，
-'
-    + '  否則設 false——大多數情況應設 false，讓玩家再做選擇。';
+  const sceneP = '當前場景：' + (gameState.currentSceneContext || '正在進行中的場景')
+    + '\n玩家剛才：「' + playerChoice + '」\n\n'
+    + '請以JSON回覆（不得回傳純文字）：\n'
+    + '{\n'
+    + '  "sceneResponse": "即時回應（1-4句，只寫這一刻，不開啟新情節）",\n'
+    + '  "sceneOver": false,\n'
+    + '  "continueToNext": false\n'
+    + '}\n\n'
+    + 'sceneOver：若此刻對話/事件已完全結束設 true，否則設 false（預設 false）。\n'
+    + 'continueToNext：只有 sceneOver=true 且需要開啟全新場景時設 true，否則設 false。';
 
   try {
     const origHistory = gameState.history;
