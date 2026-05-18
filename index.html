@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r42</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r44</p>
   </div>
 </div>
 
@@ -2745,26 +2745,42 @@ async function handlePlayerAction(playerChoice){
     gameState.history = origHistory;
     typingDiv.remove();
 
-    // 解析純文字格式
+    // 先嘗試 JSON 解析（AI 可能回傳 JSON 格式）
     const respText = resp || '';
-    
-    // 提取 [回應] 區塊
-    const responseMatch = respText.match(/\[回應\]\s*([\s\S]*?)(?=\[場景結束\]|$)/i);
-    const responseText = responseMatch
-      ? cleanMarkdown(responseMatch[1].trim())
-      : cleanMarkdown(respText.split('\n').slice(0,3).join('\n').trim());
+    let responseText = '';
+    let sceneOverFromJson = false;
+    let optionsFromJson = null;
+
+    try {
+      const jsonCleaned = respText.split('```json').join('').split('```').join('').trim();
+      const jsonMatch = jsonCleaned.match(/\{[\s\S]*\}/);
+      if(jsonMatch){
+        const jsonData = JSON.parse(jsonMatch[0]);
+        if(jsonData.sceneResponse) responseText = cleanMarkdown(jsonData.sceneResponse);
+        if(jsonData.sceneOver === true || jsonData.continueToNext === true) sceneOverFromJson = true;
+        if(jsonData.options) optionsFromJson = jsonData.options;
+      }
+    } catch(e){ /* 非 JSON，走純文字解析 */ }
+
+    // 若 JSON 解析失敗，走純文字格式
+    if(!responseText){
+      const responseMatch = respText.match(/\[回應\]\s*([\s\S]*?)(?=\[場景結束\]|$)/i);
+      responseText = responseMatch
+        ? cleanMarkdown(responseMatch[1].trim())
+        : cleanMarkdown(respText.split('```json').join('').split('```').join('').split('\n').slice(0,3).join('\n').trim());
+    }
 
 
 
-    // 提取場景結束
+    // 提取場景結束（純文字格式）
     const sceneEndMatch = respText.match(/\[場景結束\]\s*[:：]\s*(是|否|true|false|yes|no)/i);
-    const sceneOver = sceneEndMatch
+    const sceneOver = sceneOverFromJson || (sceneEndMatch
       ? ['是','true','yes'].includes(sceneEndMatch[1].toLowerCase())
-      : false;
+      : false);
 
-    // 提取選項
+    // 提取選項（純文字格式）
     const optMatches = [...respText.matchAll(/\[下一步選項([ABC])\]\s*[:：]\s*(.+)/ig)];
-    const parsedOptions = optMatches.map(m => ({
+    const parsedOptions = optionsFromJson || optMatches.map(m => ({
       label: m[1].toUpperCase(),
       text: m[2].trim()
     }));
@@ -2772,11 +2788,18 @@ async function handlePlayerAction(playerChoice){
     // 顯示回應（移除所有 [標記] 內部語法再顯示）
     const cleanedResponse = responseText
       ? responseText
+          .split('```json').join('')
+          .split('```').join('')
           .replace(/\[場景結束\][^\n]*/gi, '')
+
           .replace(/\[回應\]/gi, '')
           .replace(/\[下一步選項[ABC]\][^\n]*/gi, '')
+
           .replace(/\[continueToNext\][^\n]*/gi, '')
+
           .replace(/\[sceneOver\][^\n]*/gi, '')
+
+          .replace(/^\s*\{[\s\S]*/, '')  // 若剩下的開頭是 JSON 物件就清空
           .trim()
       : '';
     if(cleanedResponse && cleanedResponse.length > 5){
