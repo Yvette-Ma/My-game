@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r37</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r38</p>
   </div>
 </div>
 
@@ -1031,6 +1031,7 @@ let gameState = {
   castMode: 'pick',         // 'auto'=劇情隨機 | 'pick'=指定候選人
   // ── 本回合待處理的男友主動訊息 ──
   pendingBfMsg: null,
+  lastRenderedOptions: null,  // 最後一次的選項，用於繼續遊戲恢復
   // ── 男友性格檔案（第一回合建立後固定）──
   bfProfile: null,       // {habits, speechStyle, quirks, hiddenFlaw, loveReason}
   // ── 重要細節記憶庫（他記得你說過的話）──
@@ -1437,13 +1438,21 @@ window.continueGame = async function(){
     showScreen('screen-game');
     renderAllStory();
     updateHeader();
-    // 讀取後直接呼叫 nextRound 重新生成當前狀態的選項
+    // 讀取後恢復上次的選項，不自動推進
     addSystemMsg('存檔讀取完成，從第 ' + gameState.round + ' 回合繼續。');
-    // 稍微退一回合讓 nextRound 重新生成本回合選項
-    const savedRound = gameState.round;
-    gameState.round = Math.max(1, savedRound - 1);
     updateHeader();
-    await nextRound('繼續');
+    // 恢復上次的選項（若有存檔的選項就用，否則給預設選項）
+    const lastOpts = gameState.lastRenderedOptions;
+    if(lastOpts && lastOpts.length > 0){
+      renderOptions(lastOpts);
+    } else {
+      renderOptions([
+        {label:'A', text:'繼續故事'},
+        {label:'B', text:'回顧一下剛才發生的事'},
+        {label:'📱', text:'查看手機'},
+        {label:'D', text:'自定義（玩家自行輸入）'}
+      ]);
+    }
   } else {
     alert('找不到存檔，請開始新遊戲。');
   }
@@ -2956,32 +2965,32 @@ async function renderPhonePage(page){
         <div style="font-size:.65rem;color:#555;margin-top:.2rem;">📶 🔋 ${battStr}</div>
       </div>
       <div class="home-app-grid">
-        <div class="home-app" onclick="renderPhonePage('ins')">
+        <div class="home-app" data-fn="renderPhonePage" data-arg="ins" style="cursor:pointer;">
           <div class="home-app-wrap">
             <div class="app-ico" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);">📸</div>
           </div>
           <span class="app-lbl">Instagram</span>
         </div>
-        <div class="home-app" onclick="renderPhonePage('kakao')">
+        <div class="home-app" data-fn="renderPhonePage" data-arg="kakao" style="cursor:pointer;">
           <div class="home-app-wrap">
             <div class="app-ico" style="background:#fae100;">💬</div>
             ${(gameState.phoneData.kakao.chats[gameState.bfName]||[]).filter(m=>m.from!=='me').length > 0 ? '<span class="app-badge">New</span>' : ''}
           </div>
           <span class="app-lbl">KakaoTalk</span>
         </div>
-        <div class="home-app" onclick="renderPhonePage('weverse')">
+        <div class="home-app" data-fn="renderPhonePage" data-arg="weverse" style="cursor:pointer;">
           <div class="home-app-wrap">
             <div class="app-ico" style="background:#1c1c2e;">🌟</div>
           </div>
           <span class="app-lbl">Weverse</span>
         </div>
-        <div class="home-app" onclick="renderPhonePage('youtube')">
+        <div class="home-app" data-fn="renderPhonePage" data-arg="youtube" style="cursor:pointer;">
           <div class="home-app-wrap">
             <div class="app-ico" style="background:#ff0000;">▶️</div>
           </div>
           <span class="app-lbl">YouTube</span>
         </div>
-        <div class="home-app" onclick="renderPhonePage('notifs')">
+        <div class="home-app" data-fn="renderPhonePage" data-arg="notifs" style="cursor:pointer;">
           <div class="home-app-wrap">
             <div class="app-ico" style="background:#2a2a3a;">🔔</div>
             ${notifCount>0?`<span class="app-badge">${notifCount}</span>`:''}
@@ -2994,7 +3003,7 @@ async function renderPhonePage(page){
   } else if(page==='ins'){
     content.innerHTML = renderINSHome();
     actions.innerHTML = `
-      <button class="po-btn" onclick="renderPhonePage('ins-bf')">👤 ${gameState.bfName||'他'}的主頁</button>
+      <button class="po-btn" onclick="renderPhonePage('ins-bf')">${getDisplayBfName()?getDisplayBfName()+'的主頁':'偶像主頁'}</button>
       <button class="po-btn" onclick="renderPhonePage('ins-mypage')">👤 我的主頁</button>
       <button class="po-btn" onclick="renderPhonePage('ins-dm')">💌 私信</button>
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
@@ -4062,6 +4071,23 @@ window.renderPhonePage = renderPhonePage;
 window.closePhone = closePhone;
 window.clearNotifs = clearNotifs;
 window.sendKakaoMsg = sendKakaoMsg;
+
+// ── phone overlay 的 data-fn 事件委派 ──
+document.addEventListener('DOMContentLoaded', function(){
+  var overlay = document.getElementById('phone-overlay');
+  if(!overlay) return;
+  overlay.addEventListener('click', function(e){
+    var el = e.target.closest('[data-fn]');
+    if(!el) return;
+    var fn = el.dataset.fn;
+    var arg = el.dataset.arg;
+    if(typeof window[fn] === 'function'){
+      e.stopPropagation();
+      if(arg !== undefined) window[fn](arg);
+      else window[fn]();
+    }
+  });
+});
 
 // ── 安卓相容性（已由 compat SDK 解決）──
 
