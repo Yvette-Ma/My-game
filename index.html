@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r31</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r32</p>
   </div>
 </div>
 
@@ -1437,15 +1437,13 @@ window.continueGame = async function(){
     showScreen('screen-game');
     renderAllStory();
     updateHeader();
-    // 讀取後提供繼續選項
-    const panel = document.getElementById('options-panel');
-    panel.classList.remove('disabled');
-    renderOptions([
-      {label:'A', text:'繼續故事'},
-      {label:'B', text:'回顧剛才發生的事，再繼續'},
-      {label:'D', text:'自定義（玩家自行輸入）'}
-    ]);
+    // 讀取後直接呼叫 nextRound 重新生成當前狀態的選項
     addSystemMsg('存檔讀取完成，從第 ' + gameState.round + ' 回合繼續。');
+    // 稍微退一回合讓 nextRound 重新生成本回合選項
+    const savedRound = gameState.round;
+    gameState.round = Math.max(1, savedRound - 1);
+    updateHeader();
+    await nextRound('繼續');
   } else {
     alert('找不到存檔，請開始新遊戲。');
   }
