@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r44</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r46</p>
   </div>
 </div>
 
@@ -1039,6 +1039,13 @@ let gameState = {
   // ── 上一回合選項屬性標籤（用於後果延續）──
   lastChoiceTag: '',     // active/passive/emotional/rational/conflict/compromise
   lastChoiceText: '',
+  // ── 玩家行為紀錄（影響 AI 對人物的詮釋）──
+  playerPersonality: {    // 從玩家選擇中提取的性格特質
+    traits: {},            // {特質名: 出現次數} 例如 {'積極主動':3, '理性冷靜':2}
+    summary: '',           // AI 生成的人物性格摘要（每5回合更新）
+    lastUpdatedRound: 0,
+  },
+  playerBehaviorLog: [],   // [{round, choice, extractedTrait}] 最近10次
   // ── 玩家自身故事線 ──
   playerStory: {
     goal: '',            // 玩家的個人目標（第一回合由AI生成後固定）
@@ -2145,6 +2152,16 @@ ${gameState.playerMemory && gameState.playerMemory.length > 0
 - 屬性標籤：${gameState.lastChoiceTag || '無'}
 - 後果延續要求：本回合劇情必須在細節中呈現上一個選擇的餘韻（至少1-2句）
 
+【玩家性格特質檔案】（從玩家的選擇中累積提取，描述人物時必須依此）
+${(()=>{
+  const p = gameState.playerPersonality;
+  if(!p || !Object.keys(p.traits||{}).length) return '尚在觀察中，依玩家選擇方向詮釋';
+  const sorted = Object.entries(p.traits).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  return '已確認特質：' + sorted.map(([k,v])=>k+'('+v+'次)').join('、') + '\n'
+    + '→ 描寫玩家的心理、動機、反應時必須符合這些特質，不得背離。'
+    + '\n→ 玩家設定的性格：${gameState.traits||"未設定"}（初始設定，可隨劇情發展深化）';
+})()}
+
 【敘事核心原則】
 這是一個強調真實感與代入感的沉浸式戀愛養成遊戲。
 請把自己當成一位優秀的言情小說作家，而不是遊戲GM。
@@ -2184,6 +2201,12 @@ ${gameState.playerMemory && gameState.playerMemory.length > 0
 9. 文字敘述為主，emoji 僅在真正需要時少量點綴（每段落最多1個），每行不超過30字，自然分段
 10. 文筆細膩，完全沉浸式，禁止直接對玩家說話
 11. 禁止任何 Markdown 語法
+11d.【人物性格鐵律】玩家角色的內心想法、動機、價值觀完全由玩家的選擇和行動決定，AI 絕對不得擅自詮釋或填充玩家的內心狀態。
+    - 玩家選擇「強調事業和粉絲的重視」→ 敘事必須反映這個價值觀，不得說玩家「渴望個人自由」
+    - 玩家初始設定的性格：${gameState.traits || '未設定'}
+    - 玩家實際表現的特質：${gameState.playerPersonality?.summary || '觀察中'}
+    - 敘事中玩家的心理活動必須與玩家的選擇方向一致，不得背離
+    - 若玩家未表達某種感受，AI 不得代入該感受
 11b.【絕對禁止】以任何形式跳出角色：禁止說「這個對話不安全」「我是AI」「我無法繼續」等，若遇到敏感情節，直接以文學手法處理或跳過，絕不中斷沉浸感
 11c.【絕對禁止】輸出任何 HTML 標籤、程式碼、按鈕語法
 12. narration + event 合計不超過400字，確保 JSON 完整輸出
@@ -2229,7 +2252,8 @@ ${gameState.playerMemory && gameState.playerMemory.length > 0
   "playerMemoryAdd": "本回合玩家透露的值得記住的細節（字串，無則null）",
   "optionTags": ["A的標籤","B的標籤","C的標籤","📱","D"],
   "playerStoryUpdate": {"goal":"","currentChallenge":""},
-  "beWarningUpdate": 數字或null
+  "beWarningUpdate": 數字或null,
+  "playerTraitExtract": "從玩家本回合的選擇和行動中提取1-2個性格特質關鍵詞（如：積極主動、重視事業、情感細膩、理性冷靜、保護自我、顧慮他人 等，若玩家未表現出明顯特質則填null）"
 }
 
 每個選項只描述玩家的對話、行動或反應，絕不包含任何括號說明或後果提示。
@@ -2477,6 +2501,26 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
   // 關係狀態
   if(data.relationStatus) gameState.relationStatus = data.relationStatus;
 
+  // ── 玩家特質提取 ──
+  if(data.playerTraitExtract && typeof data.playerTraitExtract === 'string'){
+    const trait = data.playerTraitExtract.trim();
+    if(trait && trait !== 'null'){
+      gameState.playerPersonality = gameState.playerPersonality || {traits:{}, summary:'', lastUpdatedRound:0};
+      // 分割多個特質
+      trait.split(/[、,，]/).map(t=>t.trim()).filter(Boolean).forEach(t=>{
+        gameState.playerPersonality.traits[t] = (gameState.playerPersonality.traits[t]||0) + 1;
+      });
+      // 每5回合更新摘要
+      if(gameState.round - (gameState.playerPersonality.lastUpdatedRound||0) >= 5){
+        gameState.playerPersonality.lastUpdatedRound = gameState.round;
+        // 取前5個最常出現的特質
+        const sorted = Object.entries(gameState.playerPersonality.traits)
+          .sort((a,b)=>b[1]-a[1]).slice(0,5);
+        gameState.playerPersonality.summary = sorted.map(([k,v])=>k).join('、');
+      }
+    }
+  }
+
   // ── 男友性格檔案（首次建立後不覆蓋）──
   if(data.bfProfileUpdate && !gameState.bfProfile &&
      data.bfProfileUpdate.speechStyle){
@@ -2690,6 +2734,10 @@ window.chooseOption = async function(text, btn){
     }
   }
   gameState.lastChoiceText = text;
+  // 行為紀錄（AI 會從 JSON 回應中提取特質，這裡只記錄選項標籤）
+  gameState.playerBehaviorLog = gameState.playerBehaviorLog || [];
+  gameState.playerBehaviorLog.push({round: gameState.round, choice: text, tag: gameState.lastChoiceTag||''});
+  if(gameState.playerBehaviorLog.length > 15) gameState.playerBehaviorLog.shift();
   await handlePlayerAction(text);
 };
 
@@ -2701,6 +2749,10 @@ window.submitCustom = async function(){
   disableOptions();
   addChoiceMsg(text);
   gameState.lastChoiceText = text;
+  // 行為紀錄（AI 會從 JSON 回應中提取特質，這裡只記錄選項標籤）
+  gameState.playerBehaviorLog = gameState.playerBehaviorLog || [];
+  gameState.playerBehaviorLog.push({round: gameState.round, choice: text, tag: gameState.lastChoiceTag||''});
+  if(gameState.playerBehaviorLog.length > 15) gameState.playerBehaviorLog.shift();
   await handlePlayerAction(text);
 };
 
@@ -2802,14 +2854,21 @@ async function handlePlayerAction(playerChoice){
           .replace(/^\s*\{[\s\S]*/, '')  // 若剩下的開頭是 JSON 物件就清空
           .trim()
       : '';
-    if(cleanedResponse && cleanedResponse.length > 5){
+    // 額外清理任何剩餘的標記
+    const finalResponse = cleanedResponse
+      .replace(/^【回應】\s*/,'')
+      .replace(/^\[回應\]\s*/,'')
+      .replace(/【[^】]*】/g,'')
+      .trim();
+
+    if(finalResponse && finalResponse.length > 5){
       const el = document.createElement('div');
       el.className = 'story-msg narration scene-response';
-      el.textContent = cleanedResponse;
+      el.textContent = finalResponse;
       document.getElementById('story-panel').appendChild(el);
       document.getElementById('story-panel').scrollTop = 99999;
-      gameState.storyLog.push({type:'narration', text: cleanedResponse});
-      gameState.currentSceneContext = cleanedResponse.slice(0, 150);
+      gameState.storyLog.push({type:'narration', text: finalResponse});
+      gameState.currentSceneContext = finalResponse.slice(0, 150);
     }
 
     if(sceneOver){
@@ -3041,6 +3100,19 @@ async function renderPhonePage(page){
         </div>
       </div>`;
     actions.innerHTML = `<button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+    // 綁定 App 圖示點擊
+    setTimeout(function(){
+      content.querySelectorAll('[data-fn]').forEach(function(el){
+        el.addEventListener('click', function(){
+          var fn = el.dataset.fn;
+          var arg = el.dataset.arg;
+          if(typeof window[fn]==='function'){
+            if(arg!==undefined) window[fn](arg);
+            else window[fn]();
+          }
+        });
+      });
+    }, 0);
 
   } else if(page==='ins'){
     content.innerHTML = renderINSHome();
@@ -3075,7 +3147,7 @@ async function renderPhonePage(page){
 
   } else if(page==='kakao'){
     // 依劇情起點決定是否顯示男友
-    const bfNameK = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
+    const bfNameK = getDisplayBfName(); // auto模式回傳空字串
     const storyStart = gameState.storyStart || '';
     // 判斷是否已交換聯繫方式：有聊天記錄才算
     const bfChats = bfNameK ? (gameState.phoneData.kakao.chats[bfNameK]||[]) : [];
@@ -3126,7 +3198,7 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='kakao-bf'){
-    const bfName = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
+    const bfName = getDisplayBfName();
     const storyStartBf = gameState.storyStart || '';
     const bfChatsBf = bfName ? (gameState.phoneData.kakao.chats[bfName]||[]) : [];
     const canChatBf = bfName && bfChatsBf.length > 0;
@@ -3168,7 +3240,7 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='kakao-friends'){
-    const bfNameF = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
+    const bfNameF = getDisplayBfName();
     const storyStartF = gameState.storyStart || '';
     const bfChatsF = bfNameF ? (gameState.phoneData.kakao.chats[bfNameF]||[]) : [];
     const hasBfF = bfNameF && bfChatsF.length > 0;
