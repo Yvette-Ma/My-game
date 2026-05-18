@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r28</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r31</p>
   </div>
 </div>
 
@@ -2720,8 +2720,8 @@ async function handlePlayerAction(playerChoice){
     '[下一步選項A]: （若場景繼續：玩家可以說或做的事；若場景結束：接下來去哪/做什麼）',
     '[下一步選項B]: （另一個方向）',
     '[下一步選項C]: （再一個方向，選填）',
-  ].join('
-');
+  ].join('\n');
+
 
   try {
     const origHistory = gameState.history;
@@ -2737,9 +2737,9 @@ async function handlePlayerAction(playerChoice){
     const responseMatch = respText.match(/\[回應\]\s*([\s\S]*?)(?=\[場景結束\]|$)/i);
     const responseText = responseMatch
       ? cleanMarkdown(responseMatch[1].trim())
-      : cleanMarkdown(respText.split('
-').slice(0,3).join('
-').trim());
+      : cleanMarkdown(respText.split('\n').slice(0,3).join('\n').trim());
+
+
 
     // 提取場景結束
     const sceneEndMatch = respText.match(/\[場景結束\]\s*[:：]\s*(是|否|true|false|yes|no)/i);
