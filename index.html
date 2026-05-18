@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r26</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r27</p>
   </div>
 </div>
 
@@ -2245,17 +2245,28 @@ sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，
 }
 
 // ── 開始遊戲 ──
-async function startGame(){
-  gameState.round = 1;
-  gameState.memories = [];        // 新遊戲清空回憶
-  gameState.storyLog = [];        // 清空故事紀錄
-  gameState.history = [];         // 清空 AI history
-  gameState.phoneData = {         // 清空手機資料
-    ins: { posts: [], dms: [] },
-    kakao: { chats: {} },
-    weverse: { posts: [] },
-    notifs: []
-  };
+async function startGame(retryCount){
+  retryCount = retryCount || 0;
+  if(retryCount === 0){
+    // 只有第一次才清空
+    gameState.round = 1;
+    gameState.memories = [];
+    gameState.storyLog = [];
+    gameState.history = [];
+    gameState.phoneData = {
+      ins: { posts: [], dms: [] },
+      kakao: { chats: {} },
+      weverse: { posts: [] },
+      notifs: []
+    };
+  }
+  if(retryCount > 2){
+    addSystemMsg('開場生成失敗，請檢查 API Key 或模型設定。');
+    renderOptions([
+      {label:'A', text:'回設定頁（更換 API Key 或模型）'},
+    ]);
+    return;
+  }
   updateHeader();
   showLoading('生成初始劇情中…');
   const loadingMsgEl = addSystemMsgRemovable('⏳ 正在根據你的設定生成專屬劇情…');
@@ -2338,7 +2349,7 @@ ${meetingHint}
     gameState.history.push({ role:'user', content: startPrompt });
     gameState.history.push({ role:'assistant', content: response });
     if(loadingMsgEl) loadingMsgEl.remove();
-    processAIResponse(response, true);
+    processAIResponse(response, true, retryCount);
     // startGame 的回合為第一個場景，不需要額外設定
     // INS 貼文由劇情推進中自然產生，不預設內容
     await saveGame();
@@ -2368,7 +2379,7 @@ function cleanMarkdown(text){
     .trim();
 }
 
-function processAIResponse(raw, isFirst=false){
+function processAIResponse(raw, isFirst=false, retryCount=0){
   let data;
   if(!raw || typeof raw !== 'string'){
     addEventMsg('⚠️ AI 回應格式異常，請重試。');
@@ -2376,29 +2387,31 @@ function processAIResponse(raw, isFirst=false){
     return;
   }
   try {
-    const cleaned = resp.split('```json').join('').split('```').join('').trim();
-    // 嘗試找 JSON
+    const cleaned = raw.split('```json').join('').split('```').join('').trim();
     const match = cleaned.match(/\{[\s\S]*\}/);
     if(match) data = JSON.parse(match[0]);
     else data = JSON.parse(cleaned);
   } catch(e) {
-    // JSON 解析失敗：可能是 AI 回傳純文字或格式不對
-    // 嘗試直接顯示為敘事文字
-    const looksLikeJson = raw.trim().startsWith('{') || raw.trim().startsWith('```');
-    if(looksLikeJson){
-      // 明顯是 JSON 但解析失敗（可能被截斷），顯示錯誤並提示重試
-      addSystemMsg('⚠️ 回應格式異常，請重試。');
+    // 解析失敗：若是第一回合，自動重試一次
+    if(isFirst){
+      addSystemMsg('正在重新生成開場劇情…');
+      setTimeout(()=>startGame(), 1000);
+      return;
+    }
+    // 非第一回合：純文字就直接顯示，像場景回應一樣
+    const cleanedRaw = cleanMarkdown(raw);
+    if(cleanedRaw && cleanedRaw.length > 10){
+      addNarrationMsg(cleanedRaw);
       renderOptions([
-        {label:'A',text:'重試'},
-        {label:'B',text:'回設定頁（更換 API Key 或模型）'},
-        {label:'D',text:'自定義（玩家自行輸入）'}
+        {label:'A', text:'繼續'},
+        {label:'B', text:'換個話題'},
+        {label:'📱', text:'查看手機'},
+        {label:'D', text:'自定義（玩家自行輸入）'}
       ]);
     } else {
-      // 純文字回應，直接顯示
-      addEventMsg(raw);
       renderOptions([
-        {label:'A',text:'繼續'},
-        {label:'D',text:'自定義（玩家自行輸入）'}
+        {label:'A', text:'重試'},
+        {label:'D', text:'自定義（玩家自行輸入）'}
       ]);
     }
     return;
