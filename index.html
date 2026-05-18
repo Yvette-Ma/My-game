@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r35</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r37</p>
   </div>
 </div>
 
@@ -3026,7 +3026,9 @@ async function renderPhonePage(page){
     // 依劇情起點決定是否顯示男友
     const bfNameK = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
     const storyStart = gameState.storyStart || '';
-    const hasBfContact = bfNameK && !storyStart.includes('相識') && !storyStart.includes('初次');
+    // 判斷是否已交換聯繫方式：有聊天記錄才算
+    const bfChats = bfNameK ? (gameState.phoneData.kakao.chats[bfNameK]||[]) : [];
+    const hasBfContact = bfNameK && bfChats.length > 0;
 
     // 從 phoneData 取出有記錄的聊天
     const kakaoChats = gameState.phoneData.kakao.chats || {};
@@ -3075,7 +3077,8 @@ async function renderPhonePage(page){
   } else if(page==='kakao-bf'){
     const bfName = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
     const storyStartBf = gameState.storyStart || '';
-    const canChatBf = bfName && !storyStartBf.includes('相識') && !storyStartBf.includes('初次');
+    const bfChatsBf = bfName ? (gameState.phoneData.kakao.chats[bfName]||[]) : [];
+    const canChatBf = bfName && bfChatsBf.length > 0;
 
     if(!canChatBf){
       content.innerHTML = '<div class="phone-app-header"><span class="app-name">KakaoTalk</span></div>'
@@ -3116,7 +3119,8 @@ async function renderPhonePage(page){
   } else if(page==='kakao-friends'){
     const bfNameF = gameState.bfName || (gameState.bfCandidates && gameState.bfCandidates[0]) || '';
     const storyStartF = gameState.storyStart || '';
-    const hasBfF = bfNameF && !storyStartF.includes('相識') && !storyStartF.includes('初次');
+    const bfChatsF = bfNameF ? (gameState.phoneData.kakao.chats[bfNameF]||[]) : [];
+    const hasBfF = bfNameF && bfChatsF.length > 0;
 
     // 從 NPC 資料取出已認識的人
     const npcs = gameState.npcs || {};
@@ -3299,6 +3303,44 @@ async function getINSContent(){
 ──────────────────────
  操作：選擇下方功能
 ──────────────────────`;
+
+function getDisplayBfName(){
+  if(gameState.bfName) return gameState.bfName;
+  if(gameState.castMode==='pick' && gameState.bfCandidates && gameState.bfCandidates[0]) return gameState.bfCandidates[0];
+  return '';
+}
+window.getDisplayBfName = getDisplayBfName;
+
+function renderINSHome(){
+  var bfName = getDisplayBfName();
+  var posts = gameState.phoneData.ins.posts||[];
+  var notifs = (gameState.phoneData.notifs||[]).filter(function(n){return n.app==='Instagram'||n.app==='INS';});
+  var trending = ['#韓娛圈熱搜','#首爾時裝週','#偶像緋聞','#MAMA頒獎典禮','#新專輯發售','#機場時尚'];
+  if(bfName){ trending.unshift('#'+bfName.replace(/\s/g,'')+'_動態'); }
+  var postHtml = '';
+  if(posts.length){
+    postHtml = posts.slice(0,2).map(function(p){ return '<div class="ins-post"><div class="post-user">@'+(p.user||bfName||'').replace(/\s/g,'_').toLowerCase()+' · '+(p.time||'')+'</div><div class="post-content">'+(p.content||'')+'</div><div class="post-stats">❤️ '+Math.floor(Math.random()*200000+50000).toLocaleString()+'</div></div>'; }).join('');
+  } else if(bfName){
+    postHtml = '<div class="ins-post"><div class="post-user">@'+bfName.replace(/\s/g,'_').toLowerCase()+'</div><div class="post-content" style="color:#555;">（尚無新動態）</div></div>';
+  } else {
+    postHtml = '<div style="padding:.8rem;font-size:.78rem;color:#555;">尚無追蹤的偶像動態</div>';
+  }
+  return '<div class="phone-app-header">'
+    +'<span style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:8px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:bold;flex-shrink:0;">IG</span>'
+    +'<span class="app-name" style="margin-left:.4rem;">Instagram</span>'
+    +'</div>'
+    +'<div style="padding:.6rem .8rem;border-bottom:1px solid #1a1a24;">'
+    +'<div style="font-size:.68rem;color:#555;margin-bottom:.4rem;">熱門話題</div>'
+    +trending.slice(0,4).map(function(t){return '<span style="display:inline-block;font-size:.7rem;color:#8888aa;background:#1a1a28;padding:.2rem .5rem;border-radius:1rem;margin:.1rem;">'+t+'</span>';}).join('')
+    +'</div>'
+    +'<div style="padding:.5rem .8rem;">'
+    +'<div style="font-size:.68rem;color:#555;margin-bottom:.4rem;">動態</div>'
+    +postHtml
+    +(notifs.length?'<div class="ins-post"><div class="post-user" style="color:#555;">通知</div><div class="post-content">'+notifs[0].content+'</div></div>':'')
+    +'</div>';
+}
+window.renderINSHome = renderINSHome;
+
 }
 
 async function getBFInsPage(){
