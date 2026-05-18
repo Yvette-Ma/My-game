@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r40</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r41</p>
   </div>
 </div>
 
@@ -2772,14 +2772,11 @@ async function handlePlayerAction(playerChoice){
     // 顯示回應（移除所有 [標記] 內部語法再顯示）
     const cleanedResponse = responseText
       ? responseText
-          .replace(/\[場景結束\]\s*[:：]\s*(是|否|true|false)/gi, '')
+          .replace(/\[場景結束\][^\n]*/gi, '')
           .replace(/\[回應\]/gi, '')
-          .replace(/\[下一步選項[ABC]\]\s*[:：][^
-]*/gi, '')
-          .replace(/\[continueToNext\][^
-]*/gi, '')
-          .replace(/\[sceneOver\][^
-]*/gi, '')
+          .replace(/\[下一步選項[ABC]\][^\n]*/gi, '')
+          .replace(/\[continueToNext\][^\n]*/gi, '')
+          .replace(/\[sceneOver\][^\n]*/gi, '')
           .trim()
       : '';
     if(cleanedResponse && cleanedResponse.length > 5){
