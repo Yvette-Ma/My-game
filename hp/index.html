@@ -1,0 +1,2265 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>霍格華茲秘史</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0c10;
+  --bg2: #131118;
+  --bg3: #1a1720;
+  --card: #201d28;
+  --border: #2e2a38;
+  --border2: #3e3850;
+  --gold: #c8a84a;
+  --gold2: #e8c870;
+  --gold3: #a08030;
+  --crimson: #8a2830;
+  --crimson2: #b84050;
+  --teal: #2a6868;
+  --teal2: #3a8888;
+  --purple: #5a3878;
+  --purple2: #7a58a8;
+  --text: #e8e0d0;
+  --text2: #b0a890;
+  --text3: #6a6050;
+  --phone-bg: #0c0a10;
+  --parchment: #2a2418;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Garamond',serif;overflow:hidden;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── 魔法粒子 ── */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gold);animation:twinkle var(--d,3s) var(--delay,0s) infinite alternate;}
+@keyframes twinkle{from{opacity:.1;transform:scale(.5);}to{opacity:.9;transform:scale(1.5);}}
+
+.screen{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;overflow:hidden;}
+.screen.active{display:flex;}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.6rem 1.4rem;border-radius:.25rem;border:1px solid var(--border2);
+  background:var(--bg3);color:var(--text);
+  font-family:'Cinzel',serif;font-size:.8rem;
+  cursor:pointer;transition:all .25s;letter-spacing:.08em;
+}
+.btn:hover{background:var(--card);border-color:var(--gold3);}
+.btn-primary{background:var(--bg3);border-color:var(--gold3);}
+.btn-primary:hover{background:var(--parchment);border-color:var(--gold);}
+.btn-sm{padding:.35rem .8rem;font-size:.72rem;}
+
+/* ════════════ SPLASH ════════════ */
+#screen-splash{align-items:center;justify-content:center;background:var(--bg);}
+.splash-inner{text-align:center;z-index:1;}
+.splash-rune{font-size:2.8rem;margin-bottom:.8rem;display:block;animation:runeGlow 3s ease-in-out infinite alternate;}
+@keyframes runeGlow{from{filter:drop-shadow(0 0 4px var(--gold3));}to{filter:drop-shadow(0 0 16px var(--gold));}}
+.splash-title{
+  font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.8rem);
+  color:var(--gold);letter-spacing:.15em;line-height:1.2;margin-bottom:.5rem;
+}
+.splash-sub{color:var(--text3);font-size:.8rem;letter-spacing:.12em;margin-bottom:.4rem;font-style:italic;}
+.splash-divider{display:flex;align-items:center;gap:.8rem;margin:.8rem auto 1.5rem;max-width:240px;}
+.splash-divider::before,.splash-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border2));}
+.splash-divider::after{background:linear-gradient(90deg,var(--border2),transparent);}
+.splash-btn-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+/* ════════════ SETTINGS ════════════ */
+#screen-settings{background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;}
+.settings-inner{width:100%;max-width:540px;margin:0 auto;}
+.settings-title{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.2rem;}
+.settings-sub{color:var(--text3);font-size:.78rem;margin-bottom:1.5rem;font-style:italic;}
+.s-section{margin-bottom:1.3rem;}
+.s-label{font-size:.7rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.4rem;display:block;text-transform:uppercase;font-family:'Cinzel',serif;}
+.s-input{
+  width:100%;padding:.65rem 1rem;border-radius:.25rem;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:'EB Garamond',serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.s-input:focus{border-color:var(--gold3);}
+.s-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23c8a84a' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;}
+.s-note{font-size:.72rem;color:var(--text3);margin-top:.3rem;line-height:1.5;font-style:italic;}
+.s-row{display:flex;gap:.7rem;align-items:flex-start;}
+.s-row .s-section{flex:1;}
+.s-divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0;}
+.s-section-title{font-size:.72rem;color:var(--gold3);letter-spacing:.12em;margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+.model-opt{
+  padding:.5rem .7rem;border-radius:.25rem;border:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.78rem;color:var(--text2);
+}
+.model-opt:hover,.model-opt.selected{border-color:var(--gold3);background:var(--parchment);color:var(--text);}
+.identity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.4rem;}
+.identity-opt{
+  padding:.45rem .5rem;border-radius:.25rem;border:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.75rem;color:var(--text2);text-align:center;
+  font-family:'EB Garamond',serif;
+}
+.identity-opt:hover,.identity-opt.selected{border-color:var(--gold3);background:var(--parchment);color:var(--gold2);}
+.settings-footer{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem;flex-wrap:wrap;}
+#msg-settings{font-size:.78rem;color:var(--crimson2);margin-top:.5rem;min-height:1.2rem;}
+
+/* ── 院系徽章 ── */
+.house-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;}
+.house-opt{
+  padding:.6rem .7rem;border-radius:.25rem;border:1px solid var(--border);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.78rem;color:var(--text2);
+  text-align:center;position:relative;overflow:hidden;
+}
+.house-opt::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;}
+.house-opt[data-house="gryffindor"]::before{background:linear-gradient(135deg,rgba(174,0,1,.1),rgba(255,215,0,.05));}
+.house-opt[data-house="slytherin"]::before{background:linear-gradient(135deg,rgba(26,71,42,.15),rgba(170,170,170,.05));}
+.house-opt[data-house="ravenclaw"]::before{background:linear-gradient(135deg,rgba(0,56,184,.1),rgba(188,151,0,.05));}
+.house-opt[data-house="hufflepuff"]::before{background:linear-gradient(135deg,rgba(255,193,7,.08),rgba(60,40,0,.05));}
+.house-opt.selected::before{opacity:1;}
+.house-opt.selected{border-color:var(--gold3);color:var(--gold2);}
+
+/* ════════════ GAME ════════════ */
+#screen-game{background:var(--bg);display:none;flex-direction:column;}
+#screen-game.active{display:flex;}
+.game-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem 1rem;background:var(--bg2);
+  border-bottom:1px solid var(--border);flex-shrink:0;z-index:20;
+}
+.gh-left{display:flex;align-items:center;gap:.6rem;}
+.gh-title{font-family:'Cinzel',serif;font-size:.82rem;color:var(--gold3);letter-spacing:.08em;}
+.gh-round{font-size:.7rem;color:var(--text3);background:var(--bg3);padding:.2rem .5rem;border-radius:.2rem;border:1px solid var(--border);}
+.gh-time{font-size:.7rem;color:var(--text3);font-family:'EB Garamond',serif;font-style:italic;}
+.gh-right{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
+.gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.3rem .5rem;border-radius:.25rem;cursor:pointer;font-size:.68rem;transition:all .2s;font-family:'EB Garamond',serif;}
+.gh-btn:hover{border-color:var(--gold3);color:var(--gold3);}
+.game-body{display:flex;flex:1;overflow:hidden;}
+.story-panel{flex:1;overflow-y:auto;padding:1.2rem 1rem 1rem;display:flex;flex-direction:column;gap:.8rem;}
+.story-msg{max-width:100%;font-size:clamp(.82rem,2.2vw,.94rem);line-height:1.9;}
+.story-msg.narration{color:var(--text2);font-size:.88rem;line-height:1.8;font-style:italic;}
+.story-msg.scene-response{color:var(--text);border-left:2px solid var(--border);padding-left:.7rem;margin-left:.2rem;}
+.story-msg.event{
+  background:var(--bg3);border:1px solid var(--border);border-radius:.25rem;
+  padding:1rem 1.1rem;color:var(--text);
+}
+.story-msg.event .ev-tag{
+  font-size:.65rem;letter-spacing:.15em;color:var(--gold);
+  margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;
+  font-family:'Cinzel',serif;text-transform:uppercase;
+}
+.story-msg.phone{
+  background:var(--phone-bg);border:1px solid #1e1c28;
+  border-radius:.25rem;padding:0;overflow:hidden;font-family:'EB Garamond',serif;font-size:.8rem;
+}
+.phone-bar{
+  background:#0e0c18;padding:.4rem .8rem;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid #1a1828;font-size:.68rem;color:#585060;
+}
+.phone-content{padding:.8rem;color:#a09888;white-space:pre-wrap;line-height:1.7;}
+.story-msg.system{text-align:center;font-size:.72rem;color:var(--text3);padding:.3rem 0;letter-spacing:.1em;font-family:'Cinzel',serif;}
+.story-msg.choice-made{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:.25rem;padding:.65rem 1rem;font-size:.8rem;color:var(--gold3);
+}
+.typing-indicator{display:flex;align-items:center;gap:.4rem;padding:.5rem 0;font-size:.78rem;color:var(--text3);}
+.typing-dots{display:flex;gap:.25rem;}
+.typing-dots span{width:4px;height:4px;border-radius:50%;background:var(--gold3);animation:typingDot 1.2s infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes typingDot{0%,80%,100%{transform:scale(.6);opacity:.3;}40%{transform:scale(1);opacity:1;}}
+
+.notif-toast{
+  position:fixed;top:70px;right:12px;z-index:100;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:.25rem;padding:.7rem 1rem;max-width:260px;
+  font-size:.76rem;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.6);
+  animation:toastIn .35s ease forwards;pointer-events:none;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+
+/* 選項區 */
+.options-panel{
+  flex-shrink:0;padding:.8rem 1rem 1rem;
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:.6rem;
+}
+.options-title{font-size:.68rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.1rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.options-grid{display:flex;flex-direction:column;gap:.4rem;}
+.opt-btn{
+  display:flex;align-items:flex-start;gap:.6rem;
+  padding:.6rem .9rem;border-radius:.25rem;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;text-align:left;
+  font-family:'EB Garamond',serif;font-size:.82rem;line-height:1.55;
+  transition:all .2s;width:100%;
+}
+.opt-btn:hover{background:var(--card);border-color:var(--gold3);color:var(--text);transform:translateX(3px);}
+.opt-btn.scroll-opt{border-color:rgba(200,168,74,.2);}
+.opt-label{font-size:.68rem;color:var(--text3);min-width:1.2rem;font-family:'Cinzel',serif;margin-top:.05rem;}
+.opt-text{flex:1;}
+.custom-input-row{display:flex;gap:.5rem;margin-top:.2rem;}
+.custom-input{
+  flex:1;padding:.5rem .8rem;border-radius:.25rem;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:'EB Garamond',serif;font-size:.82rem;outline:none;
+}
+.custom-input:focus{border-color:var(--gold3);}
+.custom-send{padding:.5rem 1rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:.8rem;transition:background .2s;font-family:'EB Garamond',serif;}
+.custom-send:hover{background:var(--border);}
+.options-panel.disabled .opt-btn{opacity:.4;pointer-events:none;}
+
+/* ── 魔法羊皮紙疊加層 ── */
+#scroll-overlay{
+  position:fixed;inset:0;z-index:50;background:var(--phone-bg);
+  display:none;flex-direction:column;font-family:'EB Garamond',serif;
+}
+#scroll-overlay.open{display:flex;}
+.so-statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.4rem .9rem;background:#080610;
+  font-size:.68rem;color:#484060;border-bottom:1px solid #1a1828;
+}
+.so-body{flex:1;overflow-y:auto;padding:.8rem;}
+.so-actions{
+  padding:.6rem .8rem;background:#080610;border-top:1px solid #181828;
+  display:flex;gap:.5rem;flex-wrap:wrap;
+}
+.so-btn{
+  padding:.4rem .8rem;border-radius:.25rem;border:1px solid #2a2838;
+  background:#141020;color:#706888;cursor:pointer;font-size:.73rem;
+  transition:all .2s;font-family:'EB Garamond',serif;
+}
+.so-btn:hover{border-color:var(--gold3);color:var(--gold3);}
+.so-close{
+  padding:.4rem .8rem;border-radius:.25rem;border:1px solid var(--border);
+  background:var(--bg3);color:var(--text2);cursor:pointer;font-size:.73rem;
+}
+
+/* ── 羊皮紙UI ── */
+.parchment-header{
+  background:#0a0814;padding:.6rem .9rem;
+  display:flex;align-items:center;gap:.6rem;
+  border-bottom:1px solid #1e1a28;font-size:.8rem;color:#a09888;
+}
+.parchment-header .app-icon{font-size:.95rem;}
+.parchment-header .app-name{font-weight:500;color:#c8b898;font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.06em;}
+.parchment-header .back-btn{
+  margin-left:auto;font-size:.68rem;color:#706060;
+  cursor:pointer;padding:.2rem .5rem;border-radius:.2rem;
+  border:1px solid #2a2228;background:none;
+}
+.owl-msg{padding:.7rem .8rem;border-bottom:1px solid #18141c;}
+.owl-msg .msg-from{font-size:.7rem;color:#8a7a70;margin-bottom:.3rem;font-family:'Cinzel',serif;}
+.owl-msg .msg-content{font-size:.8rem;color:#c0b0a0;line-height:1.6;}
+.owl-msg .msg-time{font-size:.65rem;color:#504848;margin-top:.25rem;font-style:italic;}
+
+.portrait-msg-wrap{padding:.6rem .8rem;display:flex;flex-direction:column;gap:.4rem;}
+.portrait-bubble-row{display:flex;flex-direction:column;}
+.portrait-bubble-row.me{align-items:flex-end;}
+.portrait-bubble-row.other{align-items:flex-start;}
+.portrait-name{font-size:.6rem;color:#584848;margin-bottom:.15rem;padding:0 .2rem;font-style:italic;}
+.portrait-msg{
+  max-width:78%;padding:.5rem .75rem;border-radius:.5rem;
+  font-size:.79rem;line-height:1.55;word-break:break-word;
+}
+.portrait-msg.from-other{background:#1e1828;color:#c0b0a0;border-bottom-left-radius:.15rem;}
+.portrait-msg.from-me{background:#2a2210;color:#e0c890;border-bottom-right-radius:.15rem;}
+.portrait-time{font-size:.58rem;color:#484040;margin-top:.1rem;padding:0 .2rem;font-style:italic;}
+
+.gazette-post{padding:.7rem .8rem;border-bottom:1px solid #18141c;}
+.gazette-post .gz-source{font-size:.7rem;color:#8870a0;margin-bottom:.2rem;display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;font-size:.65rem;}
+.gazette-post .gz-badge{font-size:.58rem;background:#1e1428;color:#806898;padding:.1rem .3rem;border-radius:.15rem;}
+.gazette-post .gz-content{font-size:.8rem;color:#b0a090;line-height:1.6;}
+.gazette-post .gz-stats{font-size:.65rem;color:#484040;margin-top:.25rem;}
+.notif-item{padding:.5rem .8rem;border-bottom:1px solid #18141c;display:flex;gap:.6rem;}
+.notif-item .ni-icon{font-size:.95rem;flex-shrink:0;}
+.notif-item .ni-body{flex:1;}
+.notif-item .ni-app{font-size:.63rem;color:#585050;margin-bottom:.12rem;font-family:'Cinzel',serif;}
+.notif-item .ni-msg{font-size:.76rem;color:#a09880;line-height:1.4;}
+.notif-item .ni-time{font-size:.6rem;color:#484040;margin-top:.1rem;font-style:italic;}
+.home-app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;padding:1rem .6rem;}
+.home-app{display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;}
+.home-app .app-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+.home-app .app-lbl{font-size:.56rem;color:#706860;font-family:'Cinzel',serif;letter-spacing:.03em;text-align:center;}
+.home-app-wrap{position:relative;display:inline-block;}
+.app-badge{font-size:.52rem;background:#8a2838;color:#fff;border-radius:1rem;padding:.05rem .28rem;position:absolute;top:-4px;right:-4px;}
+
+/* ── 載入遮罩 ── */
+#loading-overlay{
+  position:fixed;inset:0;z-index:200;background:rgba(14,12,16,.95);
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem;
+}
+#loading-overlay.show{display:flex;}
+.lo-ring{
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid var(--border);border-top-color:var(--gold3);
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.lo-text{font-size:.82rem;color:var(--text3);font-style:italic;}
+
+/* ── Auth ── */
+#auth-overlay{position:fixed;inset:0;z-index:300;background:rgba(14,12,16,.98);display:none;align-items:center;justify-content:center;}
+#auth-overlay.show{display:flex;}
+.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:.25rem;padding:2rem;max-width:320px;width:90%;text-align:center;}
+.auth-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.5rem;}
+.auth-sub{font-size:.8rem;color:var(--text3);margin-bottom:1.5rem;line-height:1.6;font-style:italic;}
+.auth-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.8rem;border-radius:.25rem;background:#fff;color:#333;font-size:.88rem;font-weight:500;border:none;cursor:pointer;transition:opacity .2s;margin-bottom:.8rem;font-family:'EB Garamond',serif;}
+.auth-btn:hover{opacity:.9;}
+.auth-skip{font-size:.73rem;color:var(--text3);cursor:pointer;text-decoration:underline;}
+
+.save-indicator{font-size:.65rem;color:var(--teal2);opacity:0;transition:opacity .3s;}
+.save-indicator.show{opacity:1;}
+#model-test-result.ok{color:var(--teal2);}
+#model-test-result.err{color:var(--crimson2);}
+#model-test-result.loading{color:var(--text3);}
+
+/* ── 回憶卡片 ── */
+.memory-card{border-radius:.25rem;padding:1rem 1.1rem;position:relative;overflow:hidden;border:1px solid transparent;}
+.memory-card.tier-1{background:linear-gradient(135deg,#1c1810,#141210);border-color:#3a2e18;}
+.memory-card.tier-2{background:linear-gradient(135deg,#141628,#101420);border-color:#222840;}
+.memory-card.tier-3{background:linear-gradient(135deg,#201414,#181010);border-color:#3a1818;}
+.memory-card.tier-special{background:linear-gradient(135deg,#18102a,#200e20);border-color:#3a1858;}
+.memory-card-emoji{font-size:1.8rem;margin-bottom:.4rem;display:block;}
+.memory-card-title{font-size:.88rem;color:var(--text);margin-bottom:.2rem;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.05em;}
+.memory-card-meta{font-size:.66rem;color:var(--text3);margin-bottom:.5rem;font-style:italic;}
+.memory-card-excerpt{font-size:.76rem;color:var(--text2);line-height:1.6;border-top:1px solid rgba(255,255,255,.04);padding-top:.5rem;}
+.memory-card-badge{position:absolute;top:.6rem;right:.7rem;font-size:.58rem;padding:.1rem .4rem;border-radius:1rem;}
+.badge-moment{background:rgba(200,168,74,.15);color:#c8a848;}
+.badge-crisis{background:rgba(138,40,48,.2);color:#c07080;}
+.badge-milestone{background:rgba(90,56,120,.2);color:#a080c0;}
+
+/* ── 結局氛圍 ── */
+.ending-aura{position:fixed;bottom:0;left:0;right:0;height:2px;transition:background .8s ease;z-index:5;pointer-events:none;}
+.aura-happy{background:linear-gradient(90deg,transparent,var(--gold3),transparent);}
+.aura-dark{background:linear-gradient(90deg,transparent,var(--crimson),transparent);}
+.aura-mystery{background:linear-gradient(90deg,transparent,var(--purple),transparent);}
+.aura-unknown{background:transparent;}
+
+/* ── 聯繫面板 ── */
+#contact-panel{position:fixed;inset:0;z-index:70;background:rgba(14,12,16,.97);display:none;flex-direction:column;align-items:center;justify-content:center;}
+#contact-panel.open{display:flex;}
+.contact-box{background:var(--bg3);border:1px solid var(--border2);border-radius:.25rem;padding:1.5rem;max-width:360px;width:90%;}
+.contact-title{font-size:.85rem;color:var(--gold);margin-bottom:1rem;text-align:center;font-family:'Cinzel',serif;letter-spacing:.08em;}
+.contact-opts{display:flex;flex-direction:column;gap:.5rem;}
+.contact-opt{padding:.6rem 1rem;border-radius:.25rem;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:.8rem;text-align:left;transition:all .2s;font-family:'EB Garamond',serif;}
+.contact-opt:hover{border-color:var(--gold3);color:var(--text);}
+
+/* ── 設定檔卡片 ── */
+.profile-card{background:var(--bg3);border:1px solid var(--border);border-radius:.25rem;padding:.65rem .9rem;display:flex;align-items:center;gap:.7rem;cursor:pointer;transition:border-color .2s;}
+.profile-card:hover{border-color:var(--gold3);}
+.profile-card-info{flex:1;}
+.profile-card-name{font-size:.82rem;color:var(--text);}
+.profile-card-meta{font-size:.68rem;color:var(--text3);margin-top:.1rem;font-style:italic;}
+.profile-card-btns{display:flex;gap:.4rem;}
+.profile-card-btn{font-size:.68rem;padding:.22rem .5rem;border-radius:.2rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;}
+.profile-card-btn:hover{border-color:var(--border2);color:var(--text2);}
+.profile-card-btn.danger{color:var(--crimson2);}
+
+/* ── 扭轉面板 ── */
+#twist-panel{position:fixed;inset:0;z-index:70;background:rgba(14,12,16,.96);display:none;align-items:center;justify-content:center;}
+
+/* ── 回憶覆蓋 ── */
+#memories-overlay{position:fixed;inset:0;z-index:60;background:rgba(12,10,16,.97);display:none;flex-direction:column;overflow:hidden;}
+
+/* ── 劇情回顧 ── */
+#recap-overlay{position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;}
+
+/* 響應式 */
+@media(min-width:768px){.story-panel{padding:1.5rem 2rem;}.options-panel{padding:1rem 2rem 1.2rem;}.story-msg{font-size:.94rem;}.opt-btn{font-size:.85rem;}}
+@media(min-width:1024px){.game-body{max-width:800px;margin:0 auto;width:100%;}#screen-game{align-items:center;}#screen-game .game-header{width:100%;max-width:800px;}}
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- ════ SPLASH ════ -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-inner">
+    <span class="splash-rune">⚡</span>
+    <h1 class="splash-title">霍格華茲秘史</h1>
+    <p class="splash-sub">The Secret Chronicles of the Wizarding World</p>
+    <div class="splash-divider"><span style="font-size:.65rem;color:var(--text3);letter-spacing:.15em;">✦ ✦ ✦</span></div>
+    <div class="splash-btn-row">
+      <button class="btn btn-primary" onclick="startNewGame()">踏入魔法世界</button>
+      <button class="btn" onclick="continueGame()">繼續傳說</button>
+    </div>
+    <div style="margin-top:.8rem;">
+      <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.7rem;color:var(--text3);">已儲存角色</button>
+    </div>
+    <p style="margin-top:1.5rem;font-size:.68rem;color:var(--text3);font-style:italic;">以 Google 帳號登入以同步存檔至雲端</p>
+  </div>
+</div>
+
+<!-- ════ AUTH ════ -->
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-title">進入禁忌圖書館</div>
+    <p class="auth-sub">以 Google 帳號登入<br>即可在所有裝置同步你的故事</p>
+    <button class="auth-btn" onclick="signInWithGoogle()">
+      <img src="https://www.google.com/favicon.ico" alt="G" width="18" height="18">
+      使用 Google 帳號登入
+    </button>
+    <div class="auth-skip" onclick="skipAuth()">暫時不登入（存檔僅限此裝置）</div>
+  </div>
+</div>
+
+<!-- ════ SETTINGS ════ -->
+<div id="screen-settings" class="screen">
+  <div class="settings-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;">
+      <div class="settings-title">創建角色</div>
+      <button class="btn btn-sm" onclick="randomizeProfile()" style="font-size:.7rem;">✦ 隨機</button>
+    </div>
+    <p class="settings-sub">填寫你的巫師檔案，開始你在魔法世界的傳說</p>
+
+    <div class="s-section" id="saved-profiles-section" style="display:none;">
+      <span class="s-label">已儲存的角色（最多5個）</span>
+      <div id="saved-profiles-list" style="display:flex;flex-direction:column;gap:.4rem;"></div>
+      <hr class="s-divider" style="margin:.8rem 0;">
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">✦ AI 模型設定</div>
+    <div class="s-section">
+      <span class="s-label">選擇 AI 服務商</span>
+      <div class="model-grid">
+        <div class="model-opt" data-provider="openrouter" onclick="selectProvider(this)">🌐 OpenRouter<br><small style="color:#6a9a6a;">有免費模型</small></div>
+        <div class="model-opt" data-provider="openai" onclick="selectProvider(this)">💠 OpenAI<br><small>GPT-4o 等</small></div>
+        <div class="model-opt" data-provider="google" onclick="selectProvider(this)">🔵 Google Gemini</div>
+        <div class="model-opt" data-provider="anthropic" onclick="selectProvider(this)">🟠 Anthropic Claude</div>
+      </div>
+    </div>
+    <div class="s-section">
+      <span class="s-label">API Key</span>
+      <div style="display:flex;gap:.5rem;">
+        <input class="s-input" id="input-apikey" type="password" placeholder="貼上你的 API Key" style="flex:1;" oninput="onApiKeyInput()">
+        <button class="btn btn-sm" id="btn-load-models" onclick="loadModels()" style="display:none;white-space:nowrap;">載入</button>
+      </div>
+      <p class="s-note">API Key 僅存於你的瀏覽器，不會上傳至伺服器。</p>
+    </div>
+    <div class="s-section" id="model-section" style="display:none;">
+      <span class="s-label" id="model-label">選擇模型</span>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <select class="s-input s-select" id="input-model" style="flex:1;" onchange="onModelChange()"><option value="">— 請先載入模型列表 —</option></select>
+        <button class="btn btn-sm" id="btn-test-model" onclick="testModel()" style="display:none;white-space:nowrap;">測試</button>
+      </div>
+      <input class="s-input" id="input-model-manual" placeholder="或手動輸入模型名稱（選填）" style="margin-top:.4rem;font-size:.8rem;">
+      <div id="model-test-result" style="font-size:.73rem;margin-top:.4rem;min-height:1rem;"></div>
+      <p class="s-note" id="model-hint" style="margin-top:.2rem;"></p>
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">✦ 巫師基本資料</div>
+    <div class="s-row">
+      <div class="s-section"><span class="s-label">姓名</span><input class="s-input" id="input-name" placeholder="你的巫師姓名"></div>
+      <div class="s-section"><span class="s-label">年齡</span><input class="s-input" id="input-age" placeholder="例：17" type="number" min="11" max="80"></div>
+    </div>
+    <div class="s-row">
+      <div class="s-section">
+        <span class="s-label">血統身份</span>
+        <select class="s-input s-select" id="input-blood">
+          <option value="">— 選擇血統 —</option>
+          <option value="純血巫師">純血巫師（Pureblood）</option>
+          <option value="混血巫師">混血巫師（Half-blood）</option>
+          <option value="麻瓜出身巫師">麻瓜出身巫師（Muggle-born）</option>
+          <option value="麻瓜">麻瓜（Muggle）</option>
+          <option value="半人馬">半人馬（Centaur）</option>
+          <option value="狼人">狼人（Werewolf）</option>
+          <option value="吸血鬼">吸血鬼（Vampire）</option>
+          <option value="幽靈/鬼魂">幽靈/鬼魂（Ghost）</option>
+          <option value="半巨人">半巨人（Half-giant）</option>
+          <option value="精靈">精靈（House-elf）</option>
+          <option value="巫師學者">巫師學者（Magizoologist）</option>
+          <option value="藥水師">藥水師（Potioneer）</option>
+          <option value="預言家">預言家（Seer）</option>
+        </select>
+      </div>
+      <div class="s-section">
+        <span class="s-label">Hogwarts 學院</span>
+        <div class="house-grid" id="house-grid">
+          <div class="house-opt" data-house="gryffindor" onclick="selectHouse(this,'葛來分多')">🦁 葛來分多<br><small style="font-size:.6rem;color:#706060;">勇敢·騎士精神</small></div>
+          <div class="house-opt" data-house="slytherin" onclick="selectHouse(this,'史萊哲林')">🐍 史萊哲林<br><small style="font-size:.6rem;color:#606860;">野心·機敏</small></div>
+          <div class="house-opt" data-house="ravenclaw" onclick="selectHouse(this,'雷文克勞')">🦅 雷文克勞<br><small style="font-size:.6rem;color:#606070;">智慧·學識</small></div>
+          <div class="house-opt" data-house="hufflepuff" onclick="selectHouse(this,'赫夫帕夫')">🦡 赫夫帕夫<br><small style="font-size:.6rem;color:#706840;">忠誠·勤勉</small></div>
+        </div>
+        <input class="s-input" id="input-house" placeholder="或填寫其他歸屬（如：無學院、奧克頓等）" style="margin-top:.4rem;font-size:.8rem;">
+      </div>
+    </div>
+
+    <div class="s-row">
+      <div class="s-section"><span class="s-label">身形外貌</span><input class="s-input" id="input-app-body" placeholder="例：高挑纖細、矮小精幹"></div>
+      <div class="s-section"><span class="s-label">髮型特徵</span><input class="s-input" id="input-app-hair" placeholder="例：深棕長捲髮、銀白短髮"></div>
+    </div>
+    <div class="s-row">
+      <div class="s-section"><span class="s-label">臉部特徵</span><input class="s-input" id="input-app-face" placeholder="例：銳利的灰眼、有個性的眉毛"></div>
+      <div class="s-section"><span class="s-label">整體氣質</span><input class="s-input" id="input-app-vibe" placeholder="例：神秘冷靜、熱情開朗"></div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">魔法才能（可多選）</span>
+      <div class="identity-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">御咒術</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">藥水學</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">占卜術</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">草藥學</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">變形術</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">黑魔法防禦術</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">守護神術</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">飛行魔法</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">魔法生物學</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘學</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">古代符文</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">瞬間移動</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">個性特質（可多選）</span>
+      <div class="identity-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">好奇探索</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">謹慎觀察</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">直率衝動</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">溫柔體貼</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">野心強烈</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘莫測</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">正義感強</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">理性冷靜</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">其他背景（可留空）</span>
+      <input class="s-input" id="input-background" placeholder="例：家族有黑魔法歷史、有失蹤的親人、曾見過佛地魔…">
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">✦ 時代背景</div>
+
+    <div class="s-section">
+      <span class="s-label">選擇時期</span>
+      <div class="identity-grid" id="era-grid">
+        <div class="identity-opt" onclick="selectEra(this,'霍格華茲創立時期（西元993年）')">⚔️ 創校時期</div>
+        <div class="identity-opt" onclick="selectEra(this,'中世紀巫師迫害時代（1400年代）')">🔥 黑暗中世紀</div>
+        <div class="identity-opt" onclick="selectEra(this,'國際保密法令頒布時期（1692年）')">📜 保密法令時代</div>
+        <div class="identity-opt" onclick="selectEra(this,'第一次黑魔王戰爭（1970-1981年）')">🌑 第一次巫師戰爭</div>
+        <div class="identity-opt" onclick="selectEra(this,'哈利波特就讀霍格華茲期間（1991-1998年）')">⚡ 哈利在校時期</div>
+        <div class="identity-opt" onclick="selectEra(this,'第二次黑魔王戰爭（1995-1998年）')">💀 第二次巫師戰爭</div>
+        <div class="identity-opt" onclick="selectEra(this,'戰後重建時期（1998-2010年代）')">🌅 戰後重建時期</div>
+        <div class="identity-opt" onclick="selectEra(this,'下一代巫師時代（2017年左右）')">✨ 下一代時期</div>
+      </div>
+      <input class="s-input" id="input-era" placeholder="或自填時代背景..." style="margin-top:.4rem;font-size:.8rem;">
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">陣營立場</span>
+      <div class="identity-grid" id="faction-grid">
+        <div class="identity-opt" onclick="selectFaction(this,'鳳凰社成員（光明陣營）')">🔥 鳳凰社</div>
+        <div class="identity-opt" onclick="selectFaction(this,'食死人（黑暗陣營）')">💀 食死人</div>
+        <div class="identity-opt" onclick="selectFaction(this,'魔法部官員（中立/制度方）')">⚖️ 魔法部</div>
+        <div class="identity-opt" onclick="selectFaction(this,'霍格華茲師生（學術方）')">🏰 霍格華茲</div>
+        <div class="identity-opt" onclick="selectFaction(this,'中立的普通巫師')">🌫️ 中立</div>
+        <div class="identity-opt" onclick="selectFaction(this,'麻瓜世界（完全不知魔法存在）')">🌍 麻瓜世界</div>
+        <div class="identity-opt" onclick="selectFaction(this,'魔法生物聚居地')">🦄 魔法生物方</div>
+        <div class="identity-opt" onclick="selectFaction(this,'秘密組織成員')">🌑 秘密組織</div>
+      </div>
+      <input class="s-input" id="input-faction" placeholder="或自填陣營..." style="margin-top:.4rem;font-size:.8rem;">
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">✦ 主線類型</div>
+
+    <div class="s-section">
+      <span class="s-label">你的故事重心（可選一個方向，也可混合）</span>
+      <div class="identity-grid" id="plot-type-grid">
+        <div class="identity-opt" onclick="selectPlotType(this,'戀愛：在魔法世界中尋找愛情')">💕 戀愛</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'冒險：踏上危險的魔法任務')">⚔️ 冒險任務</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'政治：在魔法部或黑暗勢力中周旋')">🎭 政治陰謀</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'學術：深入研究古老魔法和禁術')">📚 魔法研究</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'生存：在戰爭或迫害中生存下來')">🛡️ 生存戰爭</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'救贖：背負黑暗過去，尋求救贖')">🌙 救贖之路</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'揭秘：調查魔法世界中的神秘事件')">🔍 神秘調查</div>
+        <div class="identity-opt" onclick="selectPlotType(this,'成長：在霍格華茲中蛻變成長')">🌱 成長蛻變</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">故事開始節點</span>
+      <div class="identity-grid" id="story-start-grid">
+        <div class="identity-opt" onclick="selectStoryStart(this,'剛到達新環境，對周圍一切陌生')">初來乍到</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'與目標對象曖昧或有初步接觸')">曖昧初識</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'戰爭即將爆發，局勢緊張')">戰前夕</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'已有深厚關係，但面臨重大考驗')">關係危機</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'戰後，在廢墟中重新開始')">戰後重建</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'秘密身份曝光，一切改變')">身份曝光</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'被委以重要使命，必須完成')">領受使命</div>
+        <div class="identity-opt" onclick="selectStoryStart(this,'失憶或被施加咒術，需要找回真相')">記憶謎題</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">既往設定（可留空，填入想要預設的劇情背景）</span>
+      <textarea class="s-input" id="input-backstory" rows="3"
+        placeholder="例：曾與佛地魔有接觸、有一個失蹤的兄弟是食死人、曾在魔法部工作過..."
+        style="resize:vertical;line-height:1.6;"></textarea>
+    </div>
+
+    <hr class="s-divider">
+    <div class="s-section-title">✦ 關鍵角色設定</div>
+
+    <div class="s-section">
+      <span class="s-label">指定重要角色（選填，可填正典人物或自創角色）</span>
+      <input class="s-input" id="input-bf-name" placeholder="例：塞佛勒斯·石內卜、德拉科·馬份、或描述類型…">
+      <p class="s-note">可填入正典魔法世界人物名稱，AI 會盡量遵循其人設展開。</p>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">重點配角（選填，逗號分隔，最多3位）</span>
+      <input class="s-input" id="input-side-chars" placeholder="例：妙麗·格蘭傑、盧平教授、納吉尼">
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">角色類型偏好（可多選）</span>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.5rem;" id="type-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">反派型魅力</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">師長/導師</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">同窗夥伴</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘陌生人</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">忠誠守護者</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">競爭對手</div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <span class="s-label">個性偏好（可多選）</span>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:.5rem;" id="vibe-grid">
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">冷酷</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">溫柔</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">神秘</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">陽光</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">矛盾</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">才華</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">危險</div>
+        <div class="identity-opt" onclick="this.classList.toggle('selected')">忠誠</div>
+      </div>
+    </div>
+
+    <div class="s-row">
+      <div class="s-section"><span class="s-label">你對他的稱呼（可留空）</span><input class="s-input" id="input-my-pet" placeholder="留空則由劇情自然帶入"></div>
+      <div class="s-section"><span class="s-label">他對你的稱呼（可留空）</span><input class="s-input" id="input-bf-pet" placeholder="留空則由劇情自然帶入"></div>
+    </div>
+
+    <div id="msg-settings"></div>
+    <div class="settings-footer" style="flex-wrap:wrap;gap:.5rem;">
+      <button class="btn" id="btn-back-splash" onclick="showScreen('screen-splash')">← 返回</button>
+      <button class="btn" id="btn-back-game" onclick="showScreen('screen-game')" style="display:none;">← 返回遊戲</button>
+      <button class="btn" onclick="saveProfilePreset()" style="font-size:.75rem;">儲存角色</button>
+      <button class="btn btn-primary" id="btn-start-game" onclick="confirmSettings()">踏入魔法世界 ✦</button>
+      <button class="btn btn-primary" id="btn-save-settings" onclick="saveSettingsOnly()" style="display:none;">儲存設定 ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CASTING ════ -->
+<div id="screen-casting" class="screen" style="background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;">
+  <div style="width:100%;max-width:520px;margin:0 auto;">
+    <div style="font-size:1rem;color:var(--gold);margin-bottom:.3rem;font-family:'Cinzel',serif;letter-spacing:.1em;">命運之人</div>
+    <p style="font-size:.78rem;color:var(--text3);margin-bottom:.8rem;line-height:1.6;font-style:italic;">根據你的設定，魔法世界為你安排了以下可能的重要角色。</p>
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div id="cast-mode-auto" class="identity-opt selected" onclick="setCastMode('auto')" style="flex:1;text-align:center;min-width:120px;padding:.5rem;">
+        命運自然流動<br><span style="font-size:.62rem;color:var(--text3);">由劇情自由決定</span>
+      </div>
+      <div id="cast-mode-pick" class="identity-opt" onclick="setCastMode('pick')" style="flex:1;text-align:center;min-width:120px;padding:.5rem;">
+        指定命定之人<br><span style="font-size:.62rem;color:var(--text3);">點選優先發展</span>
+      </div>
+    </div>
+    <div style="font-size:.7rem;color:var(--text3);margin-bottom:.8rem;padding:.4rem .6rem;background:var(--bg3);border-radius:.2rem;border:1px solid var(--border);font-style:italic;" id="cast-hint">
+      所有人都可能與你發生故事，由命運自然決定走向。長按任一人設為重點配角（固定出現）。
+    </div>
+    <div id="casting-list" style="display:flex;flex-direction:column;gap:.8rem;"></div>
+    <div id="casting-loading" style="text-align:center;color:var(--text3);font-size:.82rem;padding:2rem;">
+      <div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--gold3);animation:spin .8s linear infinite;margin:0 auto 1rem;"></div>
+      水晶球中映現出命運之人…
+    </div>
+    <div id="casting-error" style="display:none;color:var(--crimson2);font-size:.8rem;text-align:center;padding:1rem;"></div>
+  </div>
+</div>
+
+<!-- ════ GAME ════ -->
+<div id="screen-game" class="screen">
+  <div class="game-header">
+    <div class="gh-left">
+      <span class="gh-title" id="gh-title">霍格華茲秘史</span>
+      <span class="gh-round" id="gh-round">第 1 回合</span>
+      <span class="gh-time" id="gh-time"></span>
+    </div>
+    <div class="gh-right">
+      <span class="save-indicator" id="save-indicator">已同步</span>
+      <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫</button>
+      <button class="gh-btn" onclick="openScrollOverlay('home')">魔法器</button>
+      <button class="gh-btn" onclick="openMemories()">回憶</button>
+      <button class="gh-btn" onclick="showSettingsFromGame()">設定</button>
+      <button class="gh-btn" onclick="openRecap()">回顧</button>
+      <button class="gh-btn" onclick="replayRound()">重玩</button>
+      <button class="gh-btn" onclick="openTwist()">扭轉</button>
+      <button class="gh-btn" onclick="exitGame()">退出</button>
+      <button class="gh-btn" onclick="signOutUser()" style="color:var(--crimson2);">登出</button>
+    </div>
+  </div>
+  <div class="game-body">
+    <div class="story-panel" id="story-panel"></div>
+  </div>
+  <div class="options-panel" id="options-panel">
+    <div class="options-title">▸ 選擇你的行動</div>
+    <div class="options-grid" id="options-grid"></div>
+  </div>
+</div>
+
+<!-- ════ 魔法通訊器（SCROLL OVERLAY）════ -->
+<div id="scroll-overlay">
+  <div class="so-statusbar">
+    <span id="so-time">魔法鐘：14:25</span>
+    <span>🦉 🔮 <span id="so-battery">滿格</span></span>
+  </div>
+  <div class="so-body" id="so-body"><div id="so-content"></div></div>
+  <div class="so-actions" id="so-actions"></div>
+</div>
+
+<!-- ════ CONTACT PANEL ════ -->
+<div id="contact-panel">
+  <div class="contact-box">
+    <div class="contact-title">如何聯繫他？</div>
+    <div class="contact-opts">
+      <button class="contact-opt" onclick="doContact('owl')">🦉 寄送貓頭鷹信件</button>
+      <button class="contact-opt" onclick="doContact('patronus')">🌟 以守護神傳遞訊息</button>
+      <button class="contact-opt" onclick="doContact('portrait')">🖼️ 透過魔法肖像傳話</button>
+      <button class="contact-opt" onclick="doContact('floo')">🔥 以火焰網路聯繫</button>
+    </div>
+    <button onclick="document.getElementById('contact-panel').classList.remove('open')"
+      style="width:100%;margin-top:.8rem;padding:.5rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.76rem;font-family:'EB Garamond',serif;">取消</button>
+  </div>
+</div>
+<div class="ending-aura aura-unknown" id="ending-aura"></div>
+
+<!-- ════ 扭轉劇情面板 ════ -->
+<div id="twist-panel" style="position:fixed;inset:0;z-index:70;background:rgba(14,12,16,.96);display:none;align-items:center;justify-content:center;">
+  <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:.25rem;padding:1.5rem;max-width:380px;width:90%;">
+    <div style="font-size:.85rem;color:var(--gold);margin-bottom:.4rem;font-family:'Cinzel',serif;letter-spacing:.08em;">改寫命運</div>
+    <p style="font-size:.73rem;color:var(--text3);margin-bottom:.9rem;line-height:1.6;font-style:italic;">告訴魔法世界你想要的走向，它會重新生成當前回合，保留之前的故事脈絡。</p>
+    <textarea id="twist-input" style="width:100%;padding:.7rem;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:.2rem;font-size:.8rem;line-height:1.6;resize:none;outline:none;font-family:'EB Garamond',serif;" rows="3" placeholder="例如：讓石內卜露出一絲感情、讓對峙場面更緊張、加入一個神秘的不速之客…"></textarea>
+    <div style="display:flex;gap:.5rem;margin-top:.8rem;justify-content:flex-end;">
+      <button onclick="document.getElementById('twist-panel').style.display='none'" style="padding:.5rem 1rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.78rem;font-family:'EB Garamond',serif;">取消</button>
+      <button onclick="applyTwist()" style="padding:.5rem 1rem;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:.2rem;cursor:pointer;font-size:.78rem;font-family:'EB Garamond',serif;">改寫命運</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ 回憶覆蓋 ════ -->
+<div id="memories-overlay" style="position:fixed;inset:0;z-index:60;background:rgba(12,10,16,.97);display:none;flex-direction:column;overflow:hidden;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border);">
+    <span style="font-size:.9rem;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.08em;">回憶的羊皮卷</span>
+    <button onclick="document.getElementById('memories-overlay').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .6rem;border-radius:.2rem;cursor:pointer;font-size:.72rem;">關閉</button>
+  </div>
+  <div id="memories-list" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem;">
+    <p style="color:var(--text3);font-size:.8rem;text-align:center;margin-top:2rem;font-style:italic;">還沒有特別的回憶。繼續你們的故事吧 ✦</p>
+  </div>
+</div>
+
+<!-- ════ 劇情回顧 ════ -->
+<div id="recap-overlay" style="position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0;">
+    <span style="font-size:.85rem;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.06em;">劇情回顧</span>
+    <button onclick="document.getElementById('recap-overlay').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--text3);padding:.25rem .6rem;border-radius:.2rem;cursor:pointer;font-size:.7rem;">關閉</button>
+  </div>
+  <div id="recap-rounds" style="display:flex;gap:.4rem;padding:.6rem .8rem;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0;scrollbar-width:none;"></div>
+  <div id="recap-content" style="flex:1;overflow-y:auto;padding:.8rem 1rem;"></div>
+</div>
+
+<!-- ════ LOADING ════ -->
+<div id="loading-overlay">
+  <div class="lo-ring"></div>
+  <div class="lo-text" id="lo-text">魔法正在運作…</div>
+</div>
+
+<script>
+// ── 全域錯誤捕捉 ──
+window.onerror = function(msg, src, line, col, err){
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;bottom:24px;right:10px;background:rgba(40,20,20,.85);color:#c07070;padding:4px 8px;z-index:99999;font-size:.6rem;border-radius:3px;max-width:260px;word-break:break-all;pointer-events:none;';
+  d.textContent = 'err:'+line+' '+msg.slice(0,60);
+  document.body && document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 8000);
+  return false;
+};
+
+// ── Firebase ──
+const firebaseConfig = {
+  apiKey: "AIzaSyB-2MED5FYZSHImk9EbVOsGcugoj9A26Es",
+  authDomain: "kpop-game-2b35c.firebaseapp.com",
+  projectId: "kpop-game-2b35c",
+  storageBucket: "kpop-game-2b35c.firebasestorage.app",
+  messagingSenderId: "760430510342",
+  appId: "1:760430510342:web:ce38a418555d1569da9e87"
+};
+let auth=null, db=null, provider=null, firebaseReady=false;
+function loadFirebase(){
+  return new Promise(resolve=>{
+    if(firebaseReady){resolve();return;}
+    const scripts=['https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js'];
+    let loaded=0;
+    scripts.forEach(src=>{const s=document.createElement('script');s.src=src;s.onload=()=>{loaded++;if(loaded===scripts.length){try{if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();provider=new firebase.auth.GoogleAuthProvider();firebaseReady=true;auth.onAuthStateChanged(user=>{currentUser=user;if(user){document.getElementById('auth-overlay').classList.remove('show');loadCloudSave();}});}catch(e){}resolve();}};s.onerror=()=>{loaded++;if(loaded===scripts.length)resolve();};document.head.appendChild(s);});
+  });
+}
+
+// ── 星空粒子 ──
+(function createStars(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<40;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=Math.random()*2+1;
+    s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${Math.random()*4+2}s;--delay:${Math.random()*6}s;opacity:${Math.random()*.6+.1};`;
+    c.appendChild(s);
+  }
+})();
+
+// ── 全域狀態 ──
+let currentUser=null;
+let gameState={
+  round:1,
+  time:'霍格華茲，1991年9月',
+  playerName:'',playerAge:'',playerHouse:'',playerBlood:'',
+  playerEra:'',playerFaction:'',plotType:'',
+  appearance:'',appBody:'',appHair:'',appFace:'',appVibe:'',
+  talents:'',traits:'',background:'',backstory:'',storyStart:'',
+  bfName:'',myPet:'',bfPet:'',
+  apiProvider:'',apiModel:'',
+  history:[],storyLog:[],
+  magicData:{
+    owlPost:{letters:[]},
+    portraitChat:{conversations:{}},
+    dailyProphet:{articles:[]},
+    wizardingWireless:{broadcasts:[]},
+    notifs:[]
+  },
+  affection:50, affectionTrend:'stable',
+  flags:{
+    firstKiss:false, intimateNight:false, metFamily:false,
+    exposed:false, joined:false, darkMark:false, patronusSeen:false,
+    betrayed:false, madeUp:false, hadFight:false, targetSuspected:false,
+    ministry:false, war:false, survived:false, graduated:false,
+    questComplete:false
+  },
+  relationStatus:'',endingPath:'',
+  memories:[],npcs:{},playerMood:'normal',sideChars:'',
+  myWizardProfile:null,
+  targetCandidates:[],castMode:'pick',
+  pendingTargetMsg:null,
+  lastRenderedOptions:null,
+  targetProfile:null,
+  playerMemory:[],
+  lastChoiceTag:'',lastChoiceText:'',
+  playerPersonality:{traits:{},summary:'',lastUpdatedRound:0},
+  playerBehaviorLog:[],
+  playerStory:{goal:'',currentChallenge:'',nextPersonalEventRound:0},
+  beWarning:0,
+  nextEventRound:null,
+  pendingSpecialEvent:null,
+  pendingEndingHint:false,
+  pendingTwistHint:null,
+  pendingOptionTags:null,
+  currentSceneContext:'',
+  initialized:false
+};
+
+// ── 選院系 ──
+let selectedHouse='';
+window.selectHouse=function(el,val){
+  document.querySelectorAll('#house-grid .house-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedHouse=val;
+  document.getElementById('input-house').value=val;
+};
+
+// ── 選時代 ──
+let selectedEra='';
+window.selectEra=function(el,val){
+  document.querySelectorAll('#era-grid .identity-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEra=val;
+  document.getElementById('input-era').value=val;
+};
+
+// ── 選陣營 ──
+let selectedFaction='';
+window.selectFaction=function(el,val){
+  document.querySelectorAll('#faction-grid .identity-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedFaction=val;
+  document.getElementById('input-faction').value=val;
+};
+
+// ── 選主線 ──
+let selectedPlotType='';
+window.selectPlotType=function(el,val){
+  document.querySelectorAll('#plot-type-grid .identity-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlotType=val;
+};
+
+// ── 選故事起點 ──
+let selectedStoryStart='';
+window.selectStoryStart=function(el,val){
+  document.querySelectorAll('#story-start-grid .identity-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedStoryStart=val;
+};
+
+// ── 畫面切換 ──
+window.showScreen=function(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+};
+
+// ── Auth ──
+window.signInWithGoogle=async function(){
+  try{await loadFirebase();await auth.signInWithPopup(provider);}catch(e){alert('登入失敗，請確認網路連線');}
+};
+window.skipAuth=function(){
+  document.getElementById('auth-overlay').classList.remove('show');
+  loadLocalSave();
+};
+
+// ── Provider 選擇 ──
+let selectedProvider='';
+window.selectProvider=function(el){
+  document.querySelectorAll('.model-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedProvider=el.dataset.provider;
+  const modelSection=document.getElementById('model-section');
+  const loadBtn=document.getElementById('btn-load-models');
+  const modelLabel=document.getElementById('model-label');
+  const modelHint=document.getElementById('model-hint');
+  modelSection.style.display='block';
+  const hintMap={openrouter:'OpenRouter 上有許多免費模型，推薦 google/gemma-3-27b-it:free',openai:'推薦使用 gpt-4o-mini（均衡）或 gpt-4o（最強）',google:'推薦 gemini-2.5-flash（免費額度豐富）',anthropic:'推薦 claude-sonnet-4（劇情理解最佳）'};
+  modelHint.textContent=hintMap[selectedProvider]||'';
+  if(selectedProvider==='anthropic'){
+    loadBtn.style.display='none';
+    const sel=document.getElementById('input-model');
+    sel.innerHTML=[
+      {id:'claude-opus-4-5-20251001',l:'Claude Opus 4.5'},{id:'claude-sonnet-4-20250514',l:'Claude Sonnet 4（推薦）',r:true},
+      {id:'claude-haiku-4-5-20251001',l:'Claude Haiku 4.5（快速）'},{id:'claude-opus-4-20250514',l:'Claude Opus 4'},
+    ].map(m=>`<option value="${m.id}"${m.r?' selected':''}>${m.l}</option>`).join('');
+  } else {
+    loadBtn.style.display='';
+    const apiKey=document.getElementById('input-apikey').value.trim();
+    if(apiKey) loadModels();
+  }
+};
+function selectProviderById(pid){
+  const el=document.querySelector(`[data-provider="${pid}"]`);
+  if(el) selectProvider(el);
+}
+window.onApiKeyInput=function(){
+  const key=document.getElementById('input-apikey').value.trim();
+  const loadBtn=document.getElementById('btn-load-models');
+  if(key&&selectedProvider&&selectedProvider!=='anthropic') loadBtn.style.display='';
+  else if(selectedProvider==='anthropic') loadBtn.style.display='none';
+};
+window.loadModels=async function(){
+  const key=document.getElementById('input-apikey').value.trim();
+  if(!key||!selectedProvider){document.getElementById('msg-settings').textContent='請先選擇服務商並填入 API Key';return;}
+  const loadBtn=document.getElementById('btn-load-models');
+  loadBtn.textContent='載入中…';loadBtn.disabled=true;
+  try {
+    const models=await fetchModels(selectedProvider,key);
+    const sel=document.getElementById('input-model');
+    sel.innerHTML=models.map(m=>`<option value="${m.id}"${m.recommended?' selected':''}>${m.label}</option>`).join('');
+    document.getElementById('btn-test-model').style.display='';
+  }catch(e){document.getElementById('msg-settings').textContent='載入失敗：'+e.message;}
+  loadBtn.textContent='重新載入';loadBtn.disabled=false;
+};
+async function fetchModels(provider,key){
+  if(provider==='openrouter'){
+    const res=await fetch('https://openrouter.ai/api/v1/models',{headers:{'Authorization':'Bearer '+key}});
+    const data=await res.json();
+    if(!data.data) throw new Error(data.error?.message||'無法取得模型');
+    return data.data.filter(m=>m.id&&m.context_length>4000).sort((a,b)=>a.name.localeCompare(b.name)).map(m=>{
+      const isFree=m.id.includes(':free');const price=m.pricing?.completion;const isCheap=!isFree&&price&&parseFloat(price)>0&&parseFloat(price)<0.000002;
+      const tag=isFree?' [免費]':(isCheap?' [低價]':'');
+      const recommended=isFree&&(m.id.includes('gemma-3-27b')||m.id.includes('llama-3.3-70b')||m.id.includes('deepseek'));
+      return{id:m.id,label:m.name+tag,recommended};
+    });
+  } else if(provider==='openai'){
+    const res=await fetch('https://api.openai.com/v1/models',{headers:{'Authorization':'Bearer '+key}});
+    const data=await res.json();
+    if(!data.data) throw new Error(data.error?.message||'無法取得模型');
+    return data.data.filter(m=>m.id.startsWith('gpt-')||m.id.startsWith('o1')||m.id.startsWith('o3')).sort((a,b)=>b.id.localeCompare(a.id)).map(m=>({id:m.id,label:m.id,recommended:m.id==='gpt-4o-mini'}));
+  } else if(provider==='google'){
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+    const data=await res.json();
+    if(data.error) throw new Error(data.error.message);
+    return (data.models||[]).filter(m=>m.supportedGenerationMethods?.includes('generateContent')).map(m=>{
+      const id=m.name.replace('models/','');const isFree=id.includes('flash')||id.includes('exp');
+      return{id,label:(m.displayName||id)+(isFree?' [免費額度]':''),recommended:id.includes('2.5-flash')};
+    }).sort((a,b)=>a.id.localeCompare(b.id));
+  } else if(provider==='anthropic'){
+    return[{id:'claude-opus-4-5-20251001',label:'Claude Opus 4.5'},{id:'claude-sonnet-4-20250514',label:'Claude Sonnet 4（推薦）',recommended:true},{id:'claude-haiku-4-5-20251001',label:'Claude Haiku 4.5（快速）'},{id:'claude-opus-4-20250514',label:'Claude Opus 4'}];
+  }
+  return[];
+}
+window.onModelChange=function(){const sel=document.getElementById('input-model');if(sel.value)document.getElementById('btn-test-model').style.display='';};
+window.testModel=async function(){
+  const sel=document.getElementById('input-model');const manual=document.getElementById('input-model-manual').value.trim();
+  const modelId=manual||sel.value;const key=document.getElementById('input-apikey').value.trim();
+  const result=document.getElementById('model-test-result');
+  if(!modelId){result.className='err';result.textContent='請選擇模型';return;}
+  if(!key){result.className='err';result.textContent='請填入 API Key';return;}
+  result.className='loading';result.textContent='⏳ 測試中…';
+  const origProv=gameState.apiProvider,origModel=gameState.apiModel,origKey=gameState.apiKey;
+  gameState.apiProvider=selectedProvider;gameState.apiModel=modelId;gameState.apiKey=key;
+  try{const origH=gameState.history;gameState.history=[];await callAI('請回覆「測試成功」三個字。');gameState.history=origH;result.className='ok';result.textContent='✓ 連線成功！模型回應正常';localStorage.setItem('hp_provider',selectedProvider);localStorage.setItem('hp_model',modelId);localStorage.setItem('hp_apikey',key);}
+  catch(e){result.className='err';result.textContent='✗ 失敗：'+e.message;gameState.apiProvider=origProv;gameState.apiModel=origModel;gameState.apiKey=origKey;}
+};
+
+window.toggleBfCond=function(el){el.classList.toggle('selected');};
+
+// ── confirmSettings ──
+window.confirmSettings=function(){
+  const apikey=document.getElementById('input-apikey').value.trim();
+  const _selModel=document.getElementById('input-model').value.trim();
+  const _manModel=document.getElementById('input-model-manual').value.trim();
+  const model=_manModel||_selModel;
+  const name=document.getElementById('input-name').value.trim();
+  const age=document.getElementById('input-age').value.trim();
+  const blood=document.getElementById('input-blood').value;
+  const house=document.getElementById('input-house').value.trim();
+  const bfName=document.getElementById('input-bf-name').value.trim();
+  const sideChars=document.getElementById('input-side-chars')?.value.trim()||'';
+  const myPet=document.getElementById('input-my-pet').value.trim();
+  const bfPet=document.getElementById('input-bf-pet').value.trim();
+  const appBody=document.getElementById('input-app-body')?.value.trim()||'';
+  const appHair=document.getElementById('input-app-hair')?.value.trim()||'';
+  const appFace=document.getElementById('input-app-face')?.value.trim()||'';
+  const appVibe=document.getElementById('input-app-vibe')?.value.trim()||'';
+  const era=document.getElementById('input-era').value.trim();
+  const faction=document.getElementById('input-faction').value.trim();
+  const background=document.getElementById('input-background')?.value.trim()||'';
+  const backstory=document.getElementById('input-backstory')?.value.trim()||'';
+  const appearance=[appBody,appHair,appFace,appVibe].filter(Boolean).join('；');
+  const talents=[...document.querySelectorAll('.identity-grid .identity-opt.selected')].filter(e=>['御咒術','藥水學','占卜術','草藥學','變形術','黑魔法防禦術','守護神術','飛行魔法','魔法生物學','神秘學','古代符文','瞬間移動'].some(t=>e.textContent.includes(t))).map(e=>e.textContent.trim()).join('、');
+  const traits=[...document.querySelectorAll('.identity-grid .identity-opt.selected')].filter(e=>['好奇探索','謹慎觀察','直率衝動','溫柔體貼','野心強烈','神秘莫測','正義感強','理性冷靜'].some(t=>e.textContent.includes(t))).map(e=>e.textContent.trim()).join('、');
+  const msg=document.getElementById('msg-settings');
+  if(!selectedProvider){msg.textContent='請選擇 AI 服務商';return;}
+  if(!apikey){msg.textContent='請填入 API Key';return;}
+  if(!name){msg.textContent='請填入角色姓名';return;}
+  msg.textContent='';
+  localStorage.setItem('hp_provider',selectedProvider);localStorage.setItem('hp_model',model);localStorage.setItem('hp_apikey',apikey);
+  gameState.apiProvider=selectedProvider;gameState.apiModel=model;gameState.apiKey=apikey;
+  gameState.playerName=name;gameState.playerAge=age||'17';
+  gameState.playerBlood=blood||'混血巫師';gameState.playerHouse=house||selectedHouse||'';
+  gameState.playerEra=era||selectedEra||'哈利波特就讀霍格華茲期間（1991-1998年）';
+  gameState.playerFaction=faction||selectedFaction||'霍格華茲師生';
+  gameState.plotType=selectedPlotType||'戀愛：在魔法世界中尋找愛情';
+  const likedTypes=[...document.querySelectorAll('#type-grid .identity-opt.selected')].map(e=>e.textContent.trim()).join('、');
+  const likedVibes=[...document.querySelectorAll('#vibe-grid .identity-opt.selected')].map(e=>e.textContent.trim()).join('、');
+  gameState.bfName=bfName||'';gameState.sideChars=sideChars;
+  gameState.bfCondition=[likedTypes,likedVibes].filter(Boolean).join('、');
+  gameState.myPet=myPet||'';gameState.bfPet=bfPet||'';
+  gameState.appearance=appearance;gameState.appBody=appBody;gameState.appHair=appHair;gameState.appFace=appFace;gameState.appVibe=appVibe;
+  gameState.background=background;gameState.backstory=backstory;
+  gameState.talents=talents;gameState.traits=traits;
+  gameState.storyStart=selectedStoryStart||'剛到達新環境，對周圍一切陌生';
+  gameState.initialized=true;
+  initGameScreen();showScreen('screen-casting');runCasting();
+};
+
+// ── saveSettingsOnly ──
+window.saveSettingsOnly=function(){
+  const apikey=document.getElementById('input-apikey').value.trim();
+  const model=document.getElementById('input-model-manual').value.trim()||document.getElementById('input-model').value.trim();
+  if(!selectedProvider){document.getElementById('msg-settings').textContent='請選擇服務商';return;}
+  if(!apikey){document.getElementById('msg-settings').textContent='請填入 API Key';return;}
+  localStorage.setItem('hp_provider',selectedProvider);localStorage.setItem('hp_model',model);localStorage.setItem('hp_apikey',apikey);
+  gameState.apiProvider=selectedProvider;gameState.apiModel=model;gameState.apiKey=apikey;
+  document.getElementById('msg-settings').style.color='var(--teal2)';document.getElementById('msg-settings').textContent='✓ 設定已儲存';
+  setTimeout(()=>{document.getElementById('msg-settings').textContent='';document.getElementById('msg-settings').style.color='';showScreen('screen-game');},1200);
+};
+
+// ── showSettingsFromGame ──
+window.showSettingsFromGame=function(){
+  document.getElementById('btn-back-splash').style.display='none';document.getElementById('btn-back-game').style.display='';
+  document.getElementById('btn-start-game').style.display='none';document.getElementById('btn-save-settings').style.display='';
+  const savedProvider=localStorage.getItem('hp_provider')||gameState.apiProvider||'';
+  const savedModel=localStorage.getItem('hp_model')||gameState.apiModel||'';
+  const savedKey=localStorage.getItem('hp_apikey')||'';
+  if(savedProvider) selectProviderById(savedProvider);
+  if(savedModel){const sel=document.getElementById('input-model');const opt=[...sel.options].find(o=>o.value===savedModel);if(opt)sel.value=savedModel;else document.getElementById('input-model-manual').value=savedModel;}
+  if(savedKey) document.getElementById('input-apikey').value=savedKey;
+  ['name','age'].forEach(k=>{const el=document.getElementById('input-'+k);if(el&&gameState['player'+k.charAt(0).toUpperCase()+k.slice(1)])el.value=gameState['player'+k.charAt(0).toUpperCase()+k.slice(1)];});
+  if(gameState.bfName)document.getElementById('input-bf-name').value=gameState.bfName;
+  showScreen('screen-settings');
+};
+
+// ── Casting ──
+let castMode='auto';
+window.setCastMode=function(mode){
+  castMode=mode;
+  document.getElementById('cast-mode-auto').classList.toggle('selected',mode==='auto');
+  document.getElementById('cast-mode-pick').classList.toggle('selected',mode==='pick');
+  const hint=document.getElementById('cast-hint');
+  hint.textContent=mode==='auto'?'所有人都可能與你發生故事，由命運自然決定走向。長按任一人設為重點配角（固定出現）。':'點選 = 命定之人（優先發展）｜長按 = 重點配角｜再次點選 = 取消';
+};
+
+async function runCasting(){
+  const loadDiv=document.getElementById('casting-loading');const errDiv=document.getElementById('casting-error');const list=document.getElementById('casting-list');
+  loadDiv.style.display='';errDiv.style.display='none';list.innerHTML='';
+  const castPrompt=`你是哈利波特魔法世界的GM。根據以下玩家設定，生成3-5位在這個故事中可能與玩家產生重要連結的角色人選。
+
+玩家設定：
+- 姓名：${gameState.playerName}，${gameState.playerAge}歲
+- 血統：${gameState.playerBlood}，學院：${gameState.playerHouse||'未指定'}
+- 時代背景：${gameState.playerEra}
+- 陣營：${gameState.playerFaction}
+- 主線類型：${gameState.plotType}
+- 個性：${gameState.traits||'未指定'}
+- 才能：${gameState.talents||'未指定'}
+- 背景：${gameState.background||'無'}
+- 指定人選：${gameState.bfName||'未指定，由AI自由選擇'}
+- 角色偏好：${gameState.bfCondition||'無特別限制'}
+
+請根據時代背景，選擇3-5位在那個時期存在的正典角色（或合理的原創角色），這些角色可能是感情對象、重要盟友、神秘對手、導師，視主線類型決定。
+
+如果指定了人選，第一個必須是該人選。
+可以是正典哈利波特人物（要符合時代），也可以是原創角色（標示為「原創」）。
+
+以JSON格式回應（不要任何markdown）：
+{
+  "candidates": [
+    {
+      "name": "角色全名",
+      "age": 年齡數字,
+      "role": "在故事中的可能角色定位（如：神秘盟友、潛在對象、宿敵、導師）",
+      "affiliation": "所屬陣營（如：鳳凰社、食死人、魔法部、霍格華茲）",
+      "vibe": "一句話性格描述",
+      "hookDesc": "與玩家可能發生的故事類型描述（30字內）",
+      "isCanon": true或false,
+      "isOriginal": true或false
+    }
+  ]
+}`;
+  try {
+    const origHist=gameState.history;gameState.history=[];
+    const resp=await callAI(castPrompt);gameState.history=origHist;
+    const cleaned=resp.split('```json').join('').split('```').join('').replace(/<think>[\s\S]*?<\/think>/g,'').trim();
+    const m=cleaned.match(/\{[\s\S]*\}/);
+    const data=JSON.parse(m?m[0]:cleaned);
+    loadDiv.style.display='none';
+    if(!data.candidates||!data.candidates.length){errDiv.textContent='選角失敗，請重試。';errDiv.style.display='';return;}
+    gameState.targetCandidates=data.candidates.map(c=>c.name);
+    renderCastingList(data.candidates);
+  } catch(e){
+    loadDiv.style.display='none';
+    errDiv.textContent='選角失敗：'+e.message+' — 請檢查 API Key 後重試';errDiv.style.display='';
+    errDiv.innerHTML+='<br><button onclick="runCasting()" style="margin-top:.5rem;padding:.35rem .8rem;background:none;border:1px solid var(--border2);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.75rem;font-family:\'EB Garamond\',serif;">重試</button>';
+  }
+}
+
+function renderCastingList(candidates){
+  const list=document.getElementById('casting-list');list.innerHTML='';
+  candidates.forEach((c,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='background:var(--bg3);border:1px solid var(--border);border-radius:.25rem;padding:.9rem 1rem;cursor:pointer;transition:all .2s;user-select:none;';
+    card.dataset.name=c.name;card.dataset.role='';
+    const badge=c.isOriginal?'<span style="font-size:.58rem;background:rgba(90,56,120,.2);color:#a080c0;padding:.1rem .4rem;border-radius:.2rem;margin-left:.4rem;">原創</span>':(c.isCanon?'<span style="font-size:.58rem;background:rgba(200,168,74,.15);color:#a08830;padding:.1rem .4rem;border-radius:.2rem;margin-left:.4rem;">正典</span>':'');
+    card.innerHTML=`
+      <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.35rem;">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--parchment);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🧙</div>
+        <div>
+          <div style="font-size:.85rem;color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;">${c.name}${badge}</div>
+          <div style="font-size:.68rem;color:var(--text3);margin-top:.1rem;font-style:italic;">${c.affiliation||''} · ${c.age||'?'}歲</div>
+        </div>
+        <div id="cast-role-${i}" style="margin-left:auto;font-size:.65rem;color:var(--text3);min-width:40px;text-align:right;"></div>
+      </div>
+      <div style="font-size:.78rem;color:var(--text2);margin-bottom:.25rem;font-style:italic;">${c.vibe||''}</div>
+      <div style="font-size:.72rem;color:var(--text3);">${c.hookDesc||''}</div>`;
+    card._updateStyle=function(){
+      if(card.dataset.role==='main'){card.style.borderColor='var(--gold3)';card.style.background='var(--parchment)';document.getElementById('cast-role-'+i).textContent='命定之人';}
+      else if(card.dataset.role==='side'){card.style.borderColor='var(--border2)';card.style.background='var(--bg3)';document.getElementById('cast-role-'+i).textContent='重點配角';}
+      else{card.style.borderColor='var(--border)';card.style.background='var(--bg3)';document.getElementById('cast-role-'+i).textContent='';}
+    };
+    let pressTimer;
+    card.addEventListener('mousedown',()=>{pressTimer=setTimeout(()=>{if(card.dataset.role==='side'){card.dataset.role='';card._updateStyle();return;}card.dataset.role='side';card._updateStyle();},500);});
+    card.addEventListener('mouseup',()=>clearTimeout(pressTimer));
+    card.addEventListener('touchstart',()=>{pressTimer=setTimeout(()=>{if(card.dataset.role==='side'){card.dataset.role='';card._updateStyle();return;}card.dataset.role='side';card._updateStyle();},500);});
+    card.addEventListener('touchend',()=>clearTimeout(pressTimer));
+    card.addEventListener('click',()=>{
+      if(castMode!=='pick') return;
+      if(card.dataset.role==='main'){card.dataset.role='';card._updateStyle();gameState.bfName='';}
+      else if(card.dataset.role==='side') return;
+      else{
+        document.querySelectorAll('#casting-list [data-role="main"]').forEach(el=>{el.dataset.role='';el._updateStyle&&el._updateStyle();});
+        card.dataset.role='main';card._updateStyle();gameState.bfName=c.name;
+      }
+    });
+    list.appendChild(card);
+  });
+  const footer=document.createElement('div');
+  footer.style.cssText='display:flex;gap:.6rem;justify-content:flex-end;margin-top:.5rem;flex-wrap:wrap;';
+  footer.innerHTML=`<button class="btn" onclick="showScreen('screen-settings')" style="font-size:.75rem;">← 重設定</button>
+    <button class="btn btn-primary" onclick="finishCasting()" style="font-size:.8rem;">確認命運 ✦</button>`;
+  list.appendChild(footer);
+}
+
+window.finishCasting=function(){
+  const cards=[...document.querySelectorAll('#casting-list [data-role]')];
+  const mainCard=cards.find(c=>c.dataset.role==='main');
+  const sideCards=cards.filter(c=>c.dataset.role==='side');
+  if(mainCard) gameState.bfName=mainCard.dataset.name;
+  if(sideCards.length&&!gameState.sideChars) gameState.sideChars=sideCards.map(c=>c.dataset.name).join('、');
+  gameState.castMode=castMode;
+  showScreen('screen-game');startGame();
+};
+
+// ── 遊戲初始化 ──
+function initGameScreen(){
+  document.getElementById('story-panel').innerHTML='';
+  document.getElementById('gh-title').textContent=getEraTitle();
+  const contactBtn=document.getElementById('btn-contact');
+  if(contactBtn){const showContact=gameState.storyStart&&!gameState.storyStart.includes('陌生')&&!gameState.storyStart.includes('尚未');contactBtn.style.display=showContact?'':'none';}
+  renderSavedProfiles();updateEndingAura();
+}
+
+function getEraTitle(){
+  const era=gameState.playerEra||'';
+  if(era.includes('創立')) return '霍格華茲創校秘史';
+  if(era.includes('迫害')) return '黑暗中世紀年代記';
+  if(era.includes('第一次')) return '第一次巫師戰爭';
+  if(era.includes('哈利')) return '霍格華茲秘史';
+  if(era.includes('第二次')) return '黑暗降臨之年';
+  if(era.includes('重建')) return '戰後重建時代';
+  if(era.includes('下一代')) return '下一代魔法師';
+  return '霍格華茲秘史';
+}
+
+function updateHeader(){
+  document.getElementById('gh-round').textContent=`第 ${gameState.round} 回合`;
+  document.getElementById('gh-time').textContent=gameState.time||'';
+}
+
+// ── AI 呼叫 ──
+async function callAI(userMessage){
+  const p=gameState.apiProvider;const model=gameState.apiModel;
+  const key=gameState.apiKey||localStorage.getItem('hp_apikey')||'';
+  if(!key) throw new Error('缺少 API Key');
+  const msgs=[...gameState.history,{role:'user',content:userMessage}];
+  if(p==='anthropic'){
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:model||'claude-haiku-4-5-20251001',max_tokens:4096,system:buildSystemPrompt(),messages:msgs})});
+    const data=await res.json();if(data.error)throw new Error(data.error.message);const text=data.content?.[0]?.text;if(!text)throw new Error('AI 回傳內容為空');return text;
+  } else if(p==='google'){
+    const sysPrompt=buildSystemPrompt();const geminiMsgs=msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model||'gemini-2.5-flash'}:generateContent?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sysPrompt}]},contents:geminiMsgs,generationConfig:{maxOutputTokens:8192,temperature:0.9}})});
+    const data=await res.json();if(data.error)throw new Error(data.error.message);const parts=data.candidates?.[0]?.content?.parts||[];const textPart=[...parts].reverse().find(p=>p.text&&!p.thought);const text=textPart?.text||parts.find(p=>p.text)?.text;if(!text)throw new Error('AI 回傳為空，可能觸發安全過濾');return text;
+  } else {
+    const endpoint=p==='openrouter'?'https://openrouter.ai/api/v1/chat/completions':'https://api.openai.com/v1/chat/completions';
+    const sysPrompt=buildSystemPrompt();const allMsgs=[{role:'system',content:sysPrompt},...msgs];
+    const headers={'Content-Type':'application/json','Authorization':`Bearer ${key}`};if(p==='openrouter'){headers['HTTP-Referer']='https://hp-world-game.github.io';headers['X-Title']='HP-World-Game';}
+    const res=await fetch(endpoint,{method:'POST',headers,body:JSON.stringify({model:model||(p==='openrouter'?'google/gemma-3-27b-it:free':'gpt-4o-mini'),max_tokens:4096,messages:allMsgs,temperature:0.9})});
+    const data=await res.json();if(data.error)throw new Error(data.error.message||JSON.stringify(data.error));const msg=data.choices?.[0]?.message;if(!msg)throw new Error('AI 未回傳訊息');const text=msg.content||msg.reasoning||(msg.tool_calls?.[0]?.function?.arguments)||null;if(!text)throw new Error('AI 回傳內容為空');return text;
+  }
+}
+
+// ── System Prompt ──
+function buildSystemPrompt(){
+  const plotTypeDesc={
+    '戀愛':'這是一個以感情發展為核心的故事，AI 應聚焦在關係的細膩發展、心理博弈、感情轉折。',
+    '冒險':'這是一個以任務和行動為核心的故事，AI 應聚焦在危機、謎題、選擇和後果。',
+    '政治':'這是一個以陰謀和權力為核心的故事，AI 應聚焦在信任、背叛、利益博弈。',
+    '學術':'這是一個以知識和魔法研究為核心的故事，AI 應聚焦在探索、發現、代價。',
+    '生存':'這是一個以在黑暗時期求存為核心的故事，AI 應聚焦在生死抉擇、信念堅守。',
+    '救贖':'這是一個以過去與現在拉鋸為核心的故事，AI 應聚焦在內心掙扎、救贖代價。',
+    '揭秘':'這是一個以謎題和真相為核心的故事，AI 應聚焦在線索、欺騙、真相的衝擊。',
+    '成長':'這是一個以蛻變為核心的故事，AI 應聚焦在挑戰、自我發現、人際關係。'
+  };
+  const plotDesc=Object.entries(plotTypeDesc).find(([k])=>gameState.plotType?.includes(k))?.[1]||'這是一個多線並行的故事。';
+  return `你是哈利波特魔法世界的沉浸式文字RPG遊戲主持人（GM）。
+
+【時代背景】
+${gameState.playerEra}
+
+【世界觀規則】
+- 嚴格依照原著設定的時代背景，保持人物OC（角色一致性）
+- 若是正典角色，保持其已知性格和行為模式，但可以發展未被原著涵蓋的細節
+- 魔法世界的通訊方式：貓頭鷹信件（最普通）、守護神傳遞訊息（緊急/重要）、火焰網路（類似電話）、魔法肖像（類似視訊）
+- 不存在手機/網路，但有《預言家日報》、《唱詩》等魔法世界媒體
+- 魔法世界有其特定的歷史事件，AI 要將玩家故事融入這個歷史脈絡
+
+【主線類型與敘事重心】
+${plotDesc}
+主線設定：${gameState.plotType}
+
+【玩家資料】
+- 姓名：${gameState.playerName}
+- 年齡：${gameState.playerAge}歲
+- 血統：${gameState.playerBlood}
+- 學院：${gameState.playerHouse||'未指定'}
+- 陣營：${gameState.playerFaction}
+- 外貌：${gameState.appBody||''}${gameState.appHair?'；'+gameState.appHair:''}${gameState.appFace?'；'+gameState.appFace:''}${gameState.appVibe?'；'+gameState.appVibe:''}
+- 魔法才能：${gameState.talents||'未特別指定'}
+- 個性：${gameState.traits||'未特別指定'}
+- 背景：${gameState.background||'無'}
+- 故事起點：${gameState.storyStart}
+- 既往設定：${gameState.backstory||'無'}
+- 選角模式：${gameState.castMode==='auto'?'命運自然流動（不預設主要角色）':'指定命定之人'}
+- 主要對象：${gameState.castMode==='auto'?'未指定，由命運自然安排':(gameState.bfName||'未指定')}
+- 候選人池：${gameState.targetCandidates?.join('、')||'未指定'}
+${gameState.castMode==='auto'?'【自由流動模式】候選人池中的人物都可能出現並與玩家發生故事，AI 自由安排接觸機會和關係發展，不預設誰是最終對象。':'【指定模式】主要故事線圍繞指定對象發展，其他人作為配角出現。'}
+- 玩家對主要對象的稱呼：${gameState.myPet||'（由AI根據人物性格自然帶入）'}
+- 主要對象對玩家的稱呼：${gameState.bfPet||'（由AI根據人物性格自然帶入）'}
+
+【當前遊戲狀態】
+- 當前回合：第${gameState.round}回合
+- 關係狀態：${gameState.relationStatus||gameState.storyStart||'剛建立'}
+- 玩家情緒：${gameState.playerMood||'normal'}
+- 好感/信任度趨勢：${gameState.affectionTrend||'stable'}（rising上升/falling下降/stable穩定）
+- BE警告層級：${gameState.beWarning||0}/3（達3時必須觸發重大危機）
+- 已觸發旗標：${Object.entries(gameState.flags||{}).filter(([k,v])=>v).map(([k])=>k).join('、')||'無'}
+- 結局走向：${gameState.endingPath||'未定'}
+- 固定NPC：${Object.keys(gameState.npcs||{}).join('、')||'尚未建立'}
+- 重點配角（必須在劇情中自然出現）：${gameState.sideChars||'無'}
+
+【主要對象性格檔案】（嚴格遵守，不可OOC）
+${gameState.targetProfile?`
+- 說話習慣：${gameState.targetProfile.speechStyle}
+- 個人習慣/小動作：${gameState.targetProfile.habits}
+- 獨特性格quirk：${gameState.targetProfile.quirks}
+- 對壓力的反應：${gameState.targetProfile.stressResponse}
+- 與玩家連結的原因（隱藏）：${gameState.targetProfile.bondReason}
+`:'（尚未建立，本回合請在 targetProfileUpdate 欄位建立）'}
+
+【玩家記憶庫】
+${gameState.playerMemory?.length>0?gameState.playerMemory.slice(-8).map(m=>'第'+m.round+'回合：'+m.detail).join('\n'):'尚無記憶，在劇情中自然收集玩家透露的個人想法/習慣/心事'}
+
+【玩家自身故事線】
+- 玩家的個人目標：${gameState.playerStory?.goal||'尚未建立'}
+- 當前個人挑戰：${gameState.playerStory?.currentChallenge||'尚未建立'}
+
+【上一回合選擇後果延續】
+- 上一個選項：${gameState.lastChoiceText||'（第一回合）'}
+- 選項性質標籤：${gameState.lastChoiceTag||'無'}
+${gameState.pendingSpecialEvent?`
+【本回合必須觸發的特殊事件】
+事件ID：${gameState.pendingSpecialEvent.id}
+描述：${gameState.pendingSpecialEvent.desc}
+請將此事件自然融入本回合劇情，這是主線關鍵節點，不可跳過。
+`:''}
+${gameState.pendingTwistHint?`
+【玩家指定的劇情調整方向】
+${gameState.pendingTwistHint}
+請按此方向重新生成本回合，保留故事整體脈絡。
+`:''}
+${gameState.pendingEndingHint?'【結局暗示】請在本回合加入一個隱晦的伏筆，暗示可能的結局走向，但不要明示。':''}
+
+【敘事規則】
+1. 嚴格保持時代背景的歷史一致性
+2. 魔法世界細節：使用正確的咒語名稱、地名、物品（蜂蜜公爵糖果店、對角巷、禁忌森林等）
+3. 正典人物性格必須前後一致（石內卜不會突然溫柔可人；妙麗不會不讀書）
+4. 感情線或重要關係的發展必須有邏輯根據，不能跨越式跳躍
+5. 每回合必須推進主線或關係，不能停留在原地
+6. 玩家的選擇要有真實的後果，包括好的和壞的
+7. 魔法世界的現實：危險是真實的，黑魔法有代價，血統歧視是真實存在的社會問題
+8. 適時加入魔法世界特有事件：巫師考試、魁地奇比賽、魔法部公告、《預言家日報》頭條等
+9. 主要對象說話方式要符合其人設（石內卜的諷刺、馬份的傲慢、赫敏的博學）
+10. 即使場景親密，也要保持人物的核心性格特質
+11. 記憶庫中的細節在適當時機自然提起
+12. 每3-4回合穿插一個純粹關於玩家自身的事件（不只是人際關係）
+13. 選項要反映真實的魔法世界處境，有風險感和重量感
+14. 「查看通訊器」選項使用標籤「📜」
+
+【魔法世界通訊格式說明】
+notifications 中的 app 欄位使用魔法世界的媒介：
+- 「貓頭鷹信」（類似email通知）
+- 「守護神」（緊急訊息）
+- 「預言家日報」（新聞通知）
+- 「魔法肖像」（類似私信）
+- 「火焰網路」（語音通知）
+- 「魔法廣播」（廣播播報）
+
+【每回合格式】
+以JSON格式回應（不要任何markdown代碼塊）：
+
+{
+  "time": "具體時間（如：1991年10月31日 週四 深夜11:42，霍格華茲）",
+  "notifications": [{"app":"媒介名","content":"訊息內容"}],
+  "narration": "場景敘述（魔法世界氛圍，具體細節，150字內）",
+  "event": "本回合事件（具體發生的事，150字內）",
+  "sceneOver": true或false,
+  "sceneResponse": "對玩家行動的即時回應（1-4句）",
+  "options": [
+    {"label":"A","text":"選項"},
+    {"label":"B","text":"選項"},
+    {"label":"C","text":"選項"},
+    {"label":"📜","text":"查看通訊器"},
+    {"label":"D","text":"自定義（玩家自行輸入）"}
+  ],
+  "affectionDelta": 數字（-10到+10，好感/信任度變化）,
+  "moodUpdate": "玩家情緒（elated/happy/normal/tense/sad/angry/fearful）",
+  "stateUpdate": {"flag名稱": true或false},
+  "npcUpdate": {"NPC姓名": {"role":"角色","relationship":"關係"}},
+  "targetProactive": "對方主動傳來的訊息或行動（可為null）",
+  "memoryTrigger": {"title":"回憶標題","emoji":"⚡"},
+  "endingHint": "happy/dark/mystery/null",
+  "relationStatus": "當前關係狀態描述",
+  "targetProfileUpdate": {"speechStyle":"","habits":"","quirks":"","stressResponse":"","bondReason":""},
+  "playerMemoryAdd": "本回合玩家透露的值得記住的細節（字串，無則null）",
+  "optionTags": ["A的標籤","B的標籤","C的標籤","📜","D"],
+  "playerStoryUpdate": {"goal":"","currentChallenge":""},
+  "beWarningUpdate": 數字或null,
+  "playerWizardProfile": {"title":"巫師稱號或身份","notes":"關於此人的公開認知","isPublicFigure":true或false},
+  "playerTraitExtract": "從玩家本回合選擇提取1-2個性格特質關鍵詞（或null）"
+}
+
+【選項設計原則】
+每個選項必須代表真正不同的方向，在魔法世界的情境下有重量感：
+- 選項之間要有不同的感情邏輯或行動策略
+- 至少一個選項應有潛在風險（可能洩露秘密、激怒對方、引來危險）
+- 禁止出現純粹無後果的「完美選項」
+- 選項D固定為「自定義（玩家自行輸入）」
+- 選項📜固定為「查看通訊器」`;
+}
+
+// ── 開始遊戲 ──
+async function startGame(retryCount){
+  retryCount=retryCount||0;
+  if(retryCount===0){
+    gameState.round=1;gameState.memories=[];gameState.storyLog=[];gameState.history=[];
+    gameState.magicData={owlPost:{letters:[]},portraitChat:{conversations:{}},dailyProphet:{articles:[]},wizardingWireless:{broadcasts:[]},notifs:[]};
+  }
+  if(retryCount>2){addSystemMsg('開場生成失敗，請檢查 API Key 或模型設定。');renderOptions([{label:'A',text:'回設定頁（更換 API Key 或模型）'}]);return;}
+  updateHeader();showLoading('水晶球中映現出你的命運…');
+  const loadingEl=addSystemMsgRemovable('⏳ 正在根據你的設定生成專屬故事…');
+  const targetDesc=gameState.bfName?`魔法世界中的${gameState.bfName}`:`請根據以下所有玩家資料，從${gameState.playerEra}的魔法世界中選出最適合的重要角色，
+選角標準：
+1.【時代一致性】必須是在${gameState.playerEra}存在的人物
+2.【身份契合度】玩家是「${gameState.playerBlood}」屬於「${gameState.playerFaction}」，兩人相遇必須自然合理
+3.【主線匹配】主線類型是「${gameState.plotType}」，選擇能產生張力和故事深度的角色
+4.【額外條件】${gameState.bfCondition||'無特別限制'}
+選定後在劇情中自然揭示，不要說明選角理由`;
+
+  const startPrompt=`請為我生成第一回合的前置劇情。
+
+這是${gameState.playerName}（${gameState.playerAge}歲，${gameState.playerBlood}，學院：${gameState.playerHouse||'未指定'}）
+在「${gameState.playerEra}」的魔法世界冒險故事。
+陣營：${gameState.playerFaction}
+主線：${gameState.plotType}
+
+重要對象：${targetDesc}
+
+請直接以沉浸式敘事開場，不要有歡迎語，直接進入場景。
+
+【開場要求】
+劇情起點：${gameState.storyStart}
+
+依照起點決定開場：
+- 若是「陌生/初來乍到」類起點：玩家正在自己的日常中，主要對象尚未登場，在場景細節中自然埋下伏筆
+  （例如：壁爐裡突然出現的臉、貓頭鷹帶來的神秘信件、走廊角落的黑色斗篷）
+  不要在第一回合就安排直接見面，讓相遇有懸念
+- 若是「曖昧/初識」類起點：從帶有張力的日常場景切入
+- 若是「戰爭/危機」類起點：直接進入緊張的情境
+
+場景細節要求：
+- narration：純粹的魔法世界場景描寫（時間/地點/氛圍/聲音/魔法細節），100字內
+- event：本回合發生的事件，從narration接續，150字內
+
+必須在本回合 JSON 中完成：
+1. targetProfileUpdate：建立主要對象的完整性格檔案
+2. playerStoryUpdate：建立玩家的個人目標和當前面臨的挑戰
+3. playerMemoryAdd：記錄開場中玩家體現的第一個個人細節
+4. playerWizardProfile：根據玩家設定生成巫師身份簡介
+
+以完整 JSON 格式回覆，不得截斷。`;
+
+  try {
+    const response=await callAI(startPrompt);
+    gameState.history.push({role:'user',content:startPrompt});gameState.history.push({role:'assistant',content:response});
+    if(loadingEl) loadingEl.remove();
+    processAIResponse(response,true,retryCount);
+    await saveGame();
+  } catch(e){
+    hideLoading();if(loadingEl) loadingEl.remove();
+    addSystemMsg(`❌ 連線失敗：${e.message}`);
+    renderOptions([{label:'A',text:'重試（重新生成開場劇情）'},{label:'B',text:'回設定頁（更換 API Key 或模型）'}]);return;
+  }
+  hideLoading();
+}
+
+// ── 解析 AI 回應 ──
+function cleanMarkdown(text){
+  if(!text)return'';
+  return text.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/^#{1,6}\s+/gm,'').replace(/^---+$/gm,'').replace(/^===+$/gm,'').replace(/\[(.+?)\]\(.+?\)/g,'$1').trim();
+}
+
+function processAIResponse(raw,isFirst=false,retryCount=0){
+  let data;
+  if(!raw||typeof raw!=='string'){addEventMsg('⚠️ AI 回應格式異常，請重試。');renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);return;}
+  try {
+    let cleaned=raw;cleaned=cleaned.split('```json').join('').split('```').join('').replace(/<think>[\s\S]*?<\/think>/g,'').trim();
+    const match=cleaned.match(/\{[\s\S]*\}/);if(match)data=JSON.parse(match[0]);else data=JSON.parse(cleaned);
+  } catch(e) {
+    if(isFirst&&retryCount<2){addSystemMsg('正在重新生成開場劇情…');setTimeout(()=>startGame(retryCount+1),1200);return;}
+    const cleanedRaw=cleanMarkdown(raw.split('```json').join('').split('```').join('').replace(/^\s*\{[\s\S]*\}\s*$/,'').trim());
+    if(cleanedRaw&&cleanedRaw.length>10){addNarrationMsg(cleanedRaw);renderOptions([{label:'A',text:'繼續'},{label:'B',text:'換個方向'},{label:'📜',text:'查看通訊器'},{label:'D',text:'自定義（玩家自行輸入）'}]);}
+    else{renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);}return;
+  }
+  if(data.time){gameState.time=data.time;updateHeader();}
+  if(data.notifications&&data.notifications.length){
+    data.notifications.forEach(n=>{
+      showNotifToast(n.app,n.content);
+      gameState.magicData.notifs.unshift({app:n.app,content:n.content,time:data.time||''});
+      // 貓頭鷹信 → 自動建立信件記錄
+      if(n.app&&n.app.includes('貓頭鷹')&&n.content){
+        const senderMatch=n.content.match(/^([^：:]+)[：:]/);
+        if(senderMatch){const sender=senderMatch[1].trim();const msgText=n.content.replace(/^[^：:]+[：:]\s*/,'');
+          if(sender&&sender!==gameState.playerName){const letters=gameState.magicData.owlPost.letters;const lastLetter=letters.slice(-1)[0];if(!lastLetter||lastLetter.content!==msgText)letters.push({from:sender,content:msgText,time:data.time||''});}
+        }
+      }
+    });
+  }
+  if(typeof data.affectionDelta==='number'){gameState.affection=Math.max(-100,Math.min(100,(gameState.affection||50)+data.affectionDelta));gameState.affectionTrend=data.affectionDelta>2?'rising':data.affectionDelta<-2?'falling':'stable';}
+  if(data.moodUpdate) gameState.playerMood=data.moodUpdate;
+  if(data.stateUpdate&&typeof data.stateUpdate==='object'){gameState.flags=gameState.flags||{};Object.assign(gameState.flags,data.stateUpdate);if(data.stateUpdate.firstKiss||data.stateUpdate.intimateNight||data.stateUpdate.joined||data.stateUpdate.betrayed)scheduleNextEvent();}
+  if(data.npcUpdate&&typeof data.npcUpdate==='object'){gameState.npcs=gameState.npcs||{};Object.assign(gameState.npcs,data.npcUpdate);}
+  if(data.endingHint&&data.endingHint!=='null'){gameState.endingPath=data.endingHint;updateEndingAura();}
+  if(data.relationStatus) gameState.relationStatus=data.relationStatus;
+  if(data.playerWizardProfile&&!gameState.myWizardProfile) gameState.myWizardProfile=data.playerWizardProfile;
+  if(data.playerTraitExtract&&typeof data.playerTraitExtract==='string'){const trait=data.playerTraitExtract.trim();if(trait&&trait!=='null'){gameState.playerPersonality=gameState.playerPersonality||{traits:{},summary:'',lastUpdatedRound:0};trait.split(/[、,，]/).map(t=>t.trim()).filter(Boolean).forEach(t=>{gameState.playerPersonality.traits[t]=(gameState.playerPersonality.traits[t]||0)+1;});if(gameState.round-(gameState.playerPersonality.lastUpdatedRound||0)>=5){gameState.playerPersonality.lastUpdatedRound=gameState.round;const sorted=Object.entries(gameState.playerPersonality.traits).sort((a,b)=>b[1]-a[1]).slice(0,5);gameState.playerPersonality.summary=sorted.map(([k])=>k).join('、');}}}
+  if(data.targetProfileUpdate&&!gameState.targetProfile&&data.targetProfileUpdate.speechStyle) gameState.targetProfile=data.targetProfileUpdate;
+  if(data.playerMemoryAdd&&typeof data.playerMemoryAdd==='string'){gameState.playerMemory=gameState.playerMemory||[];gameState.playerMemory.push({round:gameState.round,detail:data.playerMemoryAdd});if(gameState.playerMemory.length>20)gameState.playerMemory.shift();}
+  if(data.optionTags&&Array.isArray(data.optionTags)) gameState.pendingOptionTags=data.optionTags;
+  if(data.playerStoryUpdate){gameState.playerStory=gameState.playerStory||{};if(data.playerStoryUpdate.goal&&!gameState.playerStory.goal)gameState.playerStory.goal=data.playerStoryUpdate.goal;if(data.playerStoryUpdate.currentChallenge)gameState.playerStory.currentChallenge=data.playerStoryUpdate.currentChallenge;}
+  if(typeof data.beWarningUpdate==='number'){gameState.beWarning=data.beWarningUpdate;if(gameState.beWarning>=3&&!gameState.pendingSpecialEvent)gameState.pendingSpecialEvent={id:'MAJOR_CRISIS',desc:'命運到達臨界點，一場無法迴避的重大衝突或危機'};}
+  if(data.targetProactive){
+    gameState.pendingTargetMsg=data.targetProactive;
+    const targetName=gameState.bfName||'對方';
+    const letters=gameState.magicData.owlPost.letters;const now=new Date();
+    letters.push({from:targetName,content:data.targetProactive,time:`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`});
+    showNotifToast('貓頭鷹信',`${targetName}：${data.targetProactive.slice(0,30)}…`);
+  }
+  if(data.memoryTrigger&&data.memoryTrigger.title){
+    const mem={round:gameState.round,title:data.memoryTrigger.title,emoji:data.memoryTrigger.emoji||'⚡',content:data.event||data.narration||'',time:data.time||''};
+    gameState.memories=gameState.memories||[];gameState.memories.unshift(mem);showNotifToast('回憶',`✦ ${mem.emoji} ${mem.title}`);
+  }
+  gameState.storyLog.push({type:'round_start',round:gameState.round});
+  if(data.narration) addNarrationMsg(cleanMarkdown(data.narration));
+  if(data.event) addEventMsg(cleanMarkdown(data.event));
+  gameState.currentSceneContext=[data.narration,data.event].filter(Boolean).join(' ').slice(0,200);
+  if(data.targetProactive) addSystemMsg(`📜 ${gameState.bfName||'某人'}傳來了訊息，查看通訊器回覆`);
+  let opts=data.options||[];
+  if(!opts.find(o=>o.text&&(o.text.includes('通訊器')||o.label==='📜'))) opts=[...opts,{label:'📜',text:'查看通訊器'}];
+  renderOptions(opts);
+  // 更新聯繫按鈕可見性
+  if(typeof updateContactButton==='function') updateContactButton();
+}
+
+// ── 訊息渲染 ──
+function addNarrationMsg(text){const div=document.createElement('div');div.className='story-msg narration';div.textContent=text;appendMsg(div);gameState.storyLog.push({type:'narration',text});}
+function addEventMsg(text){const div=document.createElement('div');div.className='story-msg event';div.innerHTML=`<div class="ev-tag">✦ 事件</div><div>${escapeHtml(text)}</div>`;appendMsg(div);gameState.storyLog.push({type:'event',text});}
+function addSystemMsg(text){const div=document.createElement('div');div.className='story-msg system';div.textContent=text;appendMsg(div);}
+function addSystemMsgRemovable(text){const div=document.createElement('div');div.className='story-msg system';div.textContent=text;appendMsg(div);return div;}
+function addChoiceMsg(text){const div=document.createElement('div');div.className='story-msg choice-made';div.textContent='▸ '+text;appendMsg(div);gameState.storyLog.push({type:'choice',text});}
+function appendMsg(el){const panel=document.getElementById('story-panel');panel.appendChild(el);panel.scrollTop=panel.scrollHeight;}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function renderAllStory(){const panel=document.getElementById('story-panel');panel.innerHTML='';gameState.storyLog.forEach(item=>{if(item.type==='narration')addNarrationMsg(item.text);else if(item.type==='event')addEventMsg(item.text);else if(item.type==='choice')addChoiceMsg(item.text);});}
+
+// ── 通知 Toast ──
+let toastTimeout;
+function showNotifToast(app,content){
+  let toast=document.querySelector('.notif-toast');
+  if(!toast){toast=document.createElement('div');toast.className='notif-toast';document.body.appendChild(toast);}
+  toast.innerHTML=`<div class="nt-app" style="font-size:.65rem;color:var(--text3);margin-bottom:.2rem;">📜 ${escapeHtml(app)}</div><div class="nt-msg" style="color:var(--text);">${escapeHtml(content)}</div>`;
+  toast.style.display='block';clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{toast.style.display='none';},4000);
+}
+
+// ── 選項渲染 ──
+function renderOptions(opts){
+  gameState.lastRenderedOptions=opts; // 儲存供繼續遊戲恢復用
+  const grid=document.getElementById('options-grid');const panel=document.getElementById('options-panel');
+  grid.innerHTML='';panel.classList.remove('disabled');
+  opts.forEach(opt=>{
+    if(opt.label==='D'||opt.text==='自定義（玩家自行輸入）'){
+      const row=document.createElement('div');row.className='custom-input-row';
+      row.innerHTML=`<input class="custom-input" id="custom-input" placeholder="直接輸入你想說的或想做的…"><button class="custom-send" onclick="submitCustom()">送出</button>`;
+      grid.appendChild(row);
+    } else if(opt.text==='查看通訊器'||opt.label==='📜'){
+      const btn=document.createElement('button');btn.className='opt-btn scroll-opt';
+      btn.innerHTML=`<span class="opt-label">📜</span><span class="opt-text">查看通訊器</span>`;
+      btn.onclick=()=>openScrollOverlay('home');grid.appendChild(btn);
+    } else if(opt.text==='回設定頁（更換 API Key 或模型）'){
+      const btn=document.createElement('button');btn.className='opt-btn';
+      btn.innerHTML=`<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      btn.onclick=()=>showSettingsFromGame();grid.appendChild(btn);
+    } else if(opt.text==='重試（重新生成開場劇情）'){
+      const btn=document.createElement('button');btn.className='opt-btn';
+      btn.innerHTML=`<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      btn.onclick=()=>{document.getElementById('story-panel').innerHTML='';gameState.history=[];gameState.round=1;updateHeader();startGame();};grid.appendChild(btn);
+    } else {
+      const btn=document.createElement('button');btn.className='opt-btn';
+      btn.innerHTML=`<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      btn.onclick=()=>chooseOption(opt.text,btn);grid.appendChild(btn);
+    }
+  });
+}
+
+// ── 選擇選項 ──
+window.chooseOption=async function(text,btn){
+  disableOptions();addChoiceMsg(text);
+  if(gameState.pendingOptionTags&&btn){const allBtns=[...document.querySelectorAll('.opt-btn')];const idx=allBtns.indexOf(btn);if(idx>=0&&gameState.pendingOptionTags[idx])gameState.lastChoiceTag=gameState.pendingOptionTags[idx];}
+  gameState.lastChoiceText=text;
+  gameState.playerBehaviorLog=gameState.playerBehaviorLog||[];gameState.playerBehaviorLog.push({round:gameState.round,choice:text,tag:gameState.lastChoiceTag||''});
+  if(gameState.playerBehaviorLog.length>15)gameState.playerBehaviorLog.shift();
+  await handlePlayerAction(text);
+};
+window.submitCustom=async function(){const input=document.getElementById('custom-input');const text=input.value.trim();if(!text)return;input.value='';disableOptions();addChoiceMsg(text);gameState.lastChoiceText=text;await handlePlayerAction(text);};
+function disableOptions(){document.getElementById('options-panel').classList.add('disabled');}
+
+// ── 處理玩家行動 ──
+async function handlePlayerAction(playerChoice){
+  const typingDiv=document.createElement('div');typingDiv.className='typing-indicator';typingDiv.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';document.getElementById('story-panel').appendChild(typingDiv);document.getElementById('story-panel').scrollTop=99999;
+  const isSoloAction=!playerChoice.includes('說')&&!playerChoice.includes('問')&&!playerChoice.includes('告訴')&&!playerChoice.includes('「')&&!playerChoice.includes('回覆')&&!playerChoice.includes('聊');
+  const sceneP=['當前場景：'+(gameState.currentSceneContext||'進行中的場景'),'玩家的行動：「'+playerChoice+'」','','請回應這個行動。格式如下：','','[回應]','（1-2句簡短描述這個行動的即時結果，直接寫結果或後續）','','[場景結束]: 是 或 否',isSoloAction?'這是一個單人行動（無對話），除非引發新的衝突或意外，否則請填「是」，讓劇情進入下一個場景。':'若對話/互動自然結束填「是」；若還有未完成的交流填「否」。','','[下一步選項A]: （僅在場景繼續時填寫，否則留空）','[下一步選項B]: （同上）'].join('\n');
+  try {
+    const origHistory=gameState.history;gameState.history=gameState.history.slice(-6);
+    const resp=await callAI(sceneP);gameState.history=origHistory;typingDiv.remove();
+    const responseMatch=resp.match(/\[回應\][^\n]*\n([\s\S]*?)(?=\[場景結束\]|$)/);const responseText=responseMatch?responseMatch[1].trim():'';
+    const sceneOverMatch=resp.match(/\[場景結束\]:\s*(是|Yes|true)/i);const sceneOver=!!sceneOverMatch;
+    const optAMatch=resp.match(/\[下一步選項A\]:\s*(.+)/);const optBMatch=resp.match(/\[下一步選項B\]:\s*(.+)/);
+    if(responseText){const div=document.createElement('div');div.className='story-msg scene-response';div.textContent=responseText;appendMsg(div);gameState.storyLog.push({type:'narration',text:responseText});}
+    if(sceneOver){await nextRound(playerChoice);}
+    else{const extraOpts=[];if(optAMatch&&optAMatch[1].trim())extraOpts.push({label:'A',text:optAMatch[1].trim()});if(optBMatch&&optBMatch[1].trim())extraOpts.push({label:'B',text:optBMatch[1].trim()});if(!extraOpts.length){extraOpts.push({label:'A',text:'繼續'});extraOpts.push({label:'B',text:'換個方向'});}extraOpts.push({label:'📜',text:'查看通訊器'});extraOpts.push({label:'D',text:'自定義（玩家自行輸入）'});renderOptions(extraOpts);}
+  } catch(e){
+    typingDiv.remove();addSystemMsg('❌ 連線失敗：'+e.message);
+    renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);
+  }
+}
+
+// ── 下一回合 ──
+async function nextRound(lastChoice){
+  gameState.round++;updateHeader();
+  checkSpecialEvents();showLoading('預言家日報…魔法世界繼續運轉…');
+  const eventHint=gameState.pendingSpecialEvent?`\n\n【本回合必須觸發的特殊事件】\n${gameState.pendingSpecialEvent.desc}\n請將此事件自然融入劇情，這是主線關鍵節點。`:'';
+  const endingHint=gameState.pendingEndingHint?'\n\n請在本回合加入一個隱晦的伏筆，暗示可能的結局走向，但不要明示。':'';
+  const twistHint=gameState.pendingTwistHint?`\n\n【玩家指定的劇情調整方向】\n${gameState.pendingTwistHint}\n請按此方向重新生成本回合。`:'';
+  const memoryContext=gameState.playerMemory?.length>0?`\n已知的玩家細節：${gameState.playerMemory.slice(-5).map(m=>m.detail).join('；')}`:'' ;
+  const prompt=`玩家剛才選擇了：「${lastChoice}」
+上一個場景已告一段落，請推進到第${gameState.round}回合的新場景。
+
+時代背景：${gameState.playerEra}
+目前好感/信任度趨勢：${gameState.affectionTrend}
+主要對象：${gameState.bfName||'（命運自然安排）'}
+關係狀態：${gameState.relationStatus||gameState.storyStart}
+玩家情緒：${gameState.playerMood}
+BE警告層級：${gameState.beWarning}/3
+${memoryContext}
+${eventHint}${endingHint}${twistHint}
+
+請以完整 JSON 格式生成新回合，不得截斷。`;
+  try {
+    const response=await callAI(prompt);
+    gameState.history.push({role:'user',content:prompt});gameState.history.push({role:'assistant',content:response});
+    if(gameState.history.length>24) gameState.history=gameState.history.slice(-20);
+    gameState.pendingSpecialEvent=null;gameState.pendingEndingHint=false;gameState.pendingTwistHint=null;
+    processAIResponse(response,false);
+    await saveGame();
+  } catch(e){
+    addSystemMsg('❌ 生成失敗：'+e.message);renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);
+  }
+  hideLoading();
+}
+
+// ── Loading ──
+function showLoading(txt='魔法正在運作…'){document.getElementById('lo-text').textContent=txt;document.getElementById('loading-overlay').classList.add('show');}
+function hideLoading(){document.getElementById('loading-overlay').classList.remove('show');}
+
+// ── 遊戲工具按鈕 ──
+window.replayRound=async function(){
+  if(!confirm('重新生成這一回合的劇情？'))return;
+  if(gameState.round<=1){alert('第一回合無法重玩，請使用「扭轉」功能調整方向。');return;}
+  gameState.round=Math.max(2,gameState.round-1);updateHeader();
+  const panel=document.getElementById('story-panel');const msgs=[...panel.children];let removed=0;
+  for(let i=msgs.length-1;i>=0;i--){if(msgs[i].classList.contains('choice-made')&&removed>0)break;msgs[i].remove();removed++;if(removed>8)break;}
+  if(gameState.history.length>=2) gameState.history=gameState.history.slice(0,-2);
+  await nextRound(gameState.lastChoiceText||'繼續');
+};
+
+window.openTwist=function(){document.getElementById('twist-input').value='';document.getElementById('twist-panel').style.display='flex';};
+window.applyTwist=async function(){
+  const hint=document.getElementById('twist-input').value.trim();if(!hint){alert('請輸入想要的方向');return;}
+  document.getElementById('twist-panel').style.display='none';
+  const isFirstRound=gameState.round<=1;
+  if(!isFirstRound){
+    gameState.round=Math.max(2,gameState.round-1);updateHeader();
+    const panel=document.getElementById('story-panel');const msgs=[...panel.children];let removed=0;
+    for(let i=msgs.length-1;i>=0;i--){if(msgs[i].classList.contains('choice-made')&&removed>0)break;msgs[i].remove();removed++;if(removed>8)break;}
+    if(gameState.history.length>=2) gameState.history=gameState.history.slice(0,-2);
+  }
+  addSystemMsg(`✦ 改寫命運：${hint}`);gameState.pendingTwistHint=hint;
+  await nextRound(gameState.lastChoiceText||'繼續');gameState.pendingTwistHint=null;
+};
+
+window.openRecap=function(){
+  var overlay=document.getElementById('recap-overlay');var roundsEl=document.getElementById('recap-rounds');var contentEl=document.getElementById('recap-content');
+  if(!overlay||!roundsEl||!contentEl)return;
+  var log=gameState.storyLog||[];var byRound={};var currentRound=1;
+  log.forEach(function(entry){if(entry.type==='round_start')currentRound=entry.round||currentRound;if(!byRound[currentRound])byRound[currentRound]=[];byRound[currentRound].push(entry);});
+  var rounds=Object.keys(byRound).map(Number).sort(function(a,b){return a-b;});
+  if(rounds.length===0){roundsEl.innerHTML='<span style="font-size:.72rem;color:#555;">尚無回顧內容</span>';contentEl.innerHTML='';overlay.style.display='flex';return;}
+  roundsEl.innerHTML=rounds.map(function(r){return'<button onclick="showRecapRound('+r+')" id="recap-btn-'+r+'" style="flex-shrink:0;font-size:.68rem;padding:.3rem .6rem;border-radius:1rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;font-family:\'Cinzel\',serif;">第'+r+'回合</button>';}).join('');
+  showRecapRound(rounds[rounds.length-1]);overlay.style.display='flex';
+};
+window.showRecapRound=function(round){
+  document.querySelectorAll('[id^="recap-btn-"]').forEach(function(btn){btn.style.background='none';btn.style.color='var(--text3)';btn.style.borderColor='var(--border)';});
+  var activeBtn=document.getElementById('recap-btn-'+round);if(activeBtn){activeBtn.style.background='var(--bg3)';activeBtn.style.color='var(--text)';activeBtn.style.borderColor='var(--gold3)';}
+  var log=gameState.storyLog||[];var currentRound=1;var entries=[];
+  log.forEach(function(entry){if(entry.type==='round_start')currentRound=entry.round||currentRound;if(currentRound===round)entries.push(entry);});
+  var html=entries.map(function(e){
+    if(e.type==='narration'||e.type==='event')return'<div style="font-size:.8rem;color:var(--text2);line-height:1.75;margin-bottom:.6rem;padding:.6rem .8rem;background:var(--bg3);border-radius:.2rem;border-left:2px solid var(--border2);">'+e.text+'</div>';
+    if(e.type==='choice')return'<div style="font-size:.75rem;color:var(--text3);padding:.3rem .6rem;margin:.3rem 0;display:flex;align-items:center;gap:.4rem;"><span style="color:var(--gold3);">▸</span>'+e.text+'</div>';return'';
+  }).filter(Boolean).join('');
+  document.getElementById('recap-content').innerHTML=html||'<div style="padding:2rem;text-align:center;color:#444;font-size:.76rem;">此回合尚無記錄</div>';
+  document.getElementById('recap-content').scrollTop=0;
+};
+
+window.exitGame=function(){if(confirm('退出當前遊戲？進度已自動儲存。')){showScreen('screen-splash');}};
+window.signOutUser=async function(){if(confirm('確定要登出嗎？')){try{if(firebaseReady)await auth.signOut();}catch(e){}currentUser=null;showScreen('screen-splash');}};
+
+// ── 魔法通訊器 Overlay ──
+window.openScrollOverlay=function(page){
+  const overlay=document.getElementById('scroll-overlay');overlay.classList.add('open');
+  const now=new Date();document.getElementById('so-time').textContent=`魔法鐘：${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  renderScrollPage(page);
+};
+window.closeScroll=function(){document.getElementById('scroll-overlay').classList.remove('open');};
+window.clearMagicNotifs=function(){gameState.magicData.notifs=[];renderScrollPage('notifs');};
+window.sendOwlMessage=sendOwlMessage;
+
+function getDisplayTargetName(){
+  if(gameState.castMode==='auto') return '';
+  return gameState.bfName||'';
+}
+
+function makeAvatar(name,size){
+  const initials=name?name.charAt(0).toUpperCase():'?';
+  const colors=['#3a2040','#102838','#281510','#103020','#201028'];
+  const color=colors[name.charCodeAt(0)%colors.length];
+  return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-size:${Math.floor(size*.38)}px;color:#c8a870;flex-shrink:0;font-family:'Cinzel',serif;">${initials}</div>`;
+}
+
+function renderScrollPage(page){
+  const content=document.getElementById('so-content');const actions=document.getElementById('so-actions');
+  if(!content||!actions)return;
+  content.style.color='#a09880';content.style.fontFamily="'EB Garamond',serif";
+
+  if(page==='home'){
+    const notifCount=gameState.magicData.notifs.length;const letterCount=gameState.magicData.owlPost.letters.length;
+    const targetName=getDisplayTargetName();
+    content.innerHTML=`
+      <div style="text-align:center;padding:.5rem 0 .8rem;font-family:'Cinzel',serif;font-size:.72rem;color:#a08040;letter-spacing:.1em;">✦ 魔法通訊器 ✦</div>
+      <div style="font-size:.68rem;color:#585050;text-align:center;margin-bottom:1rem;font-style:italic;">${gameState.time||'霍格華茲'}</div>
+      <div class="home-app-grid">
+        <div class="home-app" onclick="renderScrollPage('owl')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#1e1a10;">🦉</div>${letterCount>0?`<span class="app-badge">${letterCount}</span>`:''}</div>
+          <div class="app-lbl">貓頭鷹信</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('portrait')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#0e1820;">🖼️</div></div>
+          <div class="app-lbl">魔法肖像</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('prophet')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#10100e;">📰</div></div>
+          <div class="app-lbl">預言家日報</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('wireless')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#18100e;">📻</div></div>
+          <div class="app-lbl">魔法廣播</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('floo')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#0e1610;">🔥</div></div>
+          <div class="app-lbl">火焰網路</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('notifs')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#141020;">📜</div>${notifCount>0?`<span class="app-badge">${notifCount}</span>`:''}</div>
+          <div class="app-lbl">通知</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('marauder')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#100e10;">🗺️</div></div>
+          <div class="app-lbl">魔法地圖</div>
+        </div>
+        <div class="home-app" onclick="renderScrollPage('contacts')">
+          <div class="home-app-wrap"><div class="app-ico" style="background:#100e1a;">👥</div></div>
+          <div class="app-lbl">人脈</div>
+        </div>
+      </div>`;
+    actions.innerHTML=`<button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='owl'){
+    const letters=gameState.magicData.owlPost.letters;const targetName=getDisplayTargetName();
+    const targetLetters=targetName?(letters.filter(l=>l.from===targetName)||[]):[];const hasTarget=targetName&&targetLetters.length>0;
+    let listHtml='';
+    if(hasTarget){const lastLetter=targetLetters.slice(-1)[0];listHtml+=`<div class="owl-msg" style="cursor:pointer;" onclick="renderScrollPage('owl-target')"><div class="msg-from">${targetName} <span style="font-size:.58rem;color:#4a6;">● 已讀</span></div><div class="msg-content" style="color:#888;">${lastLetter.content.slice(0,30)}…</div></div>`;}
+    const others=letters.filter(l=>l.from!==targetName);others.forEach(l=>{listHtml+=`<div class="owl-msg"><div class="msg-from">${l.from}</div><div class="msg-content" style="color:#888;">${l.content.slice(0,25)}…</div></div>`;});
+    if(!listHtml) listHtml='<div style="padding:1.5rem;text-align:center;color:#444;font-size:.76rem;font-style:italic;">貓頭鷹尚未帶來任何信件</div>';
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🦉</span><span class="app-name">貓頭鷹信</span></div><div style="padding:.3rem 0;">${listHtml}</div>`;
+    actions.innerHTML=`${targetName?`<button class="so-btn" onclick="renderScrollPage('owl-target')">💌 與${targetName}的信件</button>`:''}
+      <button class="so-btn" onclick="renderScrollPage('home')">← 返回</button>
+      <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='owl-target'){
+    const targetName=getDisplayTargetName();const letters=gameState.magicData.owlPost.letters.filter(l=>l.from===targetName||l.from==='me');
+    if(!targetName||letters.length===0){content.innerHTML='<div class="parchment-header"><span class="app-name">貓頭鷹信</span></div><div style="text-align:center;color:#444;font-size:.76rem;padding:2rem;font-style:italic;">還沒有和 '+(targetName||'此人')+'互通信件</div>';actions.innerHTML='<button class="so-btn" onclick="renderScrollPage(\'owl\')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>';return;}
+    content.innerHTML=`<div class="parchment-header"><button class="back-btn" onclick="renderScrollPage('owl')">←</button><span class="app-icon">🦉</span><span class="app-name">${targetName}</span></div>
+      <div class="portrait-msg-wrap">
+        ${letters.slice(-10).map(l=>{const isMe=l.from==='me';return`<div class="portrait-bubble-row ${isMe?'me':'other'}">${!isMe?`<div class="portrait-name">${l.from}</div>`:''}<div class="portrait-msg ${isMe?'from-me':'from-other'}">${l.content}</div><div class="portrait-time">${l.time||''}</div></div>`;}).join('')}
+      </div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="sendOwlMessage()">✍️ 寫回信</button>
+      <button class="so-btn" onclick="renderScrollPage('owl')">← 返回</button>
+      <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='portrait'){
+    const targetName=getDisplayTargetName();const chats=gameState.magicData.portraitChat.conversations;const chatEntries=Object.entries(chats).filter(([n,msgs])=>msgs&&msgs.length>0);
+    const hasTarget=targetName&&(chats[targetName]||[]).length>0;
+    let listHtml='';
+    if(hasTarget){const last=(chats[targetName]||[]).slice(-1)[0];listHtml+=`<div class="owl-msg" style="cursor:pointer;" onclick="renderScrollPage('portrait-target')"><div class="msg-from" style="color:#a08060;">${targetName} <span style="font-size:.58rem;color:#4a6;">● 在線</span></div><div class="msg-content" style="color:#888;">${last?last.content.slice(0,25)+'…':'點擊查看'}</div></div>`;}
+    chatEntries.forEach(([name,msgs])=>{if(name===targetName)return;const last=msgs.slice(-1)[0];listHtml+=`<div class="owl-msg"><div class="msg-from">${name}</div><div class="msg-content" style="color:#888;">${last?last.content.slice(0,20)+'…':''}</div></div>`;});
+    if(!listHtml) listHtml='<div style="padding:1.5rem;text-align:center;color:#444;font-size:.76rem;font-style:italic;">尚無魔法肖像通話記錄</div>';
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🖼️</span><span class="app-name">魔法肖像</span></div><div style="padding:.3rem 0;">${listHtml}</div>`;
+    actions.innerHTML=`${targetName?`<button class="so-btn" onclick="renderScrollPage('portrait-target')">🖼️ 與${targetName}通話</button>`:''}
+      <button class="so-btn" onclick="renderScrollPage('home')">← 返回</button>
+      <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='portrait-target'){
+    const targetName=getDisplayTargetName();const msgs=(gameState.magicData.portraitChat.conversations[targetName]||[]);
+    if(!targetName||msgs.length===0){content.innerHTML='<div class="parchment-header"><span class="app-name">魔法肖像</span></div><div style="text-align:center;color:#444;font-size:.76rem;padding:2rem;font-style:italic;">尚未與'+(targetName||'此人')+'建立肖像連結</div>';actions.innerHTML='<button class="so-btn" onclick="renderScrollPage(\'portrait\')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>';return;}
+    content.innerHTML=`<div class="parchment-header"><button class="back-btn" onclick="renderScrollPage('portrait')">←</button><span class="app-icon">🖼️</span><span class="app-name">${targetName}</span><span style="font-size:.62rem;color:#6a6;margin-left:.3rem;">● 在線</span></div>
+      <div class="portrait-msg-wrap">
+        ${msgs.slice(-10).map(m=>{const isMe=m.from==='me';return`<div class="portrait-bubble-row ${isMe?'me':'other'}">${!isMe?`<div class="portrait-name">${m.from}</div>`:''}<div class="portrait-msg ${isMe?'from-me':'from-other'}">${m.content}</div><div class="portrait-time">${m.time||''}</div></div>`;}).join('')}
+      </div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="sendPortraitMessage()">💬 傳訊息</button>
+      <button class="so-btn" onclick="renderScrollPage('portrait')">← 返回</button>
+      <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='prophet'){
+    const articles=gameState.magicData.dailyProphet.articles;const targetName=getDisplayTargetName();
+    const era=gameState.playerEra||'';
+    const defaultArticles=[
+      {source:'預言家日報',badge:'頭版',content:era.includes('第二次')||era.includes('黑暗')?'【要聞】佛地魔重返的消息繼續引發廣泛恐慌，魔法部否認黑魔法攻擊事件':'【要聞】魔法部宣布新的魔法管制法規，巫師協議有所調整'},
+      {source:'奇士和魁地奇周刊',badge:'體育',content:'魁地奇賽季精彩繼續，本週決賽結果出爐…'},
+      {source:'女巫周刊',badge:'生活',content:'本週魔法生活指南：最新藥水配方與魔法植物照顧秘訣'},
+    ];
+    const allArticles=articles.length?articles:defaultArticles;
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">📰</span><span class="app-name">預言家日報</span></div>
+      <div style="padding:.3rem 0;">
+        ${allArticles.slice(0,5).map(a=>`<div class="gazette-post"><div class="gz-source"><span>${a.source||'預言家日報'}</span><span class="gz-badge">${a.badge||'新聞'}</span></div><div class="gz-content">${a.content}</div><div class="gz-stats">🦉 ${Math.floor(Math.random()*5000+1000).toLocaleString()}  💬 ${Math.floor(Math.random()*200+50)}</div></div>`).join('')}
+      </div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='wireless'){
+    const era=gameState.playerEra||'';
+    const broadcasts=gameState.magicData.wizardingWireless.broadcasts;
+    const defaultBroadcasts=era.includes('第二次')?[
+      {time:'23:00',content:'【秘密廣播】這裡是泡泡腦袋（Potterwatch）。我們正在播報真實的新聞，保持信仰，哈利波特還活著——'},
+      {time:'21:00',content:'魔法部官方廣播：請所有巫師配合新的保密措施，舉報可疑行為獎勵愉悅咒使用許可…'},
+    ]:[
+      {time:'08:00',content:'早安！這裡是巫師廣播，今日哈格力德與禁忌森林…今日魔法天氣：霍格華茲上空有魔法性霧，能見度受影響'},
+      {time:'14:00',content:'音樂時間：向大家推薦霍格華茲最受歡迎的唱詩小組新作品…'},
+    ];
+    const allBroadcasts=broadcasts.length?broadcasts:defaultBroadcasts;
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">📻</span><span class="app-name">巫師廣播</span></div>
+      <div style="padding:.3rem 0;">
+        ${allBroadcasts.map(b=>`<div class="owl-msg"><div class="msg-from" style="font-size:.65rem;">${b.time||''}</div><div class="msg-content">${b.content}</div></div>`).join('')}
+      </div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='floo'){
+    const targetName=getDisplayTargetName();
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🔥</span><span class="app-name">火焰網路</span></div>
+      <div style="padding:.8rem;font-size:.78rem;color:#a09070;line-height:1.7;">
+        <div style="font-style:italic;color:#686050;margin-bottom:.8rem;">火焰網路允許巫師通過壁爐進行跨距離聯繫。</div>
+        ${targetName?`<div class="owl-msg" style="cursor:pointer;" onclick="doFlooContact()"><div class="msg-from" style="color:#a08040;">撥打連線</div><div class="msg-content">🔥 ${targetName}的壁爐</div></div>`:'<div style="color:#484040;font-style:italic;padding:1rem;text-align:center;">尚未有已建立連結的壁爐</div>'}
+        <div class="owl-msg"><div class="msg-from">常用地址</div><div class="msg-content" style="color:#686050;">🏰 霍格華茲院長室<br>🏚️ 黑魔法防禦術教授辦公室<br>🏠 韋斯萊家（若已知道）</div></div>
+      </div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='notifs'){
+    const notifs=gameState.magicData.notifs;
+    const iconMap={'貓頭鷹信':'🦉','守護神':'🌟','預言家日報':'📰','魔法肖像':'🖼️','火焰網路':'🔥','魔法廣播':'📻','回憶':'✦'};
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">📜</span><span class="app-name">通知記錄</span></div>
+      ${notifs.length?notifs.slice(0,10).map(n=>`<div class="notif-item"><div class="ni-icon">${iconMap[n.app]||'📜'}</div><div class="ni-body"><div class="ni-app">${n.app}</div><div class="ni-msg">${n.content}</div><div class="ni-time">${n.time||''}</div></div></div>`).join(''):'<div style="padding:1.5rem;text-align:center;color:#444;font-size:.76rem;font-style:italic;">暫無通知</div>'}`;
+    actions.innerHTML=`<button class="so-btn" onclick="clearMagicNotifs()">清除通知</button><button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='marauder'){
+    const era=gameState.playerEra||'';const house=gameState.playerHouse||'';
+    const locations=era.includes('創立')?['梅林的塔','湖區','古老城堡東翼']:era.includes('哈利')||era.includes('第二次')?['大廳','禁忌森林邊緣','霍格莫德村','圖書館（受限區）','地牢（石內卜的領域）','天文台']:['霍格華茲大廳','黑魔法防禦術教室','赫敏的圖書館位子'];
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🗺️</span><span class="app-name">掠奪者地圖</span></div>
+      <div style="padding:.8rem;background:linear-gradient(135deg,#100e08,#181408);margin:.5rem;border-radius:.2rem;border:1px solid #302810;font-family:'EB Garamond',serif;">
+        <div style="text-align:center;font-size:.65rem;color:#a08040;letter-spacing:.15em;margin-bottom:.8rem;font-style:italic;">✦ 我鄭重承認我企圖惡作劇 ✦</div>
+        <div style="font-size:.72rem;color:#a08040;margin-bottom:.5rem;">已知位置：</div>
+        ${locations.map(l=>`<div style="font-size:.76rem;color:#807060;padding:.2rem .4rem;margin:.2rem 0;">• ${l}</div>`).join('')}
+        <div style="margin-top:.8rem;font-size:.68rem;color:#505040;font-style:italic;">地圖持續更新中…</div>
+      </div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+
+  } else if(page==='contacts'){
+    const targetName=getDisplayTargetName();const npcs=gameState.npcs||{};const npcEntries=Object.entries(npcs);
+    const letters=gameState.magicData.owlPost.letters;const knownContacts=Object.keys(gameState.magicData.portraitChat.conversations).filter(n=>n!==targetName);
+    let friendHtml='';
+    if(targetName){friendHtml+=`<div style="font-size:.65rem;color:#585050;padding:.3rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">重要人物</div><div class="owl-msg" style="cursor:pointer;" onclick="renderScrollPage('owl-target')"><div class="msg-from" style="color:#a08040;">${targetName} <span style="font-size:.58rem;color:#4a6;">● 在線</span></div></div>`;}
+    if(npcEntries.length>0){friendHtml+=`<div style="font-size:.65rem;color:#585050;padding:.3rem .8rem;margin-top:.2rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">已識人物</div>`;npcEntries.forEach(([name,info])=>{if(name===targetName)return;friendHtml+=`<div class="owl-msg"><div class="msg-from">${name}${info.role?` <span style="font-size:.6rem;color:#666;">(${info.role})</span>`:''}</div></div>`;});}
+    if(!friendHtml) friendHtml='<div style="text-align:center;color:#444;font-size:.76rem;padding:1.5rem;font-style:italic;">通訊錄暫無人員<br>隨劇情推進會逐漸增加</div>';
+    content.innerHTML=`<div class="parchment-header"><span class="app-icon">👥</span><span class="app-name">魔法通訊錄</span></div><div style="padding:.3rem 0;">${friendHtml}</div>`;
+    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+  }
+
+  // 綁定事件
+  setTimeout(function(){
+    const acts=document.getElementById('so-actions');if(!acts)return;
+    acts.querySelectorAll('button[onclick]').forEach(function(btn){const code=btn.getAttribute('onclick');if(!code)return;btn.removeAttribute('onclick');btn.addEventListener('click',function(){try{new Function(code)();}catch(e){}});});
+    const soContent=document.getElementById('so-content');if(!soContent)return;
+    soContent.querySelectorAll('[onclick]').forEach(function(el){const code=el.getAttribute('onclick');if(!code)return;el.removeAttribute('onclick');el.addEventListener('click',function(){try{new Function(code)();}catch(e){}});});
+  },0);
+}
+
+async function sendOwlMessage(){
+  const targetName=gameState.bfName||'對方';
+  const text=window.prompt(`寫信給 ${targetName}：`);
+  if(!text) return;
+  const letters=gameState.magicData.owlPost.letters;const now=new Date();
+  letters.push({from:'me',content:text,time:`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`});
+  showLoading('貓頭鷹飛行中…');
+  try {
+    const reply=await callAI(`玩家透過貓頭鷹信寄信給${targetName}：「${text}」\n請以${targetName}的口吻回信（1-3句，符合其人設和時代背景，純文字，不需JSON）。`);
+    const cleanReply=reply?reply.replace(/\x60\x60\x60[\s\S]*?\x60\x60\x60/g,'').trim():'';
+    letters.push({from:targetName,content:cleanReply,time:`${now.getHours().toString().padStart(2,'0')}:${(now.getMinutes()+2).toString().padStart(2,'0')}`});
+    gameState.magicData.owlPost.letters=letters;
+  } catch(e){}
+  hideLoading();renderScrollPage('owl-target');
+}
+
+async function sendPortraitMessage(){
+  const targetName=gameState.bfName||'對方';
+  const text=window.prompt(`透過魔法肖像聯繫 ${targetName}：`);
+  if(!text) return;
+  const chats=gameState.magicData.portraitChat.conversations;const msgs=chats[targetName]||[];
+  const now=new Date();msgs.push({from:'me',content:text,time:`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`});
+  chats[targetName]=msgs;showLoading('魔法肖像連線中…');
+  try {
+    const reply=await callAI(`玩家透過魔法肖像對${targetName}說：「${text}」\n請以${targetName}的口吻回應（1-3句，符合其人設，純文字，不需JSON）。`);
+    const cleanReply=reply?reply.replace(/\x60\x60\x60[\s\S]*?\x60\x60\x60/g,'').trim():'';
+    msgs.push({from:targetName,content:cleanReply,time:`${now.getHours().toString().padStart(2,'0')}:${(now.getMinutes()+1).toString().padStart(2,'0')}`});
+    chats[targetName]=msgs;
+  } catch(e){}
+  hideLoading();renderScrollPage('portrait-target');
+}
+
+async function doFlooContact(){
+  const targetName=gameState.bfName||'對方';
+  closeScroll();addChoiceMsg(`【火焰網路】撥打連線至${targetName}`);disableOptions();
+  showLoading('火焰網路連線中…');
+  try {
+    const resp=await callAI(`玩家透過火焰網路壁爐聯繫${targetName}。\n請描述：1.${targetName}的反應（接通/未在壁爐旁等）2.對話內容（1-2句）3.這次聯繫的氛圍\n以純文字敘述，符合魔法世界背景，100字內，不要JSON。`);
+    addNarrationMsg(cleanMarkdown(resp));
+  } catch(e){addSystemMsg('火焰網路連線失敗：'+e.message);}
+  hideLoading();document.getElementById('options-panel').classList.remove('disabled');
+}
+
+// ── 主動聯繫 ──
+window.initiateContact=function(){document.getElementById('contact-panel').classList.add('open');};
+window.doContact=async function(type){
+  document.getElementById('contact-panel').classList.remove('open');
+  const targetName=gameState.bfName||'他';let userInput='';
+  if(type==='owl'){userInput=window.prompt(`寄貓頭鷹信給 ${targetName}：`);if(!userInput)return;}
+  else if(type==='patronus'){userInput='以守護神傳遞訊息';}
+  else if(type==='portrait'){userInput=window.prompt(`透過魔法肖像告訴 ${targetName}：`);if(!userInput)return;}
+  else if(type==='floo'){doFlooContact();return;}
+  disableOptions();addChoiceMsg(`【${type==='owl'?'貓頭鷹信':type==='patronus'?'守護神訊息':'魔法肖像'}】${type==='patronus'?'以守護神傳遞訊息':'：「'+userInput+'」'}`);
+  showLoading('等待回應…');
+  const prompt2=`玩家主動${type==='owl'?'寄貓頭鷹信給'+targetName+'說：「'+userInput+'」':type==='patronus'?'召喚守護神傳訊給'+targetName:'透過魔法肖像告訴'+targetName+'：「'+userInput+'」'}\n請描述：1.${targetName}的回應方式和內容（符合當前好感度${gameState.affection||50}）2.這次主動聯繫後的氛圍\n以純文字敘述，符合魔法世界背景，100字內，不要JSON。`;
+  try {
+    const origHistory=gameState.history;gameState.history=gameState.history.slice(-6);const resp=await callAI(prompt2);gameState.history=origHistory;
+    addNarrationMsg(cleanMarkdown(resp));
+    if(type==='owl'){const letters=gameState.magicData.owlPost.letters;const now=new Date();letters.push({from:'me',content:userInput,time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')});const replyText=resp.split(/[。！？\n]/)[0];if(replyText&&replyText.length<80)letters.push({from:targetName,content:replyText,time:now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')});}
+    await saveGame();
+  } catch(e){addSystemMsg('聯繫失敗：'+e.message);}
+  hideLoading();document.getElementById('options-panel').classList.remove('disabled');
+};
+
+// ── 事件系統 ──
+function scheduleNextEvent(){const interval=4+Math.floor(Math.random()*6);gameState.nextEventRound=(gameState.round||1)+interval;}
+function buildEventPool(){
+  const aff=gameState.affection||50;const flags=gameState.flags||{};const round=gameState.round||1;const plot=gameState.plotType||'';const pool=[];
+  // 感情線特有
+  if(plot.includes('戀愛')){
+    if(aff>=70&&!flags.firstKiss&&round>=5)pool.push({id:'FIRST_KISS',weight:4,desc:'感情積累到臨界點，一個自然而然的親密瞬間'});
+    if(aff<=20&&!flags.betrayed)pool.push({id:'TRUST_CRISIS',weight:5,desc:'信任出現裂縫，感情面臨考驗'});
+    if(aff>20&&aff<=38)pool.push({id:'MISUNDERSTANDING',weight:3,desc:'一個誤解或摩擦，讓兩人之間出現距離感'});
+  }
+  // 冒險/生存線
+  if(plot.includes('冒險')||plot.includes('生存')){pool.push({id:'DANGER_ENCOUNTER',weight:3,desc:'突如其來的危險，必須立刻做出選擇'});pool.push({id:'MISSION_UPDATE',weight:2,desc:'任務出現新的轉折或阻礙'});}
+  // 政治線
+  if(plot.includes('政治')){pool.push({id:'POLITICAL_SHIFT',weight:3,desc:'魔法世界的政治局勢發生變化，影響玩家處境'});}
+  // 揭秘線
+  if(plot.includes('揭秘')){pool.push({id:'CLUE_DISCOVERED',weight:3,desc:'一條新的線索浮出水面'});}
+  // 通用事件
+  const era=gameState.playerEra||'';
+  if(era.includes('第二次')||era.includes('黑暗'))pool.push({id:'WAR_EVENT',weight:3,desc:'戰爭相關事件影響當前局勢'});
+  if(!flags.exposed)pool.push({id:'IDENTITY_RISK',weight:2,desc:'身份或秘密有被發現的風險'});
+  if(flags.exposed)pool.push({id:'AFTERMATH_PRESSURE',weight:4,desc:'曝光後的後續影響持續發酵'});
+  if(round>=6)pool.push({id:'AUTHORITY_NOTICE',weight:2,desc:'魔法部或學校當局開始關注玩家的行動'});
+  if(aff>=50)pool.push({id:'MOMENT_OF_CONNECTION',weight:2,desc:'一個意外的連結瞬間，真實而溫暖'});
+  pool.push({id:'PLAYER_CHALLENGE',weight:1,desc:'玩家自己在個人目標上遇到重要考驗'});
+  if(round>=8)pool.push({id:'ALLIANCE_TEST',weight:1,desc:'某個重要盟友或家人對玩家的選擇表示質疑'});
+  if(aff>=75&&flags.firstKiss&&round>=10&&!flags.intimateNight)pool.push({id:'DEEPER_BOND',weight:2,desc:'一個更深層的親密時刻，自然而然地到來'});
+  return pool;
+}
+function weightedRandom(pool){const total=pool.reduce((s,e)=>s+e.weight,0);let r=Math.random()*total;for(const e of pool){r-=e.weight;if(r<=0)return e;}return pool[pool.length-1];}
+function checkSpecialEvents(){
+  const round=gameState.round;const aff=gameState.affection||50;const flags=gameState.flags||{};
+  if(!gameState.nextEventRound)scheduleNextEvent();
+  let forceEvent=null;
+  if(aff<=15&&!flags.betrayed&&!gameState.pendingSpecialEvent)forceEvent={id:'MAJOR_CRISIS',desc:'局勢到達臨界點，一場無法迴避的重大危機或對峙'};
+  if(aff>=85&&!flags.firstKiss&&round>=4&&!gameState.pendingSpecialEvent&&gameState.plotType?.includes('戀愛'))forceEvent={id:'FIRST_KISS',desc:'感情在某個瞬間達到臨界點'};
+  if(forceEvent){gameState.pendingSpecialEvent=forceEvent;scheduleNextEvent();return;}
+  if(round>=(gameState.nextEventRound||999)&&!gameState.pendingSpecialEvent){const pool=buildEventPool();if(pool.length>0)gameState.pendingSpecialEvent=weightedRandom(pool);scheduleNextEvent();}
+  if(!gameState.nextEndingHintRound)gameState.nextEndingHintRound=10+Math.floor(Math.random()*6);
+  if(round>=gameState.nextEndingHintRound&&!gameState.pendingEndingHint){gameState.pendingEndingHint=true;gameState.nextEndingHintRound=round+10+Math.floor(Math.random()*6);}
+}
+
+// ── 結局氛圍 ──
+function updateEndingAura(){
+  const aura=document.getElementById('ending-aura');if(!aura)return;
+  const path=gameState.endingPath||'';
+  aura.className='ending-aura '+(path==='happy'?'aura-happy':path==='dark'?'aura-dark':path==='mystery'?'aura-mystery':'aura-unknown');
+}
+
+// ── 回憶 ──
+window.openMemories=function(){
+  const overlay=document.getElementById('memories-overlay');const list=document.getElementById('memories-list');const mems=gameState.memories||[];
+  if(!mems.length){list.innerHTML='<p style="color:var(--text3);font-size:.8rem;text-align:center;margin-top:2rem;padding:1rem;font-style:italic;">還沒有特別的回憶。繼續你們的故事吧 ✦</p>';}
+  else{
+    list.innerHTML=mems.map(m=>{
+      const isSpecial=m.title.includes('初吻')||m.title.includes('守護神')||m.title.includes('誓言')||m.title.includes('告白');
+      const isCrisis=m.title.includes('背叛')||m.title.includes('危機')||m.title.includes('戰鬥')||m.title.includes('對峙');
+      const tier=isSpecial?'tier-special':isCrisis?'tier-3':m.round>20?'tier-2':'tier-1';
+      const badge=isSpecial?'<span class="memory-card-badge badge-milestone">里程碑</span>':isCrisis?'<span class="memory-card-badge badge-crisis">危機</span>':'<span class="memory-card-badge badge-moment">時刻</span>';
+      return`<div class="memory-card ${tier}">${badge}<span class="memory-card-emoji">${m.emoji}</span><div class="memory-card-title">${m.title}</div><div class="memory-card-meta">第 ${m.round} 回合 · ${m.time||''}</div>${m.content?`<div class="memory-card-excerpt">${m.content.slice(0,100)}${m.content.length>100?'…':''}</div>`:''}</div>`;
+    }).join('');
+  }
+  overlay.style.display='flex';
+};
+
+// ── 存檔/讀檔 ──
+async function saveGame(){
+  if(!gameState.initialized) return;
+  const saveData={...gameState,apiKey:'',history:gameState.history.slice(-20)};
+  localStorage.setItem('hp_save',JSON.stringify(saveData));
+  const saveInd=document.getElementById('save-indicator');if(saveInd){saveInd.classList.add('show');setTimeout(()=>saveInd.classList.remove('show'),2000);}
+  if(currentUser&&db){try{await db.collection('hp_saves').doc(currentUser.uid).set({data:JSON.stringify(saveData),updatedAt:new Date()});}catch(e){}}
+}
+function loadLocalSave(){
+  const raw=localStorage.getItem('hp_save');if(!raw)return false;
+  try{const saved=JSON.parse(raw);Object.assign(gameState,saved);gameState.apiKey=localStorage.getItem('hp_apikey')||'';gameState.apiProvider=localStorage.getItem('hp_provider')||saved.apiProvider||'';gameState.apiModel=localStorage.getItem('hp_model')||saved.apiModel||'';return true;}catch(e){return false;}
+}
+async function loadCloudSave(){
+  if(!currentUser||!db)return;
+  try{const doc=await db.collection('hp_saves').doc(currentUser.uid).get();if(doc.exists){const saved=JSON.parse(doc.data().data);Object.assign(gameState,saved);gameState.apiKey=localStorage.getItem('hp_apikey')||'';gameState.apiProvider=localStorage.getItem('hp_provider')||saved.apiProvider||'';gameState.apiModel=localStorage.getItem('hp_model')||saved.apiModel||'';}}catch(e){}
+}
+
+// ── 入口 ──
+window.startNewGame=async function(){
+  await loadFirebase();
+  document.getElementById('btn-back-splash').style.display='';document.getElementById('btn-back-game').style.display='none';
+  document.getElementById('btn-start-game').style.display='';document.getElementById('btn-save-settings').style.display='none';
+  const savedProvider=localStorage.getItem('hp_provider')||'';const savedModel=localStorage.getItem('hp_model')||'';const savedKey=localStorage.getItem('hp_apikey')||'';
+  if(savedProvider)selectProviderById(savedProvider);if(savedModel){const sel=document.getElementById('input-model');const opt=[...sel.options].find(o=>o.value===savedModel);if(opt)sel.value=savedModel;else document.getElementById('input-model-manual').value=savedModel;}
+  if(savedKey)document.getElementById('input-apikey').value=savedKey;
+  renderSavedProfiles();showScreen('screen-settings');
+};
+
+window.continueGame=async function(){
+  await loadFirebase();
+  const loaded=loadLocalSave();
+  if(!loaded||!gameState.initialized){alert('沒有找到儲存的遊戲，請開始新遊戲。');startNewGame();return;}
+  // 若已登入，嘗試從雲端載入更新版本
+  if(currentUser){
+    try{await loadCloudSave();}catch(e){}
+  }
+  initGameScreen();updateHeader();updateGameTitle();renderAllStory();
+  // 恢復最後的選項
+  if(gameState.lastRenderedOptions&&gameState.lastRenderedOptions.length>0){renderOptions(gameState.lastRenderedOptions);}
+  else{renderOptions([{label:'A',text:'繼續故事'},{label:'📜',text:'查看通訊器'},{label:'D',text:'自定義（玩家自行輸入）'}]);}
+  updateContactButton();
+  showScreen('screen-game');
+};
+
+// ── 角色設定存檔 ──
+function getProfiles(){try{return JSON.parse(localStorage.getItem('hp_profiles')||'[]');}catch(e){return[];}}
+function saveProfiles(arr){localStorage.setItem('hp_profiles',JSON.stringify(arr));}
+window.saveProfilePreset=function(){
+  const name=gameState.playerName||document.getElementById('input-name')?.value?.trim();if(!name){alert('請先填入角色姓名');return;}
+  const profiles=getProfiles();if(profiles.length>=5){alert('最多儲存5個角色設定，請先刪除一個');return;}
+  const profile={id:Date.now(),label:name,playerName:document.getElementById('input-name')?.value?.trim()||gameState.playerName,playerAge:document.getElementById('input-age')?.value?.trim()||gameState.playerAge,playerBlood:document.getElementById('input-blood')?.value||gameState.playerBlood,playerHouse:document.getElementById('input-house')?.value?.trim()||gameState.playerHouse,appBody:document.getElementById('input-app-body')?.value?.trim()||'',appHair:document.getElementById('input-app-hair')?.value?.trim()||'',background:document.getElementById('input-background')?.value?.trim()||''};
+  profiles.push(profile);saveProfiles(profiles);
+  const msg=document.getElementById('msg-settings');msg.style.color='var(--teal2)';msg.textContent=`✓ 已儲存「${name}」的角色設定`;setTimeout(()=>{msg.textContent='';msg.style.color='';},2000);
+  renderSavedProfiles();
+};
+function renderSavedProfiles(){
+  const profiles=getProfiles();const sec=document.getElementById('saved-profiles-section');const list=document.getElementById('saved-profiles-list');if(!sec||!list)return;
+  if(!profiles.length){sec.style.display='none';return;}sec.style.display='block';
+  list.innerHTML=profiles.map(p=>`<div class="profile-card"><div class="profile-card-info"><div class="profile-card-name">${p.label}</div><div class="profile-card-meta">${p.playerAge||''}歲 · ${p.playerBlood||''} · ${p.playerHouse||''}</div></div><div class="profile-card-btns"><button class="profile-card-btn" onclick="loadProfile(${p.id})">套用</button><button class="profile-card-btn" onclick="useProfileNewGame(${p.id})">直接開始</button><button class="profile-card-btn danger" onclick="deleteProfile(${p.id})">✕</button></div></div>`).join('');
+}
+window.loadProfile=function(id){
+  const p=getProfiles().find(x=>x.id===id);if(!p)return;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el&&v)el.value=v;};
+  set('input-name',p.playerName);set('input-age',p.playerAge);set('input-blood',p.playerBlood);set('input-house',p.playerHouse);set('input-app-body',p.appBody);set('input-app-hair',p.appHair);set('input-background',p.background);
+};
+window.useProfileNewGame=function(id){loadProfile(id);setTimeout(()=>confirmSettings(),300);};
+window.deleteProfile=function(id){const profiles=getProfiles().filter(x=>x.id!==id);saveProfiles(profiles);renderSavedProfiles();};
+window.showProfileManager=function(){startNewGame();};
+
+// ── 隨機角色 ──
+window.randomizeProfile=async function(){
+  const btn=document.querySelector('[onclick="randomizeProfile()"]');if(btn){btn.textContent='⏳';btn.disabled=true;}
+  // 先讀取目前設定頁的 API Key 和 provider
+  const tempKey=document.getElementById('input-apikey')?.value.trim()||localStorage.getItem('hp_apikey')||'';
+  const tempProv=selectedProvider||localStorage.getItem('hp_provider')||'';
+  if(!tempKey||!tempProv){alert('請先選擇 AI 服務商並填入 API Key，再使用隨機功能。');if(btn){btn.textContent='✦ 隨機';btn.disabled=false;}return;}
+  const origProv=gameState.apiProvider,origKey=gameState.apiKey;
+  gameState.apiProvider=tempProv;gameState.apiKey=tempKey;
+  if(!gameState.apiModel){const modelSel=document.getElementById('input-model');const manModel=document.getElementById('input-model-manual');gameState.apiModel=(manModel?.value.trim()||modelSel?.value.trim()||localStorage.getItem('hp_model')||'');}
+  const randPrompt=`請隨機生成一個有趣的哈利波特魔法世界玩家角色設定，以JSON回覆（不要markdown）：
+{"name":"中文名字","age":數字(11-50),"blood":"血統（純血/混血/麻瓜出身）","house":"學院（葛來分多/史萊哲林/雷文克勞/赫夫帕夫/無）","era":"時代（從：霍格華茲創立時期/第一次黑魔王戰爭/哈利波特就讀時期/第二次黑魔王戰爭/戰後重建時期）","faction":"陣營","plotType":"主線（戀愛/冒險任務/政治陰謀/魔法研究/生存戰爭）","appBody":"身形（10字內）","appHair":"髮型髮色（10字內）","background":"背景（30字內）","hook":"一句話說明這個角色的趣味點"}`;
+  try {
+    const resp=await callAI(randPrompt);const cleaned=resp.split('```json').join('').split('```').join('').trim();const m=cleaned.match(/\{[\s\S]*\}/);const p=JSON.parse(m?m[0]:cleaned);
+    const set=(id,v)=>{const el=document.getElementById(id);if(el&&v)el.value=v;};
+    set('input-name',p.name);set('input-age',p.age);set('input-blood',p.blood);set('input-house',p.house);set('input-app-body',p.appBody);set('input-app-hair',p.appHair);set('input-background',p.background);
+    if(p.hook){const msg=document.getElementById('msg-settings');msg.style.color='var(--text2)';msg.textContent=`✨ ${p.hook}`;}
+    if(p.era){selectedEra=p.era;const el=document.getElementById('input-era');if(el)el.value=p.era;}
+    if(p.faction){selectedFaction=p.faction;const el=document.getElementById('input-faction');if(el)el.value=p.faction;}
+    if(p.plotType){selectedPlotType=p.plotType;}
+  } catch(e){alert('隨機生成失敗：'+e.message);}
+  gameState.apiProvider=origProv;gameState.apiKey=origKey;
+  if(btn){btn.textContent='✦ 隨機';btn.disabled=false;}
+};
+
+// ── data-fn 委派 ──
+document.addEventListener('DOMContentLoaded',function(){
+  var overlay=document.getElementById('scroll-overlay');if(!overlay)return;
+  overlay.addEventListener('click',function(e){var el=e.target.closest('[data-fn]');if(!el)return;var fn=el.dataset.fn;var arg=el.dataset.arg;if(typeof window[fn]==='function'){e.stopPropagation();if(arg!==undefined)window[fn](arg);else window[fn]();}});
+});
+
+window.renderScrollPage=renderScrollPage;
+window.closeScroll=closeScroll;
+window.clearMagicNotifs=clearMagicNotifs;
+window.sendOwlMessage=sendOwlMessage;
+window.sendPortraitMessage=sendPortraitMessage;
+window.doFlooContact=doFlooContact;
+
+// ── 補充：initiateContact 顯示邏輯 ──
+// 每次回合結束後更新聯繫按鈕可見性
+function updateContactButton(){
+  const btn=document.getElementById('btn-contact');if(!btn)return;
+  const hasTarget=gameState.bfName&&gameState.bfName.length>0;
+  const notAtStart=gameState.storyStart&&!gameState.storyStart.includes('陌生')&&!gameState.storyStart.includes('尚未')&&!gameState.storyStart.includes('初來');
+  const hasHistory=gameState.round>2;
+  btn.style.display=(hasTarget&&(notAtStart||hasHistory))?'':'none';
+}
+
+// ── 補充：隨機座右銘（載入畫面 flavor text）──
+const LOADING_MESSAGES=[
+  '翻開羊皮卷，命運正在書寫…',
+  '貓頭鷹飛越黑夜，傳遞未來的消息…',
+  '預言家日報的墨水尚未乾燥…',
+  '魔法師的羽毛筆在空氣中舞動…',
+  '水晶球中映現出你的命運…',
+  '火焰在壁爐中跳躍，故事即將展開…',
+  '霍格華茲的石牆見證了無數秘密…',
+  '魔法的齒輪悄悄轉動著…',
+];
+function getLoadingMsg(){return LOADING_MESSAGES[Math.floor(Math.random()*LOADING_MESSAGES.length)];}
+
+// 覆蓋 showLoading 加入隨機文字
+const _origShowLoading=showLoading;
+window.showLoading=function(txt){
+  const finalTxt=txt||getLoadingMsg();
+  document.getElementById('lo-text').textContent=finalTxt;
+  document.getElementById('loading-overlay').classList.add('show');
+};
+
+// ── 補充：nextRound 後呼叫 updateContactButton ──
+const _origNextRound=nextRound;
+
+// ── 補充：場景回應加入 storyLog ──
+// （已在 handlePlayerAction 中處理，此處確保完整性）
+
+// ── 補充：鍵盤快捷鍵 ──
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    // 關閉所有浮層
+    document.getElementById('twist-panel').style.display='none';
+    document.getElementById('memories-overlay').style.display='none';
+    document.getElementById('recap-overlay').style.display='none';
+    document.getElementById('scroll-overlay').classList.remove('open');
+    document.getElementById('contact-panel').classList.remove('open');
+  }
+  // Enter 快速送出自定義輸入
+  if(e.key==='Enter'&&e.target.id==='custom-input'){window.submitCustom&&window.submitCustom();}
+  if(e.key==='Enter'&&e.target.id==='twist-input'){window.applyTwist&&window.applyTwist();}
+});
+
+// ── 補充：遊戲標題動態更新 ──
+function updateGameTitle(){
+  const titleEl=document.getElementById('gh-title');
+  if(titleEl) titleEl.textContent=getEraTitle();
+}
+
+// ── 補充：魔法世界日期格式 ──
+function formatMagicTime(round){
+  const era=gameState.playerEra||'';
+  let baseYear=1991;
+  if(era.includes('創立'))baseYear=993;
+  else if(era.includes('中世紀'))baseYear=1450;
+  else if(era.includes('保密'))baseYear=1692;
+  else if(era.includes('第一次'))baseYear=1972;
+  else if(era.includes('哈利'))baseYear=1991;
+  else if(era.includes('第二次'))baseYear=1995;
+  else if(era.includes('重建'))baseYear=1998;
+  else if(era.includes('下一代'))baseYear=2017;
+  const months=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  const month=months[Math.floor((round-1)/3)%12];
+  return`${baseYear}年${month}`;
+}
+
+// ── 補充：歡迎訊息 ──
+window.addEventListener('load',function(){
+  // 載入完成後顯示歡迎動畫（若有 splash）
+  const splash=document.getElementById('screen-splash');
+  if(splash&&splash.classList.contains('active')){
+    const inner=splash.querySelector('.splash-inner');
+    if(inner){inner.style.opacity='0';inner.style.transform='translateY(20px)';inner.style.transition='all .8s ease';setTimeout(()=>{inner.style.opacity='1';inner.style.transform='translateY(0)';},100);}
+  }
+  // 還原已存的 provider/model 設定
+  const savedProvider=localStorage.getItem('hp_provider');
+  const savedModel=localStorage.getItem('hp_model');
+  const savedKey=localStorage.getItem('hp_apikey');
+  if(savedKey) gameState.apiKey=savedKey;
+  if(savedProvider) gameState.apiProvider=savedProvider;
+  if(savedModel) gameState.apiModel=savedModel;
+});
+</script>
+
+<div style="position:fixed;bottom:6px;right:8px;font-size:.52rem;color:#3a3030;pointer-events:none;z-index:9999;letter-spacing:.04em;">✦ HP World Game v1.0</div>
+</body>
+</html>
