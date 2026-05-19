@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260519-r49</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260519-r52</p>
   </div>
 </div>
 
@@ -812,6 +812,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="gh-btn" onclick="openPhoneOverlay('home')">手機</button>
       <button class="gh-btn" onclick="openMemories()">回憶</button>
       <button class="gh-btn" onclick="showSettingsFromGame()">設定</button>
+      <button class="gh-btn" onclick="openRecap()">回顧</button>
       <button class="gh-btn" onclick="replayRound()">重玩</button>
       <button class="gh-btn" onclick="openTwist()">扭轉</button>
       <button class="gh-btn" onclick="exitGame()">退出</button>
@@ -896,6 +897,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   <div id="memories-list" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem;">
     <p style="color:var(--text3);font-size:.82rem;text-align:center;margin-top:2rem;">還沒有回憶，繼續遊玩吧 ✨</p>
   </div>
+</div>
+
+<!-- ════ 劇情回顧 OVERLAY ════ -->
+<div id="recap-overlay" style="position:fixed;inset:0;z-index:65;background:rgba(12,12,18,.97);display:none;flex-direction:column;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0;">
+    <span style="font-size:.88rem;color:var(--text2);">劇情回顧</span>
+    <button onclick="document.getElementById('recap-overlay').style.display='none'"
+      style="background:none;border:1px solid var(--border);color:var(--text3);padding:.25rem .6rem;border-radius:.4rem;cursor:pointer;font-size:.72rem;">關閉</button>
+  </div>
+  <!-- 回合選擇列 -->
+  <div id="recap-rounds" style="display:flex;gap:.4rem;padding:.6rem .8rem;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0;scrollbar-width:none;"></div>
+  <!-- 劇情內容 -->
+  <div id="recap-content" style="flex:1;overflow-y:auto;padding:.8rem 1rem;"></div>
 </div>
 
 <!-- ════ LOADING ════ -->
@@ -1893,6 +1907,83 @@ window.replayRound = async function(){
 };
 
 // ── 扭轉劇情 ──
+// ── 劇情回顧 ──
+window.openRecap = function(){
+  var overlay = document.getElementById('recap-overlay');
+  var roundsEl = document.getElementById('recap-rounds');
+  var contentEl = document.getElementById('recap-content');
+  if(!overlay || !roundsEl || !contentEl) return;
+
+  // 從 storyLog 按回合分組
+  var log = gameState.storyLog || [];
+  var byRound = {}; // {回合數: [{type,text}]}
+  var currentRound = 1;
+
+  log.forEach(function(entry){
+    if(entry.type === 'round_start') currentRound = entry.round || currentRound;
+    if(!byRound[currentRound]) byRound[currentRound] = [];
+    byRound[currentRound].push(entry);
+  });
+
+  var rounds = Object.keys(byRound).map(Number).sort(function(a,b){return a-b;});
+
+  if(rounds.length === 0){
+    roundsEl.innerHTML = '<span style="font-size:.75rem;color:#555;">尚無回顧內容</span>';
+    contentEl.innerHTML = '';
+    overlay.style.display = 'flex';
+    return;
+  }
+
+  // 回合選擇列
+  roundsEl.innerHTML = rounds.map(function(r){
+    return '<button onclick="showRecapRound('+r+')" id="recap-btn-'+r+'" '
+      +'style="flex-shrink:0;font-size:.72rem;padding:.3rem .7rem;border-radius:1rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;">第'+r+'回合</button>';
+  }).join('');
+
+  // 顯示最新回合
+  showRecapRound(rounds[rounds.length-1]);
+  overlay.style.display = 'flex';
+};
+
+window.showRecapRound = function(round){
+  // 更新按鈕樣式
+  document.querySelectorAll('[id^="recap-btn-"]').forEach(function(btn){
+    btn.style.background = 'none';
+    btn.style.color = 'var(--text3)';
+    btn.style.borderColor = 'var(--border)';
+  });
+  var activeBtn = document.getElementById('recap-btn-'+round);
+  if(activeBtn){
+    activeBtn.style.background = 'var(--bg3)';
+    activeBtn.style.color = 'var(--text)';
+    activeBtn.style.borderColor = 'var(--border2)';
+  }
+
+  // 顯示該回合的劇情
+  var log = gameState.storyLog || [];
+  var currentRound = 1;
+  var entries = [];
+  log.forEach(function(entry){
+    if(entry.type === 'round_start') currentRound = entry.round || currentRound;
+    if(currentRound === round) entries.push(entry);
+  });
+
+  var html = entries.map(function(e){
+    if(e.type === 'narration' || e.type === 'event'){
+      return '<div style="font-size:.82rem;color:var(--text2);line-height:1.75;margin-bottom:.6rem;padding:.6rem .8rem;background:var(--bg3);border-radius:.6rem;border-left:2px solid var(--border2);">'+e.text+'</div>';
+    }
+    if(e.type === 'choice'){
+      return '<div style="font-size:.78rem;color:var(--text3);padding:.3rem .6rem;margin:.3rem 0;display:flex;align-items:center;gap:.4rem;">'
+        +'<span style="color:var(--border2);">▸</span>'+e.text+'</div>';
+    }
+    return '';
+  }).filter(Boolean).join('');
+
+  document.getElementById('recap-content').innerHTML = html ||
+    '<div style="padding:2rem;text-align:center;color:#444;font-size:.78rem;">此回合尚無記錄</div>';
+  document.getElementById('recap-content').scrollTop = 0;
+};
+
 window.openTwist = function(){
   document.getElementById('twist-input').value = '';
   document.getElementById('twist-panel').style.display = 'flex';
@@ -1946,6 +2037,25 @@ window.setCastMode = function(mode){
     });
   } else {
     hint.textContent = '點選 = 候選人（優先感情線）｜長按 = 重點配角｜再次點選 = 取消';
+  }
+};
+
+// ── 選項收合/展開 ──
+window.toggleOptions = function(){
+  var col = document.getElementById('opts-collapsible');
+  var btn = document.getElementById('opts-toggle');
+  if(!col || !btn) return;
+  if(col.style.display === 'none'){
+    col.style.display = '';
+    btn.textContent = '收合 ▾';
+    btn.style.color = 'var(--text3)';
+  } else {
+    col.style.display = 'none';
+    btn.textContent = '展開 ▴';
+    btn.style.color = 'var(--text2)';
+    // 收合時自動滾動到最新劇情
+    var panel = document.getElementById('story-panel');
+    if(panel) panel.scrollTop = panel.scrollHeight;
   }
 };
 
@@ -2592,6 +2702,9 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
     showNotifToast('回憶', `新回憶：${mem.emoji} ${mem.title}`);
   }
 
+  // 記錄回合開始
+  gameState.storyLog.push({type:'round_start', round: gameState.round});
+
   // 敘述
   if(data.narration) addNarrationMsg(cleanMarkdown(data.narration));
 
@@ -3087,6 +3200,52 @@ function updatePhoneClock(){
   document.getElementById('po-battery').textContent = gameState._battery + '%';
 }
 
+
+// ── 頭像生成（SVG漸層，根據名字產生獨特顏色）──
+function makeAvatar(name, size){
+  size = size || 36;
+  var colors = [
+    ['#833ab4','#fd1d1d'],['#f77737','#fcb045'],['#405de6','#833ab4'],
+    ['#12c2e9','#c471ed'],['#f64f59','#c471ed'],['#43cea2','#185a9d'],
+    ['#ee0979','#ff6a00'],['#7F00FF','#E100FF'],['#11998e','#38ef7d'],
+    ['#fc4a1a','#f7b733'],
+  ];
+  var idx = 0;
+  for(var i=0;i<(name||'').length;i++) idx += (name||'').charCodeAt(i);
+  var c = colors[idx % colors.length];
+  var initials = (name||'?').slice(0,2).toUpperCase();
+  var id = 'av'+Math.random().toString(36).slice(2,7);
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<defs><linearGradient id="'+id+'" x1="0%" y1="0%" x2="100%" y2="100%">'
+    +'<stop offset="0%" style="stop-color:'+c[0]+';stop-opacity:1"/>'
+    +'<stop offset="100%" style="stop-color:'+c[1]+';stop-opacity:1"/>'
+    +'</linearGradient></defs>'
+    +'<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+(size/2)+'" fill="url(#'+id+')"/>'
+    +'<text x="'+(size/2)+'" y="'+(size/2+size*0.13)+'" text-anchor="middle" fill="white" font-size="'+(size*0.36)+'" font-family="sans-serif" font-weight="600">'+initials+'</text>'
+    +'</svg>';
+}
+
+// ── 貼文圖片佔位（漸層背景+場景描述）──
+function makePostImage(content, name){
+  var gradients = [
+    'linear-gradient(135deg,#1a1528,#0e0e1a)',
+    'linear-gradient(135deg,#0f0c29,#302b63)',
+    'linear-gradient(135deg,#1a1a2e,#16213e)',
+    'linear-gradient(135deg,#0d0d0d,#1a1a2e)',
+    'linear-gradient(135deg,#12001f,#300030)',
+  ];
+  var idx = 0;
+  for(var i=0;i<(name||'').length;i++) idx+=(name||'').charCodeAt(i);
+  var bg = gradients[idx%gradients.length];
+  var preview = (content||'').slice(0,20);
+  return '<div style="width:100%;height:180px;background:'+bg+';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;">'
+    +'<div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;">'
+    +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>'
+    +'</div>'
+    +'<div style="font-size:.65rem;color:rgba(255,255,255,.25);max-width:120px;text-align:center;line-height:1.4;">'+preview+'</div>'
+    +'</div>';
+}
+
 function getDisplayBfName(){
   if(gameState.bfName) return gameState.bfName;
   if(gameState.castMode==='pick' && gameState.bfCandidates && gameState.bfCandidates[0]) return gameState.bfCandidates[0];
@@ -3096,31 +3255,67 @@ window.getDisplayBfName = getDisplayBfName;
 
 function renderINSHome(){
   var bfName = getDisplayBfName();
+  var pName = (gameState.playerName||'我');
   var posts = gameState.phoneData.ins.posts||[];
-  var notifs = (gameState.phoneData.notifs||[]).filter(function(n){return n.app==='Instagram'||n.app==='INS';});
-  var trending = ['#韓娛圈熱搜','#首爾時裝週','#偶像緋聞','#MAMA頒獎典禮','#新專輯發售','#機場時尚'];
-  if(bfName){ trending.unshift('#'+bfName.replace(/\s/g,'')+'_動態'); }
-  var postHtml = '';
-  if(posts.length){
-    postHtml = posts.slice(0,2).map(function(p){ return '<div class="ins-post"><div class="post-user">@'+(p.user||bfName||'').replace(/\s/g,'_').toLowerCase()+' · '+(p.time||'')+'</div><div class="post-content">'+(p.content||'')+'</div><div class="post-stats">❤️ '+Math.floor(Math.random()*200000+50000).toLocaleString()+'</div></div>'; }).join('');
-  } else if(bfName){
-    postHtml = '<div class="ins-post"><div class="post-user">@'+bfName.replace(/\s/g,'_').toLowerCase()+'</div><div class="post-content" style="color:#555;">（尚無新動態）</div></div>';
-  } else {
-    postHtml = '<div style="padding:.8rem;font-size:.78rem;color:#555;">尚無追蹤的偶像動態</div>';
-  }
-  return '<div class="phone-app-header">'
-    +'<span style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);border-radius:8px;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:bold;flex-shrink:0;">IG</span>'
-    +'<span class="app-name" style="margin-left:.4rem;">Instagram</span>'
-    +'</div>'
-    +'<div style="padding:.6rem .8rem;border-bottom:1px solid #1a1a24;">'
-    +'<div style="font-size:.68rem;color:#555;margin-bottom:.4rem;">熱門話題</div>'
-    +trending.slice(0,4).map(function(t){return '<span style="display:inline-block;font-size:.7rem;color:#8888aa;background:#1a1a28;padding:.2rem .5rem;border-radius:1rem;margin:.1rem;">'+t+'</span>';}).join('')
-    +'</div>'
-    +'<div style="padding:.5rem .8rem;">'
-    +'<div style="font-size:.68rem;color:#555;margin-bottom:.4rem;">動態</div>'
-    +postHtml
-    +(notifs.length?'<div class="ins-post"><div class="post-user" style="color:#555;">通知</div><div class="post-content">'+notifs[0].content+'</div></div>':'')
-    +'</div>';
+  var candidates = gameState.bfCandidates||[];
+
+  // Stories 列
+  var storyItems = [{name:pName,self:true}];
+  (candidates.length?candidates:(bfName?[bfName]:[])).slice(0,5).forEach(function(n){storyItems.push({name:n,self:false});});
+
+  var storiesHtml = storyItems.map(function(s){
+    var ring = s.self
+      ? 'border:2px dashed #444'
+      : 'border:2px solid transparent;background:linear-gradient(#1c1c2e,#1c1c2e) padding-box,linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045) border-box';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:.25rem;flex-shrink:0;cursor:pointer;">'
+      +'<div style="width:56px;height:56px;border-radius:50%;'+ring+';padding:2px;box-sizing:border-box;">'
+      +(s.self
+        ? '<div style="width:100%;height:100%;border-radius:50%;background:#2a2040;display:flex;align-items:center;justify-content:center;font-size:1rem;">＋</div>'
+        : makeAvatar(s.name, 52))
+      +'</div>'
+      +'<span style="font-size:.58rem;color:#aaa;max-width:56px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;">'+(s.self?'你的':s.name)+'</span>'
+      +'</div>';
+  }).join('');
+
+  // 貼文卡片
+  var allPosts = posts.length ? posts : (bfName?[{user:bfName,content:'今天的練習結束了，感謝大家的支持',time:'2小時前'}]:[]);
+  var postCardsHtml = allPosts.slice(0,3).map(function(p){
+    var user = p.user||bfName||'';
+    var handle = '@'+user.replace(/\s/g,'_').toLowerCase();
+    var likes = p.likes||Math.floor(Math.random()*200000+50000);
+    var comments = Math.floor(likes*0.02);
+    return '<div style="border-bottom:1px solid #111;">'
+      +'<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;">'
+      +makeAvatar(user,32)
+      +'<div style="flex:1;"><div style="font-size:.8rem;color:#fff;font-weight:600;">'+user+'</div>'
+      +'<div style="font-size:.62rem;color:#666;">'+handle+' · 追蹤中</div></div>'
+      +'<svg width="16" height="16" viewBox="0 0 24 24" fill="white" opacity=".4"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>'
+      +'</div>'
+      +makePostImage(p.content, user)
+      +'<div style="padding:.5rem .8rem;">'
+      +'<div style="display:flex;gap:1rem;margin-bottom:.35rem;align-items:center;">'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" style="margin-left:auto;"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>'
+      +'</div>'
+      +'<div style="font-size:.75rem;color:#fff;font-weight:600;">'+likes.toLocaleString()+' 個讚</div>'
+      +'<div style="font-size:.77rem;color:#e8e8e8;margin-top:.2rem;line-height:1.45;"><span style="font-weight:700;">'+user+'</span> '+(p.content||'')+'</div>'
+      +'<div style="font-size:.68rem;color:#666;margin-top:.15rem;">查看全部 '+comments.toLocaleString()+' 則留言</div>'
+      +'<div style="font-size:.65rem;color:#555;margin-top:.1rem;">'+(p.time||'剛剛')+'</div>'
+      +'</div></div>';
+  }).join('');
+
+  if(!postCardsHtml) postCardsHtml='<div style="padding:2rem;text-align:center;color:#444;font-size:.78rem;">尚無動態</div>';
+
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.55rem .8rem;border-bottom:1px solid #111;">'
+    +'<span style="font-size:1rem;color:#fff;font-weight:700;font-family:'Billabong','Dancing Script',cursive,sans-serif;letter-spacing:.5px;">Instagram</span>'
+    +'<div style="display:flex;gap:.7rem;align-items:center;">'
+    +'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>'
+    +'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" onclick="renderPhonePage('ins-dm');"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>'
+    +'</div></div>'
+    +'<div style="display:flex;gap:.5rem;padding:.6rem .8rem;overflow-x:auto;border-bottom:1px solid #111;scrollbar-width:none;">'+storiesHtml+'</div>'
+    +postCardsHtml;
 }
 window.renderINSHome = renderINSHome;
 
@@ -3209,13 +3404,39 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins-mypage'){
-    content.textContent = getMyInsPage();
+    const playerName = gameState.playerName || '我';
+    const playerHandle = '@' + (playerName).replace(/\s/g,'_').toLowerCase();
+    content.innerHTML = '<div class="phone-app-header">'
+      + '<span class="app-name">' + playerHandle + '</span>'
+      + '</div>'
+      + '<div style="padding:.8rem;border-bottom:1px solid #1a1a24;display:flex;gap:1rem;align-items:center;">'
+      + '<div style="width:48px;height:48px;border-radius:50%;background:#2a2040;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">👤</div>'
+      + '<div>'
+      + '<div style="font-size:.85rem;color:var(--text);">' + playerName + '</div>'
+      + '<div style="font-size:.7rem;color:#666;margin-top:.2rem;">'
+      + (gameState.playerIdentity || '') + (gameState.playerNation ? ' · ' + gameState.playerNation : '')
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div style="padding:.5rem .8rem;">'
+      + '<div class="ins-post"><div class="post-user" style="color:#555;">最新貼文</div>'
+      + '<div class="post-content" style="color:#666;">（私人帳號，劇情推進後會有更新）</div></div>'
+      + '</div>';
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins-dm'){
-    content.textContent = getInsDM();
+    const dmList = (gameState.phoneData.ins.dms || []);
+    content.innerHTML = '<div class="phone-app-header">'
+      + '<span class="app-name">私信</span>'
+      + '</div>'
+      + (dmList.length
+        ? dmList.map(function(dm){
+            return '<div class="ins-post"><div class="post-user">' + (dm.from||'') + '</div>'
+              + '<div class="post-content" style="color:#888;">' + (dm.text||'') + '</div></div>';
+          }).join('')
+        : '<div style="padding:1.5rem;text-align:center;color:#444;font-size:.78rem;">暫無私信</div>');
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
@@ -3405,30 +3626,52 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='youtube'){
-    const bfName = getDisplayBfName();
-    content.innerHTML = `
-      <div class="phone-app-header">
-        <span class="app-icon" style="background:#f00;border-radius:4px;padding:2px 4px;font-size:.7rem;color:#fff;">▶</span>
-        <span class="app-name" style="margin-left:.3rem;">YouTube</span>
-      </div>
-      <div style="padding:.5rem .8rem;">
-        <div style="font-size:.68rem;color:#555;margin-bottom:.6rem;">為你推薦</div>
-        <div class="ins-post">
-          <div class="post-user">${bfName} Official</div>
-          <div class="post-content" style="color:#a0a8c0;">[MV] 最新主打歌 Official Music Video</div>
-          <div class="post-stats">觀看次數 ${Math.floor(Math.random()*5000+500).toLocaleString()}萬次</div>
-        </div>
-        <div class="ins-post">
-          <div class="post-user">${bfName} Official</div>
-          <div class="post-content" style="color:#a0a8c0;">[LIVE] 粉絲見面會精華</div>
-          <div class="post-stats">觀看次數 ${Math.floor(Math.random()*500+100).toLocaleString()}萬次</div>
-        </div>
-        <div class="ins-post">
-          <div class="post-user">韓娛新聞</div>
-          <div class="post-content" style="color:#a0a8c0;">最新韓流動態整理</div>
-          <div class="post-stats">觀看次數 ${Math.floor(Math.random()*100+20).toLocaleString()}萬次</div>
-        </div>
-      </div>`;
+    const ytName = getDisplayBfName();
+    const ytHandle = ytName ? ytName.replace(/\s/g,'')+'Official' : '';
+
+    // 影片資料
+    var ytVideos = ytName ? [
+      {ch:ytName+' Official',title:'[MV] 最新主打歌 Official Music Video',views:Math.floor(Math.random()*5000+500)+'萬次觀看',time:'2天前',dur:'3:42'},
+      {ch:ytName+' Official',title:'[LIVE] 粉絲見面會完整版',views:Math.floor(Math.random()*200+50)+'萬次觀看',time:'1週前',dur:'2:14:33'},
+      {ch:ytName+' Official',title:'[Teaser] 新專輯預告',views:Math.floor(Math.random()*1000+100)+'萬次觀看',time:'3天前',dur:'0:45'},
+      {ch:'韓娛日報',title:'[最新] '+ytName+' 機場直擊，造型太帥了！',views:'23萬次觀看',time:'5小時前',dur:'8:21'},
+    ] : [
+      {ch:'韓娛日報',title:'本週韓娛圈大事件整理',views:'45萬次觀看',time:'1天前',dur:'12:30'},
+      {ch:'KPOP Daily',title:'本週新歌推薦 TOP10',views:'89萬次觀看',time:'3天前',dur:'18:44'},
+    ];
+
+    var ytCards = ytVideos.map(function(v){
+      return '<div style="margin-bottom:.5rem;">'
+        // 縮圖
+        +'<div style="width:100%;height:160px;background:linear-gradient(135deg,#0f0f0f,#1a1a1a);position:relative;display:flex;align-items:center;justify-content:center;">'
+        +'<svg width="48" height="48" viewBox="0 0 24 24" fill="rgba(255,255,255,.15)"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>'
+        +'<div style="position:absolute;bottom:.3rem;right:.3rem;background:rgba(0,0,0,.8);color:#fff;font-size:.65rem;padding:.1rem .3rem;border-radius:.2rem;">'+v.dur+'</div>'
+        +'</div>'
+        // 影片資訊
+        +'<div style="display:flex;gap:.5rem;padding:.5rem .8rem;">'
+        +makeAvatar(v.ch,36)
+        +'<div style="flex:1;">'
+        +'<div style="font-size:.78rem;color:#e8e8e8;line-height:1.4;font-weight:500;">'+v.title+'</div>'
+        +'<div style="font-size:.68rem;color:#888;margin-top:.2rem;">'+v.ch+' · '+v.views+' · '+v.time+'</div>'
+        +'</div>'
+        +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>'
+        +'</div></div>';
+    }).join('');
+
+    content.innerHTML = '<div style="background:#0f0f0f;border-bottom:1px solid #222;padding:.55rem .8rem;display:flex;align-items:center;justify-content:space-between;">'
+      +'<svg width="72" height="18" viewBox="0 0 90 20"><rect x="0" y="2" width="28" height="16" rx="4" fill="#ff0000"/><polygon points="11,6 11,14 19,10" fill="white"/><text x="32" y="15" fill="white" font-size="14" font-weight="700" font-family="sans-serif">YouTube</text></svg>'
+      +'<div style="display:flex;gap:.7rem;">'
+      +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'
+      +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
+      +'</div></div>'
+      +'<div style="display:flex;gap:.5rem;padding:.5rem .8rem;overflow-x:auto;border-bottom:1px solid #1a1a1a;scrollbar-width:none;">'
+      +['全部','音樂','韓流','最新','Live'].map(function(t,i){
+        return '<span style="flex-shrink:0;font-size:.72rem;padding:.25rem .7rem;border-radius:1rem;'
+          +(i===0?'background:#fff;color:#000;':'background:#1a1a1a;color:#aaa;')
+          +'cursor:pointer;">'+t+'</span>';
+      }).join('')
+      +'</div>'
+      +ytCards;
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
@@ -3461,15 +3704,37 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   // 重新綁定所有按鈕（解決安卓 onclick 失效問題）
-  setTimeout(()=>{
-    actions.querySelectorAll('button').forEach(btn=>{
-      const code = btn.getAttribute('onclick');
+  setTimeout(function(){
+    // 綁定 actions 按鈕
+    actions.querySelectorAll('button').forEach(function(btn){
+      var code = btn.getAttribute('onclick');
       if(!code) return;
       btn.removeAttribute('onclick');
       btn.addEventListener('click', function(e){
         e.stopPropagation();
         try{ new Function(code)(); }
         catch(err){ console.error('phone btn error:', err); }
+      });
+    });
+    // 綁定 content 裡的 onclick 按鈕和 data-fn 元素
+    content.querySelectorAll('[onclick]').forEach(function(el){
+      var code = el.getAttribute('onclick');
+      if(!code) return;
+      el.removeAttribute('onclick');
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        try{ new Function(code)(); }
+        catch(err){ console.error('phone content btn error:', err); }
+      });
+    });
+    content.querySelectorAll('[data-fn]').forEach(function(el){
+      el.addEventListener('click', function(){
+        var fn = el.dataset.fn;
+        var arg = el.dataset.arg;
+        if(typeof window[fn]==='function'){
+          if(arg!==undefined) window[fn](arg);
+          else window[fn]();
+        }
       });
     });
   }, 0);
