@@ -2303,6 +2303,11 @@ ${(()=>{
 3. 若男友姓名有指定，嚴格根據其真實公開形象構建人設，不可OOC；若未指定，自行選定後全程一致
 4. 玩家只有主視角，不顯示任何數值、概率、百分比、狀態標籤、遊戲化提示
 5. 男友隱藏缺點在20回合後透過細節顯現，不單獨提示
+5b.【節奏調配】劇情需有張弛，不能每回合都是大事件。
+   甜蜜日常回合（DAILY_SWEET/LIGHT_CHAT/PLAYFUL_MOMENT）：
+   - 選項要輕鬆自然，像真實聊天而非重大抉擇
+   - 他的行為細節要體現性格（高冷的人送咖啡不說話、溫柔的人記住你說過的小事）
+   - 這種回合的目的是讓玩家感受「在一起的日常感」，不是推進劇情
 6. 親密場景視好感度與情境自然觸發（不強制每4回合），採文學言情筆法：
    感官細節烘托氛圍，情感與描寫並重，用詞明確但有美感，自然融入脈絡
    觸發時可自然安排避孕相關情節，但絕對不得出現任何數字、概率、百分比，必須完全融入敘事，以人物行為和對話呈現，不能有任何遊戲化提示
@@ -2328,6 +2333,11 @@ ${(()=>{
 18. 【季節節日】注意遊戲內日期，特殊節日自然觸發對應劇情
 19. 【結局走向】暗中追蹤最可能結局，在 endingHint 更新
 20. 【男友性格檔案】首回合必須在 bfProfileUpdate 建立性格檔案，後續嚴格遵守，不可突然改變
+    性格檔案是硬性約束，任何情況下都不得違反：
+    - 若他是高冷型，不會突然說甜言蜜語（但可以用行動表達）
+    - 若他是溫柔型，不會突然冷漠對待（但可以有自己的心事）
+    - 他的說話方式、口頭禪、對壓力的反應都要一致
+    - 即使劇情進入親密場景，他的核心性格也不會變，只是表達方式更柔軟
 21. 【記憶庫】劇情中自然提及玩家說過的細節；若玩家透露新的個人習慣/喜好/心事，在 playerMemoryAdd 記錄
 22. 【選項標籤】每個選項附上屬性標籤，在 optionTags 欄位以陣列回報（active/passive/emotional/rational/conflict/compromise）
 23. 【玩家故事線】若 playerStory 尚未建立，在 playerStoryUpdate 回報玩家的個人目標和當前挑戰；每3-4回合穿插一個純粹關於玩家自己的事件
@@ -2379,15 +2389,18 @@ sceneOver 的判斷標準：
 sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，不要鋪墊新情節。
 
 【選項設計原則】：
-每個選項必須代表真正不同的選擇，且對劇情有實質影響：
-- 體現不同的態度或價值觀（積極vs保守、理性vs感性）
-- 選擇不同會導致不同的後續劇情發展
-- 不是同一件事的不同細節描述（例如「去沖澡」和「擦頭髮」是同一件事的步驟，不是有意義的選擇）
-- 涉及玩家性格的展現機會
+每個選項必須代表真正不同的方向，讓玩家感受到「這個選擇有重量」：
+
+選項品質要求：
+- 每個選項背後有不同的情感邏輯（主動追求 vs 保持距離、坦誠 vs 隱藏、順從 vs 堅持）
+- 選項之間的差異要讓玩家猶豫——如果玩家看完三個選項能立刻不假思索選，代表選項差異不夠
+- 選項文字本身不說明後果，但玩家應該能感受到「選A和選B會走向截然不同的結果」
+- 至少一個選項應該有一定風險或代價（可能讓關係更近但更暴露、或更安全但錯過機會）
 
 禁止出現的選項類型：
 - 只是描述行動細節步驟（「擦乾頭髮」「躺上床」「閉上眼睛」等日常瑣事）
 - 選哪個結果都一樣的偽選擇
+- 純粹正面無風險的「完美選項」（現實中沒有零代價的選擇）
 
 必須包含一個【查看手機】選項（label用「📱」）
 選項D固定為「自定義（玩家自行輸入）」`;
@@ -3452,7 +3465,7 @@ async function renderPhonePage(page){
           +'背景：'+(gameState.background||'未知')+'\n\n'
           +'請生成：\n'
           +'{"handle":"英文小寫帳號（2-12字，符合人設，如偶像用藝名縮寫，素人用名字變體，不要底線）",'
-          +'"bio":"IG簡介（2行以內，用emoji，符合真實韓國IG風格，簡潔有個性，不暴露秘密身份）",'
+          +'"bio":"IG簡介（2行以內，用emoji，符合真實韓國IG風格，只寫興趣/風格/人生態度等公開資訊，絕對不能出現財閥/身份/家庭背景/練習生等敏感資訊）",'
           +'"isPrivate":true或false,'
           +'"posts":['
           +'{"content":"第1篇貼文內容（短句+emoji，符合人設）","time":"3天前"},'
@@ -3479,6 +3492,12 @@ async function renderPhonePage(page){
       } catch(e){ gameState.myInsProfile = {handle:(gameState.playerName||'user').toLowerCase(), bio:'', isPrivate:true}; }
     }
     const mpName = gameState.playerName || '我';
+    // 若已有資料但 bio 含有敏感詞，清空重新生成
+    if(gameState.myInsProfile && gameState.myInsProfile.bio){
+      var sensWords = ['財閥','出身','練習生','偶像','身份','秘密'];
+      var hasSens = sensWords.some(function(w){ return gameState.myInsProfile.bio.includes(w); });
+      if(hasSens) gameState.myInsProfile = null;
+    }
     const myIns = gameState.myInsProfile || {};
     const mpHandle = myIns.handle ? '@'+myIns.handle : '@' + mpName.replace(/\s/g,'_').toLowerCase();
     const mpBio = myIns.bio || (gameState.background ? gameState.background.slice(0,40) : '探索首爾中 🌙');
@@ -3506,7 +3525,7 @@ async function renderPhonePage(page){
       .map(function(s){ return '<div style="text-align:center;font-size:.78rem;color:#eee;line-height:1.6;">'+s+'</div>'; }).join('')
       +'</div></div>'
       +'<div style="font-size:.82rem;color:#eee;font-weight:600;margin-bottom:.1rem;">'+mpName+'</div>'
-      +'<div style="font-size:.75rem;color:#888;margin-bottom:.2rem;">'+(gameState.playerIdentity||'')+(gameState.playerNation?' · '+gameState.playerNation:'')+'</div>'
+
       +'<div style="font-size:.72rem;color:#aaa;line-height:1.5;">'+mpBio+'</div>'
       +'<button style="width:100%;margin-top:.6rem;padding:.35rem;background:#222;border:1px solid #333;color:#eee;border-radius:.5rem;font-size:.78rem;cursor:pointer;">編輯個人資料</button>'
       +'</div>';
@@ -4620,6 +4639,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r57</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r59</div>
 </body>
 </html>
