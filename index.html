@@ -501,7 +501,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260515-r47</p>
+    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260519-r49</p>
   </div>
 </div>
 
@@ -2267,12 +2267,19 @@ sceneOver 的判斷標準：
 
 sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，不要鋪墊新情節。
 
-【選項邏輯規則】：
-- 選項必須符合當前情境和對話脈絡
-- sceneOver=false 時：選項是「接下來說什麼/做什麼」，貼合對話
-- sceneOver=true 時：選項是「接下來去哪/做什麼」，開啟新的動線
-- 必須包含一個【查看手機】選項（label用「📱」）
-- 選項D固定為「自定義（玩家自行輸入）」`;
+【選項設計原則】：
+每個選項必須代表真正不同的選擇，且對劇情有實質影響：
+- 體現不同的態度或價值觀（積極vs保守、理性vs感性）
+- 選擇不同會導致不同的後續劇情發展
+- 不是同一件事的不同細節描述（例如「去沖澡」和「擦頭髮」是同一件事的步驟，不是有意義的選擇）
+- 涉及玩家性格的展現機會
+
+禁止出現的選項類型：
+- 只是描述行動細節步驟（「擦乾頭髮」「躺上床」「閉上眼睛」等日常瑣事）
+- 選哪個結果都一樣的偽選擇
+
+必須包含一個【查看手機】選項（label用「📱」）
+選項D固定為「自定義（玩家自行輸入）」`;
 }
 
 // ── 開始遊戲 ──
@@ -2771,22 +2778,27 @@ async function handlePlayerAction(playerChoice){
   document.getElementById('story-panel').appendChild(typingDiv);
   document.getElementById('story-panel').scrollTop = 99999;
 
-  // 場景內回應：純文字格式，要求附上結束標記和選項
+  // 判斷這個行動是否是「單人行動」（沒有對話對象，只是玩家自己做的事）
+  const isSoloAction = !playerChoice.includes('說') && !playerChoice.includes('問')
+    && !playerChoice.includes('告訴') && !playerChoice.includes('「')
+    && !playerChoice.includes('回覆') && !playerChoice.includes('聊');
+
   const sceneP = [
     '當前場景：' + (gameState.currentSceneContext || '正在進行中的場景'),
-    '玩家剛才：「' + playerChoice + '」',
+    '玩家的行動：「' + playerChoice + '」',
     '',
-    '請直接回應這個行動，格式如下（必須完整）：',
+    '請回應這個行動。格式如下：',
     '',
     '[回應]',
-    '（1-3句，只寫對方反應或場景變化，不開啟新情節）',
+    '（1-2句簡短描述這個行動的即時結果，不要重複玩家已做的事，直接寫結果或後續）',
     '',
     '[場景結束]: 是 或 否',
-    '（若這個話題/場景已自然收尾填「是」，否則填「否」）',
+    isSoloAction
+      ? '這是一個單人行動（無對話），除非這個行動引發了新的衝突或意外，否則請填「是」，讓劇情進入下一個有意義的場景。'
+      : '若對話/互動自然結束填「是」；若還有未完成的交流填「否」。',
     '',
-    '[下一步選項A]: （若場景繼續：玩家可以說或做的事；若場景結束：接下來去哪/做什麼）',
-    '[下一步選項B]: （另一個方向）',
-    '[下一步選項C]: （再一個方向，選填）',
+    '[下一步選項A]: （僅在場景繼續時填寫，否則留空）',
+    '[下一步選項B]: （同上）',
   ].join('\n');
 
 
@@ -3042,11 +3054,37 @@ function closePhone(){
 }
 
 function updatePhoneClock(){
-  const now = new Date();
-  document.getElementById('po-time').textContent =
-    `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  document.getElementById('po-battery').textContent =
-    Math.floor(Math.random()*30+60)+'%';
+  // 優先使用劇情時間，解析 gameState.time
+  let displayTime = '';
+  const storyTime = gameState.time || '';
+
+  // 嘗試解析「下午2:35」「上午10:05」「晚上11:30」等格式
+  const matchAmPm = storyTime.match(/(上午|下午|晚上|早上|凌晨)\s*(\d{1,2})[：:](\d{2})/);
+  if(matchAmPm){
+    let h = parseInt(matchAmPm[2]);
+    const m = matchAmPm[3];
+    const period = matchAmPm[1];
+    if((period==='下午'||period==='晚上') && h < 12) h += 12;
+    if((period==='上午'||period==='早上'||period==='凌晨') && h === 12) h = 0;
+    displayTime = String(h).padStart(2,'0') + ':' + m;
+  }
+
+  // 嘗試解析「14:35」24小時格式
+  if(!displayTime){
+    const match24 = storyTime.match(/(\d{1,2})[：:](\d{2})/);
+    if(match24) displayTime = String(parseInt(match24[1])).padStart(2,'0') + ':' + match24[2];
+  }
+
+  // 若無法解析，用實際時間
+  if(!displayTime){
+    const now = new Date();
+    displayTime = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  }
+
+  document.getElementById('po-time').textContent = displayTime;
+  // 電池電量保持固定（用存檔值或初始值）
+  if(!gameState._battery) gameState._battery = Math.floor(Math.random()*30+60);
+  document.getElementById('po-battery').textContent = gameState._battery + '%';
 }
 
 function getDisplayBfName(){
