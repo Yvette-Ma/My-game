@@ -2580,9 +2580,27 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
 
   // 通知
   if(data.notifications && data.notifications.length){
-    data.notifications.forEach(n=>{
+    data.notifications.forEach(function(n){
       showNotifToast(n.app, n.content);
       gameState.phoneData.notifs.unshift({app:n.app, content:n.content, time:data.time||''});
+
+      // KakaoTalk 通知 → 自動建立聊天記錄
+      if(n.app && n.app.includes('Kakao') && n.content){
+        var senderMatch = n.content.match(/^([^：:]+)[：:]/);
+        if(senderMatch){
+          var sender = senderMatch[1].trim();
+          var msgText = n.content.replace(/^[^：:]+[：:]\s*/, '');
+          if(sender && sender !== gameState.playerName){
+            var chats = gameState.phoneData.kakao.chats;
+            if(!chats[sender]) chats[sender] = [];
+            // 避免重複加入
+            var lastMsg = chats[sender].slice(-1)[0];
+            if(!lastMsg || lastMsg.text !== msgText){
+              chats[sender].push({from:sender, text:msgText, time:data.time||''});
+            }
+          }
+        }
+      }
     });
   }
 
@@ -3259,8 +3277,15 @@ function renderINSHome(){
   var candidates = gameState.bfCandidates||[];
 
   // Stories 列
+  // 只顯示已認識（有聊天記錄或在 npcs 裡）的人
+  var knownPeople = Object.keys(gameState.phoneData.kakao.chats||{})
+    .concat(Object.keys(gameState.npcs||{}))
+    .filter(function(n,i,a){ return a.indexOf(n)===i; }); // 去重
+
   var storyItems = [{name:pName,self:true}];
-  (candidates.length?candidates:(bfName?[bfName]:[])).slice(0,5).forEach(function(n){storyItems.push({name:n,self:false});});
+  knownPeople.slice(0,5).forEach(function(n){
+    storyItems.push({name:n,self:false});
+  });
 
   var storiesHtml = storyItems.map(function(s){
     var ring = s.self
@@ -3403,24 +3428,55 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins-mypage'){
-    const playerName = gameState.playerName || '我';
-    const playerHandle = '@' + (playerName).replace(/\s/g,'_').toLowerCase();
-    content.innerHTML = '<div class="phone-app-header">'
-      + '<span class="app-name">' + playerHandle + '</span>'
-      + '</div>'
-      + '<div style="padding:.8rem;border-bottom:1px solid #1a1a24;display:flex;gap:1rem;align-items:center;">'
-      + '<div style="width:48px;height:48px;border-radius:50%;background:#2a2040;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">👤</div>'
-      + '<div>'
-      + '<div style="font-size:.85rem;color:var(--text);">' + playerName + '</div>'
-      + '<div style="font-size:.7rem;color:#666;margin-top:.2rem;">'
-      + (gameState.playerIdentity || '') + (gameState.playerNation ? ' · ' + gameState.playerNation : '')
-      + '</div>'
-      + '</div>'
-      + '</div>'
-      + '<div style="padding:.5rem .8rem;">'
-      + '<div class="ins-post"><div class="post-user" style="color:#555;">最新貼文</div>'
-      + '<div class="post-content" style="color:#666;">（私人帳號，劇情推進後會有更新）</div></div>'
-      + '</div>';
+    const mpName = gameState.playerName || '我';
+    const mpHandle = '@' + mpName.replace(/\s/g,'_').toLowerCase();
+    const mpPosts = gameState.phoneData.ins.posts.filter(function(p){ return p.user===mpName||p.self; });
+    const mpFollowers = Math.floor(Math.random()*500+200);
+    const mpFollowing = Math.floor(Math.random()*300+100);
+    const mpPostCount = Math.floor(Math.random()*20+8);
+
+    // 個人資料區
+    var mpHeader = '<div style="padding:.55rem .8rem;border-bottom:1px solid #111;display:flex;align-items:center;justify-content:space-between;">'
+      +'<span style="font-size:.88rem;color:#fff;font-weight:700;">'+mpHandle+'</span>'
+      +'<div style="display:flex;gap:.7rem;">'
+      +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'
+      +'</div></div>';
+
+    var mpProfile = '<div style="padding:.8rem;">'
+      +'<div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:.7rem;">'
+      +makeAvatar(mpName,72)
+      +'<div style="display:flex;gap:1.5rem;">'
+      +['<b>'+mpPostCount+'</b><br><span style="color:#888;">貼文</span>',
+        '<b>'+mpFollowers+'</b><br><span style="color:#888;">粉絲</span>',
+        '<b>'+mpFollowing+'</b><br><span style="color:#888;">追蹤中</span>']
+      .map(function(s){ return '<div style="text-align:center;font-size:.78rem;color:#eee;line-height:1.6;">'+s+'</div>'; }).join('')
+      +'</div></div>'
+      +'<div style="font-size:.82rem;color:#eee;font-weight:600;margin-bottom:.1rem;">'+mpName+'</div>'
+      +'<div style="font-size:.75rem;color:#888;margin-bottom:.2rem;">'+(gameState.playerIdentity||'')+(gameState.playerNation?' · '+gameState.playerNation:'')+'</div>'
+      +'<div style="font-size:.72rem;color:#aaa;line-height:1.5;">'+(gameState.background||'探索首爾中 🌙')+'</div>'
+      +'<button style="width:100%;margin-top:.6rem;padding:.35rem;background:#222;border:1px solid #333;color:#eee;border-radius:.5rem;font-size:.78rem;cursor:pointer;">編輯個人資料</button>'
+      +'</div>';
+
+    // 貼文格線（3欄）
+    var gridItems = '';
+    for(var gi=0; gi<9; gi++){
+      var gPost = mpPosts[gi];
+      gridItems += '<div style="aspect-ratio:1;background:'+(gPost
+        ?'linear-gradient(135deg,#1a1528,#0e0e1a)'
+        :'#111')+';display:flex;align-items:center;justify-content:center;border:1px solid #000;">'
+        +(gPost?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>':'')
+        +'</div>';
+    }
+
+    var mpGrid = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:.3rem;">'
+      +'<div style="grid-column:1/-1;display:flex;gap:1rem;padding:.3rem .8rem;border-bottom:1px solid #111;border-top:1px solid #111;">'
+      +'<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>'
+      +'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>'
+      +'</div>'
+      +gridItems
+      +'</div>';
+
+    content.innerHTML = mpHeader + mpProfile + mpGrid;
     actions.innerHTML = `
       <button class="po-btn" onclick="renderPhonePage('ins')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
@@ -4510,6 +4566,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r53</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r54</div>
 </body>
 </html>
