@@ -2261,20 +2261,6 @@ function renderScrollPage(page){
     content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">👥</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">魔法通訊錄</span></div><div style="background:#0a0806;border-bottom:1px solid #2a2010;padding:.35rem .8rem;font-size:.6rem;color:#706040;font-style:italic;"><span style="color:#806040;">👥 </span>劇情中認識的人物會記錄在此。點擊核心角色可跳轉至貓頭鷹信往來記錄。</div>${html}`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
   }
-
-  // 事件委派重綁定
-  setTimeout(function(){
-    const acts=document.getElementById('so-actions');
-    if(acts) acts.querySelectorAll('button[onclick]').forEach(function(btn){
-      const code=btn.getAttribute('onclick');if(!code)return;
-      btn.removeAttribute('onclick');btn.addEventListener('click',function(){try{new Function(code)();}catch(e){}});
-    });
-    const soContent=document.getElementById('so-content');
-    if(soContent) soContent.querySelectorAll('[onclick]').forEach(function(el){
-      const code=el.getAttribute('onclick');if(!code)return;
-      el.removeAttribute('onclick');el.addEventListener('click',function(){try{new Function(code)();}catch(e){}});
-    });
-  },0);
 }
 
 async function sendOwlMessage(){
@@ -2683,6 +2669,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v1.0</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v1.6</div>
 </body>
 </html>
