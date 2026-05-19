@@ -501,7 +501,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.75rem;color:var(--text3);">已儲存設定</button>
     </div>
     <p style="margin-top:1.5rem;font-size:.72rem;color:var(--text3);">請使用 Google 帳號登入以同步存檔</p>
-    <p style="margin-top:.8rem;font-size:.58rem;color:#585858;letter-spacing:.03em;">v20260519-r52</p>
   </div>
 </div>
 
@@ -3309,10 +3308,10 @@ function renderINSHome(){
   if(!postCardsHtml) postCardsHtml='<div style="padding:2rem;text-align:center;color:#444;font-size:.78rem;">尚無動態</div>';
 
   return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.55rem .8rem;border-bottom:1px solid #111;">'
-    +'<span style="font-size:1rem;color:#fff;font-weight:700;font-family:'Billabong','Dancing Script',cursive,sans-serif;letter-spacing:.5px;">Instagram</span>'
+    +'<span style="font-size:1rem;color:#fff;font-weight:700;font-family:cursive;letter-spacing:.5px;">Instagram</span>'
     +'<div style="display:flex;gap:.7rem;align-items:center;">'
     +'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>'
-    +'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" onclick="renderPhonePage('ins-dm');"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>'
+    +'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" onclick="renderPhonePage(\'ins-dm\')"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>'
     +'</div></div>'
     +'<div style="display:flex;gap:.5rem;padding:.6rem .8rem;overflow-x:auto;border-bottom:1px solid #111;scrollbar-width:none;">'+storiesHtml+'</div>'
     +postCardsHtml;
@@ -4511,5 +4510,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#3a3a3a;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r53</div>
 </body>
 </html>
