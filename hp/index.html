@@ -1533,9 +1533,7 @@ notifications 中的 app 欄位使用魔法世界的媒介：
   "time": "具體時間（如：1991年10月31日 週四 深夜11:42，霍格華茲）",
   "notifications": [{"app":"媒介名","content":"訊息內容"}],
   "narration": "場景敘述（魔法世界氛圍，具體細節，150字內）",
-  "event": "本回合事件（具體發生的事，150字內）",
-  "sceneOver": true或false,
-  "sceneResponse": "對玩家行動的即時回應（1-4句）",
+  "event": "本回合發生的事（具體場景、對話或行動，150字內）",
   "options": [
     {"label":"A","text":"選項"},
     {"label":"B","text":"選項"},
@@ -1765,20 +1763,17 @@ function disableOptions(){document.getElementById('options-panel').classList.add
 
 // ── 處理玩家行動 ──
 async function handlePlayerAction(playerChoice){
-  const typingDiv=document.createElement('div');typingDiv.className='typing-indicator';typingDiv.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';document.getElementById('story-panel').appendChild(typingDiv);document.getElementById('story-panel').scrollTop=99999;
-  const isSoloAction=!playerChoice.includes('說')&&!playerChoice.includes('問')&&!playerChoice.includes('告訴')&&!playerChoice.includes('「')&&!playerChoice.includes('回覆')&&!playerChoice.includes('聊');
-  const sceneP=['當前場景：'+(gameState.currentSceneContext||'進行中的場景'),'玩家的行動：「'+playerChoice+'」','','請回應這個行動。格式如下：','','[回應]','（1-2句簡短描述這個行動的即時結果，直接寫結果或後續）','','[場景結束]: 是 或 否',isSoloAction?'這是一個單人行動（無對話），除非引發新的衝突或意外，否則請填「是」，讓劇情進入下一個場景。':'若對話/互動自然結束填「是」；若還有未完成的交流填「否」。','','[下一步選項A]: （僅在場景繼續時填寫，否則留空）','[下一步選項B]: （同上）'].join('\n');
+  const typingDiv=document.createElement('div');
+  typingDiv.className='typing-indicator';
+  typingDiv.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
+  document.getElementById('story-panel').appendChild(typingDiv);
+  document.getElementById('story-panel').scrollTop=99999;
   try {
-    const origHistory=gameState.history;gameState.history=gameState.history.slice(-6);
-    const resp=await callAI(sceneP);gameState.history=origHistory;typingDiv.remove();
-    const responseMatch=resp.match(/\[回應\][^\n]*\n([\s\S]*?)(?=\[場景結束\]|$)/);const responseText=responseMatch?responseMatch[1].trim():'';
-    const sceneOverMatch=resp.match(/\[場景結束\]:\s*(是|Yes|true)/i);const sceneOver=!!sceneOverMatch;
-    const optAMatch=resp.match(/\[下一步選項A\]:\s*(.+)/);const optBMatch=resp.match(/\[下一步選項B\]:\s*(.+)/);
-    if(responseText){const div=document.createElement('div');div.className='story-msg scene-response';div.textContent=responseText;appendMsg(div);gameState.storyLog.push({type:'narration',text:responseText});}
-    if(sceneOver){await nextRound(playerChoice);}
-    else{const extraOpts=[];if(optAMatch&&optAMatch[1].trim())extraOpts.push({label:'A',text:optAMatch[1].trim()});if(optBMatch&&optBMatch[1].trim())extraOpts.push({label:'B',text:optBMatch[1].trim()});if(!extraOpts.length){extraOpts.push({label:'A',text:'繼續'});extraOpts.push({label:'B',text:'換個方向'});}extraOpts.push({label:'📜',text:'查看通訊器'});extraOpts.push({label:'D',text:'自定義（玩家自行輸入）'});renderOptions(extraOpts);}
+    typingDiv.remove();
+    await nextRound(playerChoice);
   } catch(e){
-    typingDiv.remove();addSystemMsg('❌ 連線失敗：'+e.message);
+    typingDiv.remove();
+    addSystemMsg('❌ 連線失敗：'+e.message);
     renderOptions([{label:'A',text:'重試'},{label:'D',text:'自定義（玩家自行輸入）'}]);
   }
 }
