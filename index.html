@@ -3439,6 +3439,45 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='ins-mypage'){
+    // 若尚無 AI 生成的個人資料，先生成
+    if(!gameState.myInsProfile){
+      content.innerHTML = '<div style="padding:2rem;text-align:center;color:#555;font-size:.78rem;">載入中…</div>';
+      try {
+        const insGenPrompt = '根據以下玩家設定，生成真實感的 Instagram 個人資料，以JSON回覆（不要其他文字）：\n'
+          +'玩家姓名：'+( gameState.playerName||'未知')+'\n'
+          +'身份：'+(gameState.playerIdentity||'未知')+'\n'
+          +'國籍：'+(gameState.playerNation||'未知')+'\n'
+          +'個性：'+(gameState.traits||'未知')+'\n'
+          +'才能：'+(gameState.talents||'未知')+'\n'
+          +'背景：'+(gameState.background||'未知')+'\n\n'
+          +'請生成：\n'
+          +'{"handle":"英文小寫帳號（2-12字，符合人設，如偶像用藝名縮寫，素人用名字變體，不要底線）",'
+          +'"bio":"IG簡介（2行以內，用emoji，符合真實韓國IG風格，簡潔有個性，不暴露秘密身份）",'
+          +'"isPrivate":true或false,'
+          +'"posts":['
+          +'{"content":"第1篇貼文內容（短句+emoji，符合人設）","time":"3天前"},'
+          +'{"content":"第2篇貼文內容","time":"1週前"},'
+          +'{"content":"第3篇貼文內容","time":"2週前"}'
+          +']}';
+
+        const origHist = gameState.history;
+        gameState.history = [];
+        const insResp = await callAI(insGenPrompt);
+        gameState.history = origHist;
+
+        const insCleaned = insResp.split('```json').join('').split('```').join('').trim();
+        const insMatch = insCleaned.match(/\{[\s\S]*\}/);
+        if(insMatch){
+          const insData = JSON.parse(insMatch[0]);
+          gameState.myInsProfile = insData;
+          // 把貼文存入 phoneData
+          if(insData.posts && insData.posts.length){
+            insData.posts.forEach(function(p){ p.user = gameState.playerName; p.self = true; });
+            gameState.phoneData.ins.posts = insData.posts.concat(gameState.phoneData.ins.posts);
+          }
+        }
+      } catch(e){ gameState.myInsProfile = {handle:(gameState.playerName||'user').toLowerCase(), bio:'', isPrivate:true}; }
+    }
     const mpName = gameState.playerName || '我';
     const myIns = gameState.myInsProfile || {};
     const mpHandle = myIns.handle ? '@'+myIns.handle : '@' + mpName.replace(/\s/g,'_').toLowerCase();
@@ -4581,6 +4620,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r56</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r57</div>
 </body>
 </html>
