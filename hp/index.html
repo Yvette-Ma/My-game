@@ -124,16 +124,38 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 #screen-game.active{display:flex;}
 .game-header{
   display:flex;align-items:center;justify-content:space-between;
-  padding:.6rem 1rem;background:var(--bg2);
+  padding:.5rem .8rem;background:var(--bg2);
   border-bottom:1px solid var(--border);flex-shrink:0;z-index:20;
+  gap:.5rem;min-height:44px;
 }
-.gh-left{display:flex;align-items:center;gap:.6rem;}
-.gh-title{font-family:'Cinzel',serif;font-size:.82rem;color:var(--gold3);letter-spacing:.08em;}
-.gh-round{font-size:.7rem;color:var(--text3);background:var(--bg3);padding:.2rem .5rem;border-radius:.2rem;border:1px solid var(--border);}
-.gh-time{font-size:.7rem;color:var(--text3);font-family:'EB Garamond',serif;font-style:italic;}
-.gh-right{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
-.gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.3rem .5rem;border-radius:.25rem;cursor:pointer;font-size:.68rem;transition:all .2s;font-family:'EB Garamond',serif;}
+.gh-left{display:flex;align-items:center;gap:.45rem;min-width:0;flex:1;overflow:hidden;}
+.gh-title{font-family:'Cinzel',serif;font-size:.72rem;color:var(--gold3);letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gh-round{font-size:.65rem;color:var(--text3);background:var(--bg3);padding:.18rem .45rem;border-radius:.2rem;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
+.gh-time{font-size:.62rem;color:var(--text3);font-family:'EB Garamond',serif;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.gh-right{display:flex;align-items:center;gap:.3rem;flex-shrink:0;}
+.gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .5rem;border-radius:.25rem;cursor:pointer;font-size:.65rem;transition:all .2s;font-family:'EB Garamond',serif;white-space:nowrap;}
 .gh-btn:hover{border-color:var(--gold3);color:var(--gold3);}
+
+/* ── 溢出選單 ── */
+.gh-more-wrap{position:relative;display:inline-block;}
+.gh-more-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .45rem;border-radius:.25rem;cursor:pointer;font-size:.75rem;line-height:1;transition:all .2s;}
+.gh-more-btn:hover{border-color:var(--gold3);color:var(--gold3);}
+.gh-dropdown{
+  position:absolute;top:calc(100% + 4px);right:0;z-index:50;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:.35rem;min-width:100px;
+  display:none;flex-direction:column;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
+}
+.gh-dropdown.open{display:flex;}
+.gh-dd-item{
+  padding:.45rem .8rem;font-size:.72rem;color:var(--text2);cursor:pointer;
+  font-family:'EB Garamond',serif;transition:background .15s;white-space:nowrap;
+  background:none;border:none;text-align:left;
+}
+.gh-dd-item:hover{background:var(--bg3);color:var(--text);}
+.gh-dd-item.danger{color:var(--crimson2);}
+.gh-dd-sep{height:1px;background:var(--border);margin:.2rem 0;}
 .game-body{display:flex;flex:1;overflow:hidden;}
 .story-panel{flex:1;overflow-y:auto;padding:1.2rem 1rem 1rem;display:flex;flex-direction:column;gap:.8rem;}
 .story-msg{max-width:100%;font-size:clamp(.82rem,2.2vw,.94rem);line-height:1.9;}
@@ -181,32 +203,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 
 /* 選項區 */
 .options-panel{
-  flex-shrink:0;padding:.8rem 1rem 1rem;
+  flex-shrink:0;padding:.6rem .8rem .8rem;
   background:var(--bg2);border-top:1px solid var(--border);
-  display:flex;flex-direction:column;gap:.6rem;
+  display:flex;flex-direction:column;gap:.4rem;
 }
-.options-title{font-size:.68rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.1rem;font-family:'Cinzel',serif;text-transform:uppercase;}
-.options-grid{display:flex;flex-direction:column;gap:.4rem;}
+.options-title{font-size:.62rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.1rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.options-grid{display:flex;flex-direction:column;gap:.35rem;}
 .opt-btn{
-  display:flex;align-items:flex-start;gap:.6rem;
-  padding:.6rem .9rem;border-radius:.25rem;
+  display:flex;align-items:flex-start;gap:.55rem;
+  padding:.55rem .8rem;border-radius:.25rem;
   background:var(--bg3);border:1px solid var(--border);
   color:var(--text2);cursor:pointer;text-align:left;
-  font-family:'EB Garamond',serif;font-size:.82rem;line-height:1.55;
-  transition:all .2s;width:100%;
+  font-family:'EB Garamond',serif;font-size:.82rem;line-height:1.5;
+  transition:all .18s;width:100%;
 }
 .opt-btn:hover{background:var(--card);border-color:var(--gold3);color:var(--text);transform:translateX(3px);}
-.opt-btn.scroll-opt{border-color:rgba(200,168,74,.2);}
-.opt-label{font-size:.68rem;color:var(--text3);min-width:1.2rem;font-family:'Cinzel',serif;margin-top:.05rem;}
+.opt-btn.scroll-opt{border-color:rgba(200,168,74,.15);}
+.opt-label{font-size:.65rem;color:var(--text3);min-width:1.1rem;font-family:'Cinzel',serif;margin-top:.05rem;}
 .opt-text{flex:1;}
-.custom-input-row{display:flex;gap:.5rem;margin-top:.2rem;}
+.custom-input-row{display:flex;gap:.4rem;margin-top:.1rem;}
 .custom-input{
-  flex:1;padding:.5rem .8rem;border-radius:.25rem;
+  flex:1;padding:.48rem .75rem;border-radius:.25rem;
   background:var(--bg3);border:1px solid var(--border);
   color:var(--text);font-family:'EB Garamond',serif;font-size:.82rem;outline:none;
 }
 .custom-input:focus{border-color:var(--gold3);}
-.custom-send{padding:.5rem 1rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:.8rem;transition:background .2s;font-family:'EB Garamond',serif;}
+.custom-send{padding:.48rem .9rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:.8rem;transition:background .2s;font-family:'EB Garamond',serif;}
 .custom-send:hover{background:var(--border);}
 .options-panel.disabled .opt-btn{opacity:.4;pointer-events:none;}
 
@@ -216,11 +238,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   display:none;flex-direction:column;font-family:'EB Garamond',serif;
 }
 #scroll-overlay.open{display:flex;}
-.so-statusbar{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:.4rem .9rem;background:#080610;
-  font-size:.68rem;color:#484060;border-bottom:1px solid #1a1828;
-}
+
 .so-body{flex:1;overflow-y:auto;padding:.8rem;}
 .so-actions{
   padding:.6rem .8rem;background:#080610;border-top:1px solid #181828;
@@ -367,9 +385,119 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 /* ── 劇情回顧 ── */
 #recap-overlay{position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;}
 
+
+/* ══ 各通訊介面主題 CSS ══ */
+
+/* 貓頭鷹信 — 羊皮紙書信風格 */
+.letter-wrap{margin:.5rem .7rem;background:linear-gradient(160deg,#1e1a10,#16130b);border:1px solid #3a2e14;border-radius:.2rem;position:relative;overflow:hidden;}
+.letter-wrap::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(80,60,20,.07) 27px,rgba(80,60,20,.07) 28px);pointer-events:none;}
+.letter-seal{display:flex;align-items:center;justify-content:space-between;padding:.5rem .8rem .3rem;border-bottom:1px solid rgba(100,75,30,.3);}
+.letter-from{font-family:'Cinzel',serif;font-size:.68rem;color:#a08040;letter-spacing:.06em;}
+.letter-date{font-size:.6rem;color:#685840;font-style:italic;}
+.letter-body{padding:.65rem .85rem .8rem;font-size:.82rem;color:#c0a870;line-height:1.85;font-style:italic;position:relative;z-index:1;}
+.letter-list-item{padding:.5rem .8rem;border-bottom:1px solid rgba(80,60,20,.2);cursor:pointer;display:flex;align-items:center;gap:.55rem;transition:background .15s;}
+.letter-list-item:hover{background:rgba(80,60,20,.12);}
+.letter-list-owl{font-size:1rem;flex-shrink:0;}
+.letter-list-from{font-family:'Cinzel',serif;font-size:.7rem;color:#a08840;letter-spacing:.04em;margin-bottom:.12rem;}
+.letter-list-preview{font-size:.7rem;color:#706050;font-style:italic;}
+
+/* 魔法肖像 — 金框畫像 */
+.portrait-frame-outer{margin:.5rem .7rem;border:3px solid #4a3818;border-radius:.2rem;background:#0a0806;box-shadow:inset 0 0 20px rgba(0,0,0,.5),0 0 0 1px #2a1e0a,0 2px 8px rgba(0,0,0,.4);}
+.portrait-frame-header{padding:.45rem .75rem;background:linear-gradient(90deg,#1a1208,#221808,#1a1208);border-bottom:1px solid #3a2a10;display:flex;align-items:center;gap:.5rem;}
+.portrait-frame-name{font-family:'Cinzel',serif;font-size:.7rem;color:#c8a050;letter-spacing:.08em;}
+.portrait-status-dot{width:5px;height:5px;border-radius:50%;background:#507050;margin-left:auto;flex-shrink:0;}
+.portrait-scene{padding:.7rem .8rem;display:flex;gap:.7rem;align-items:flex-start;}
+.portrait-avatar{width:52px;height:64px;flex-shrink:0;background:linear-gradient(160deg,#1a1208,#2a1e10);border:1px solid #4a3820;border-radius:.1rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#a08040;font-family:'Cinzel',serif;}
+.portrait-dialogue{flex:1;}
+.portrait-speech-bubble{background:linear-gradient(135deg,#131008,#1a1508);border:1px solid #3a2a10;border-radius:.15rem;padding:.55rem .7rem;font-size:.8rem;color:#c8b080;line-height:1.7;font-style:italic;position:relative;}
+.portrait-speech-bubble::before{content:'◀';position:absolute;left:-.6rem;top:.6rem;font-size:.5rem;color:#3a2a10;}
+.portrait-speaker-name{font-family:'Cinzel',serif;font-size:.6rem;color:#806030;margin-top:.25rem;letter-spacing:.06em;}
+
+/* 預言家日報 — 報紙版面 */
+.prophet-masthead{background:linear-gradient(180deg,#0e0c06,#161208);border-bottom:2px solid #5a4020;padding:.6rem .8rem .5rem;text-align:center;}
+.prophet-title{font-family:'Cinzel',serif;font-size:1rem;color:#c8a040;letter-spacing:.2em;text-shadow:0 0 10px rgba(200,160,64,.25);}
+.prophet-subtitle{font-size:.55rem;color:#806840;letter-spacing:.25em;margin-top:.1rem;text-transform:uppercase;}
+.prophet-dateline{display:flex;justify-content:space-between;padding:.28rem .8rem;font-size:.6rem;color:#605040;border-bottom:1px solid #3a2810;font-style:italic;}
+.prophet-article{padding:.6rem .8rem;border-bottom:1px solid #2a2010;}
+.prophet-headline{font-family:'Cinzel',serif;font-size:.76rem;color:#c0a050;letter-spacing:.04em;margin-bottom:.3rem;line-height:1.4;}
+.prophet-byline{font-size:.58rem;color:#604830;margin-bottom:.28rem;font-style:italic;}
+.prophet-body{font-size:.76rem;color:#a09060;line-height:1.7;}
+.prophet-photo{width:100%;height:40px;background:linear-gradient(135deg,#1a1408,#0e0c06);border:1px solid #3a2810;border-radius:.1rem;margin:.25rem 0;display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#403020;letter-spacing:.1em;font-style:italic;}
+
+/* 巫師廣播 — 木製收音機 */
+.wireless-set{margin:.5rem .7rem;background:linear-gradient(180deg,#1c1008,#140c04);border:1px solid #5a2810;border-radius:.35rem;overflow:hidden;}
+.wireless-speaker-grill{height:6px;background:repeating-linear-gradient(90deg,#3a1808,#3a1808 2px,#1c0c04 2px,#1c0c04 4px);opacity:.6;}
+.wireless-display{padding:.5rem .8rem;background:#080604;border-bottom:1px solid #3a1a08;}
+.wireless-freq{font-size:.55rem;color:#804010;font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:.1rem;}
+.wireless-station-name{font-size:.78rem;color:#e08030;font-family:'Courier New',monospace;}
+.wireless-signal{display:flex;gap:2px;align-items:flex-end;margin-top:.2rem;}
+.wireless-bar{width:3px;background:#805020;border-radius:1px;animation:signalBar var(--sd,1s) ease-in-out infinite alternate;}
+@keyframes signalBar{from{opacity:.3;}to{opacity:.9;}}
+.wireless-broadcast-item{padding:.45rem .8rem;border-bottom:1px solid #2a1208;}
+.wireless-time-tag{font-size:.6rem;color:#804828;font-family:'Courier New',monospace;margin-bottom:.18rem;}
+.wireless-text{font-size:.77rem;color:#b07840;line-height:1.65;}
+.wireless-static-line{height:1px;background:repeating-linear-gradient(90deg,#301808,#301808 2px,transparent 2px,transparent 5px);margin:.15rem 0;opacity:.4;}
+
+/* 火焰網路 — 壁爐連線 */
+.floo-hearth-outer{margin:.5rem .7rem;background:linear-gradient(180deg,#0c0804,#160e04);border:2px solid #4a2808;border-radius:.25rem;overflow:hidden;}
+.floo-mantle{padding:.4rem .8rem;background:linear-gradient(90deg,#1a0e06,#221408,#1a0e06);border-bottom:1px solid #3a1e08;font-family:'Cinzel',serif;font-size:.65rem;color:#a06020;letter-spacing:.1em;text-align:center;}
+.floo-firebox{
+  height:56px;background:radial-gradient(ellipse at 50% 100%,#4a2008 0%,#2a1004 40%,#0a0602 100%);
+  display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:0 .5rem .3rem;
+  position:relative;overflow:hidden;
+}
+.floo-flame-svg{position:absolute;bottom:0;width:100%;height:100%;opacity:.6;}
+.floo-flame-el{
+  border-radius:50% 50% 35% 35%;animation:floFlicker var(--fd,1s) ease-in-out infinite alternate;
+  background:linear-gradient(180deg,var(--ft,#40b0ff),var(--fb,#2060c0));
+}
+@keyframes floFlicker{from{transform:scaleY(.85) scaleX(.9);opacity:.6;}to{transform:scaleY(1.1) scaleX(1);opacity:1;}}
+.floo-address-section{padding:.4rem 0;}
+.floo-section-label{font-size:.6rem;color:#704020;letter-spacing:.1em;padding:.2rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.floo-entry{padding:.45rem .85rem;border-bottom:1px solid rgba(80,40,8,.25);cursor:pointer;display:flex;align-items:center;gap:.55rem;transition:background .15s;}
+.floo-entry:hover{background:rgba(80,40,8,.2);}
+.floo-entry-icon{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2a1608,#1a0c04);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;border:1px solid #5a2808;}
+.floo-entry-name{font-family:'Cinzel',serif;font-size:.7rem;color:#c07030;letter-spacing:.04em;}
+.floo-entry-location{font-size:.6rem;color:#704020;font-style:italic;}
+
+/* 掠奪者地圖 — 手繪羊皮卷 */
+.marauder-scroll{
+  margin:.5rem .7rem;
+  background:linear-gradient(160deg,#201c08,#181406,#201c08);
+  border:2px solid #6a5a18;border-radius:.2rem;
+  position:relative;overflow:hidden;
+  box-shadow:inset 0 0 25px rgba(0,0,0,.35);
+}
+.marauder-scroll::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='2' cy='2' r='.5' fill='rgba(100,80,20,.08)'/%3E%3C/svg%3E");
+}
+.marauder-incantation-bar{text-align:center;padding:.5rem .6rem .35rem;border-bottom:1px dashed rgba(140,110,40,.35);}
+.marauder-spell{font-family:'EB Garamond',serif;font-style:italic;font-size:.68rem;color:#a08830;letter-spacing:.1em;}
+.marauder-map-content{padding:.5rem .7rem;}
+.marauder-area-title{font-family:'Cinzel',serif;font-size:.62rem;color:#907030;letter-spacing:.08em;text-transform:uppercase;margin:.4rem 0 .2rem;padding-bottom:.15rem;border-bottom:1px dashed rgba(140,110,40,.25);}
+.marauder-location{padding:.22rem .4rem .22rem .8rem;font-size:.75rem;color:#a09050;font-style:italic;position:relative;line-height:1.5;}
+.marauder-location::before{content:'';position:absolute;left:.3rem;top:.55rem;width:5px;height:5px;border-radius:50%;background:#c8a040;animation:mapPulse 2.5s ease-in-out infinite;opacity:.7;}
+@keyframes mapPulse{0%,100%{opacity:.2;transform:scale(.8);}50%{opacity:.9;transform:scale(1.1);}}
+.marauder-footer-text{text-align:center;padding:.35rem .6rem;border-top:1px dashed rgba(140,110,40,.3);font-size:.58rem;color:#605030;font-style:italic;}
+
+/* ══ END 各通訊介面 CSS ══ */
+
 /* 響應式 */
-@media(min-width:768px){.story-panel{padding:1.5rem 2rem;}.options-panel{padding:1rem 2rem 1.2rem;}.story-msg{font-size:.94rem;}.opt-btn{font-size:.85rem;}}
-@media(min-width:1024px){.game-body{max-width:800px;margin:0 auto;width:100%;}#screen-game{align-items:center;}#screen-game .game-header{width:100%;max-width:800px;}}
+@media(min-width:768px){
+  .story-panel{padding:1.2rem 1.6rem;}
+  .options-panel{padding:.7rem 1.4rem .9rem;}
+  .story-msg{font-size:.93rem;}
+  .opt-btn{font-size:.85rem;}
+  .gh-time{max-width:none;}
+}
+@media(min-width:1024px){
+  .game-body{max-width:800px;margin:0 auto;width:100%;}
+  #screen-game{align-items:center;}
+  #screen-game .game-header{width:100%;max-width:800px;}
+  .options-panel{padding:.8rem 2rem 1rem;}
+  .story-panel{padding:1.4rem 2rem;}
+}
 </style>
 </head>
 <body>
@@ -699,14 +827,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
     <div class="gh-right">
       <span class="save-indicator" id="save-indicator">已同步</span>
       <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫</button>
-      <button class="gh-btn" onclick="openScrollOverlay('home')">魔法器</button>
+      <button class="gh-btn" onclick="openScrollOverlay('home')">📜 通訊器</button>
       <button class="gh-btn" onclick="openMemories()">回憶</button>
-      <button class="gh-btn" onclick="showSettingsFromGame()">設定</button>
-      <button class="gh-btn" onclick="openRecap()">回顧</button>
-      <button class="gh-btn" onclick="replayRound()">重玩</button>
-      <button class="gh-btn" onclick="openTwist()">扭轉</button>
-      <button class="gh-btn" onclick="exitGame()">退出</button>
-      <button class="gh-btn" onclick="signOutUser()" style="color:var(--crimson2);">登出</button>
+      <!-- ── 溢出選單 ── -->
+      <div class="gh-more-wrap" id="gh-more-wrap">
+        <button class="gh-more-btn" onclick="toggleMoreMenu()" title="更多">⋯</button>
+        <div class="gh-dropdown" id="gh-dropdown">
+          <button class="gh-dd-item" onclick="showSettingsFromGame();closeMoreMenu()">⚙ 設定</button>
+          <button class="gh-dd-item" onclick="openRecap();closeMoreMenu()">📖 劇情回顧</button>
+          <button class="gh-dd-item" onclick="replayRound();closeMoreMenu()">↺ 重玩此回合</button>
+          <button class="gh-dd-item" onclick="openTwist();closeMoreMenu()">✦ 改寫命運</button>
+          <div class="gh-dd-sep"></div>
+          <button class="gh-dd-item" onclick="exitGame();closeMoreMenu()">⏏ 退出</button>
+          <button class="gh-dd-item danger" onclick="signOutUser();closeMoreMenu()">↩ 登出</button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="game-body">
@@ -720,10 +855,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 
 <!-- ════ 魔法通訊器（SCROLL OVERLAY）════ -->
 <div id="scroll-overlay">
-  <div class="so-statusbar">
-    <span id="so-time">魔法鐘：14:25</span>
-    <span>🦉 🔮 <span id="so-battery">滿格</span></span>
-  </div>
+
   <div class="so-body" id="so-body"><div id="so-content"></div></div>
   <div class="so-actions" id="so-actions"></div>
 </div>
@@ -1743,7 +1875,7 @@ window.signOutUser=async function(){if(confirm('確定要登出嗎？')){try{if(
 // ── 魔法通訊器 Overlay ──
 window.openScrollOverlay=function(page){
   const overlay=document.getElementById('scroll-overlay');overlay.classList.add('open');
-  const now=new Date();document.getElementById('so-time').textContent=`魔法鐘：${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  const now=new Date();
   renderScrollPage(page);
 };
 window.closeScroll=function(){document.getElementById('scroll-overlay').classList.remove('open');};
@@ -1763,176 +1895,365 @@ function makeAvatar(name,size){
 }
 
 function renderScrollPage(page){
-  const content=document.getElementById('so-content');const actions=document.getElementById('so-actions');
+  const content=document.getElementById('so-content');
+  const actions=document.getElementById('so-actions');
   if(!content||!actions)return;
-  content.style.color='#a09880';content.style.fontFamily="'EB Garamond',serif";
+  content.style.color='';content.style.fontFamily='';
 
+  const T=getDisplayTargetName();
+  const ERA=gameState.playerEra||'';
+
+  // ── 首頁 ──
   if(page==='home'){
-    const notifCount=gameState.magicData.notifs.length;const letterCount=gameState.magicData.owlPost.letters.length;
-    const targetName=getDisplayTargetName();
+    const nc=gameState.magicData.notifs.length;
+    const lc=gameState.magicData.owlPost.letters.length;
     content.innerHTML=`
-      <div style="text-align:center;padding:.5rem 0 .8rem;font-family:'Cinzel',serif;font-size:.72rem;color:#a08040;letter-spacing:.1em;">✦ 魔法通訊器 ✦</div>
-      <div style="font-size:.68rem;color:#585050;text-align:center;margin-bottom:1rem;font-style:italic;">${gameState.time||'霍格華茲'}</div>
+      <div style="background:linear-gradient(180deg,#0e0c06,#161208);padding:.6rem .8rem .4rem;border-bottom:1px solid #3a2810;text-align:center;">
+        <div style="font-family:'Cinzel',serif;font-size:.8rem;color:#c8a040;letter-spacing:.18em;">✦ 魔法通訊錄 ✦</div>
+        <div style="font-size:.6rem;color:#605040;font-style:italic;margin-top:.15rem;">${gameState.time||''}</div>
+      </div>
       <div class="home-app-grid">
         <div class="home-app" onclick="renderScrollPage('owl')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#1e1a10;">🦉</div>${letterCount>0?`<span class="app-badge">${letterCount}</span>`:''}</div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#1e1a10,#2a2210);">🦉</div>${lc>0?`<span class="app-badge">${lc}</span>`:''}</div>
           <div class="app-lbl">貓頭鷹信</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('portrait')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#0e1820;">🖼️</div></div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#141820,#0e1018);">🖼️</div></div>
           <div class="app-lbl">魔法肖像</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('prophet')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#10100e;">📰</div></div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#141208,#1a1608);">📰</div></div>
           <div class="app-lbl">預言家日報</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('wireless')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#18100e;">📻</div></div>
-          <div class="app-lbl">魔法廣播</div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#1a1008,#221408);">📻</div></div>
+          <div class="app-lbl">巫師廣播</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('floo')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#0e1610;">🔥</div></div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#0e1608,#121e0a);">🔥</div></div>
           <div class="app-lbl">火焰網路</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('notifs')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#141020;">📜</div>${notifCount>0?`<span class="app-badge">${notifCount}</span>`:''}</div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#141020,#1a1428);">📜</div>${nc>0?`<span class="app-badge">${nc}</span>`:''}</div>
           <div class="app-lbl">通知</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('marauder')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#100e10;">🗺️</div></div>
-          <div class="app-lbl">魔法地圖</div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#181608,#201c0a);">🗺️</div></div>
+          <div class="app-lbl">掠奪者地圖</div>
         </div>
         <div class="home-app" onclick="renderScrollPage('contacts')">
-          <div class="home-app-wrap"><div class="app-ico" style="background:#100e1a;">👥</div></div>
+          <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#141020,#0e0c1a);">👥</div></div>
           <div class="app-lbl">人脈</div>
         </div>
       </div>`;
     actions.innerHTML=`<button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 貓頭鷹信 列表 ──
   } else if(page==='owl'){
-    const letters=gameState.magicData.owlPost.letters;const targetName=getDisplayTargetName();
-    const targetLetters=targetName?(letters.filter(l=>l.from===targetName)||[]):[];const hasTarget=targetName&&targetLetters.length>0;
-    let listHtml='';
-    if(hasTarget){const lastLetter=targetLetters.slice(-1)[0];listHtml+=`<div class="owl-msg" style="cursor:pointer;" onclick="renderScrollPage('owl-target')"><div class="msg-from">${targetName} <span style="font-size:.58rem;color:#4a6;">● 已讀</span></div><div class="msg-content" style="color:#888;">${lastLetter.content.slice(0,30)}…</div></div>`;}
-    const others=letters.filter(l=>l.from!==targetName);others.forEach(l=>{listHtml+=`<div class="owl-msg"><div class="msg-from">${l.from}</div><div class="msg-content" style="color:#888;">${l.content.slice(0,25)}…</div></div>`;});
-    if(!listHtml) listHtml='<div style="padding:1.5rem;text-align:center;color:#444;font-size:.76rem;font-style:italic;">貓頭鷹尚未帶來任何信件</div>';
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🦉</span><span class="app-name">貓頭鷹信</span></div><div style="padding:.3rem 0;">${listHtml}</div>`;
-    actions.innerHTML=`${targetName?`<button class="so-btn" onclick="renderScrollPage('owl-target')">💌 與${targetName}的信件</button>`:''}
+    const letters=gameState.magicData.owlPost.letters;
+    const tLetters=T?letters.filter(l=>l.from===T):[];
+    const hasT=T&&tLetters.length>0;
+    let html='<div style="padding:.3rem 0;">';
+    if(hasT){
+      const last=tLetters.slice(-1)[0];
+      html+=`<div class="letter-list-item" onclick="renderScrollPage('owl-target')">
+        <span class="letter-list-owl">🦉</span>
+        <div><div class="letter-list-from">${T}</div>
+        <div class="letter-list-preview">${last.content.slice(0,35)}…</div></div>
+      </div>`;
+    }
+    const others=letters.filter(l=>l.from!==T&&l.from!=='me');
+    others.slice(0,5).forEach(l=>{
+      html+=`<div class="letter-list-item">
+        <span class="letter-list-owl">🦉</span>
+        <div><div class="letter-list-from">${l.from}</div>
+        <div class="letter-list-preview">${l.content.slice(0,30)}…</div></div>
+      </div>`;
+    });
+    if(!hasT&&!others.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">貓頭鷹尚未帶來任何信件</div>';
+    html+='</div>';
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">貓頭鷹信</span></div>${html}`;
+    actions.innerHTML=`${T?`<button class="so-btn" onclick="renderScrollPage('owl-target')">✍️ 與${T}的往來信件</button>`:''}
       <button class="so-btn" onclick="renderScrollPage('home')">← 返回</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 貓頭鷹信 對話 ──
   } else if(page==='owl-target'){
-    const targetName=getDisplayTargetName();const letters=gameState.magicData.owlPost.letters.filter(l=>l.from===targetName||l.from==='me');
-    if(!targetName||letters.length===0){content.innerHTML='<div class="parchment-header"><span class="app-name">貓頭鷹信</span></div><div style="text-align:center;color:#444;font-size:.76rem;padding:2rem;font-style:italic;">還沒有和 '+(targetName||'此人')+'互通信件</div>';actions.innerHTML='<button class="so-btn" onclick="renderScrollPage(\'owl\')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>';return;}
-    content.innerHTML=`<div class="parchment-header"><button class="back-btn" onclick="renderScrollPage('owl')">←</button><span class="app-icon">🦉</span><span class="app-name">${targetName}</span></div>
-      <div class="portrait-msg-wrap">
-        ${letters.slice(-10).map(l=>{const isMe=l.from==='me';return`<div class="portrait-bubble-row ${isMe?'me':'other'}">${!isMe?`<div class="portrait-name">${l.from}</div>`:''}<div class="portrait-msg ${isMe?'from-me':'from-other'}">${l.content}</div><div class="portrait-time">${l.time||''}</div></div>`;}).join('')}
+    const letters=gameState.magicData.owlPost.letters.filter(l=>l.from===T||l.from==='me');
+    if(!T||letters.length===0){
+      content.innerHTML=`<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">還沒有和${T||'此人'}互通信件</div>`;
+      actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('owl')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+      return;
+    }
+    const lettersHtml=letters.slice(-6).map(l=>{
+      const isMe=l.from==='me';
+      return`<div class="letter-wrap" style="margin:${isMe?'.4rem .7rem .4rem 2rem':'.4rem 2rem .4rem .7rem'};">
+        <div class="letter-seal">
+          <span class="letter-from">${isMe?gameState.playerName||'你':l.from}</span>
+          <span class="letter-date">${l.time||''}</span>
+        </div>
+        <div class="letter-body">${l.content}</div>
       </div>`;
+    }).join('');
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><button class="back-btn" onclick="renderScrollPage('owl')">←</button><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">${T}</span></div>${lettersHtml}`;
     actions.innerHTML=`<button class="so-btn" onclick="sendOwlMessage()">✍️ 寫回信</button>
       <button class="so-btn" onclick="renderScrollPage('owl')">← 返回</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 魔法肖像 列表 ──
   } else if(page==='portrait'){
-    const targetName=getDisplayTargetName();const chats=gameState.magicData.portraitChat.conversations;const chatEntries=Object.entries(chats).filter(([n,msgs])=>msgs&&msgs.length>0);
-    const hasTarget=targetName&&(chats[targetName]||[]).length>0;
-    let listHtml='';
-    if(hasTarget){const last=(chats[targetName]||[]).slice(-1)[0];listHtml+=`<div class="owl-msg" style="cursor:pointer;" onclick="renderScrollPage('portrait-target')"><div class="msg-from" style="color:#a08060;">${targetName} <span style="font-size:.58rem;color:#4a6;">● 在線</span></div><div class="msg-content" style="color:#888;">${last?last.content.slice(0,25)+'…':'點擊查看'}</div></div>`;}
-    chatEntries.forEach(([name,msgs])=>{if(name===targetName)return;const last=msgs.slice(-1)[0];listHtml+=`<div class="owl-msg"><div class="msg-from">${name}</div><div class="msg-content" style="color:#888;">${last?last.content.slice(0,20)+'…':''}</div></div>`;});
-    if(!listHtml) listHtml='<div style="padding:1.5rem;text-align:center;color:#444;font-size:.76rem;font-style:italic;">尚無魔法肖像通話記錄</div>';
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🖼️</span><span class="app-name">魔法肖像</span></div><div style="padding:.3rem 0;">${listHtml}</div>`;
-    actions.innerHTML=`${targetName?`<button class="so-btn" onclick="renderScrollPage('portrait-target')">🖼️ 與${targetName}通話</button>`:''}
+    const chats=gameState.magicData.portraitChat.conversations;
+    const hasT=T&&(chats[T]||[]).length>0;
+    let html='<div style="padding:.3rem 0;">';
+    if(hasT){
+      const last=(chats[T]||[]).slice(-1)[0];
+      html+=`<div class="letter-list-item" onclick="renderScrollPage('portrait-target')" style="border-left:2px solid #4a3818;">
+        <span class="letter-list-owl">🖼️</span>
+        <div><div class="letter-list-from" style="color:#c8a050;">${T} <span style="font-size:.58rem;color:#507050;">● 在框</span></div>
+        <div class="letter-list-preview">${last?last.content.slice(0,30)+'…':'點擊查看'}</div></div>
+      </div>`;
+    }
+    Object.entries(chats).filter(([n])=>n!==T).forEach(([name,msgs])=>{
+      const last=msgs.slice(-1)[0];
+      html+=`<div class="letter-list-item"><span class="letter-list-owl">🖼️</span>
+        <div><div class="letter-list-from">${name}</div>
+        <div class="letter-list-preview">${last?last.content.slice(0,25)+'…':''}</div></div>
+      </div>`;
+    });
+    if(!hasT&&!Object.keys(chats).length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">尚無魔法肖像通話記錄</div>';
+    html+='</div>';
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">魔法肖像</span></div>${html}`;
+    actions.innerHTML=`${T?`<button class="so-btn" onclick="renderScrollPage('portrait-target')">🖼️ 喚醒${T}的肖像</button>`:''}
       <button class="so-btn" onclick="renderScrollPage('home')">← 返回</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 魔法肖像 對話 ──
   } else if(page==='portrait-target'){
-    const targetName=getDisplayTargetName();const msgs=(gameState.magicData.portraitChat.conversations[targetName]||[]);
-    if(!targetName||msgs.length===0){content.innerHTML='<div class="parchment-header"><span class="app-name">魔法肖像</span></div><div style="text-align:center;color:#444;font-size:.76rem;padding:2rem;font-style:italic;">尚未與'+(targetName||'此人')+'建立肖像連結</div>';actions.innerHTML='<button class="so-btn" onclick="renderScrollPage(\'portrait\')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>';return;}
-    content.innerHTML=`<div class="parchment-header"><button class="back-btn" onclick="renderScrollPage('portrait')">←</button><span class="app-icon">🖼️</span><span class="app-name">${targetName}</span><span style="font-size:.62rem;color:#6a6;margin-left:.3rem;">● 在線</span></div>
-      <div class="portrait-msg-wrap">
-        ${msgs.slice(-10).map(m=>{const isMe=m.from==='me';return`<div class="portrait-bubble-row ${isMe?'me':'other'}">${!isMe?`<div class="portrait-name">${m.from}</div>`:''}<div class="portrait-msg ${isMe?'from-me':'from-other'}">${m.content}</div><div class="portrait-time">${m.time||''}</div></div>`;}).join('')}
+    const msgs=(gameState.magicData.portraitChat.conversations[T]||[]);
+    if(!T||msgs.length===0){
+      content.innerHTML=`<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">尚未與${T||'此人'}的肖像建立連結</div>`;
+      actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('portrait')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+      return;
+    }
+    const initials=T?T.charAt(0).toUpperCase():'?';
+    const msgsHtml=msgs.slice(-5).map(m=>{
+      const isMe=m.from==='me';
+      if(isMe) return`<div style="text-align:right;padding:.3rem .5rem .5rem;"><div style="display:inline-block;background:#1a1508;border:1px solid #3a2a10;border-radius:.15rem;padding:.45rem .65rem;font-size:.79rem;color:#c8b080;line-height:1.65;font-style:italic;max-width:85%;text-align:left;">${m.content}</div><div style="font-size:.58rem;color:#584030;margin-top:.15rem;">${m.time||''}</div></div>`;
+      return`<div class="portrait-frame-outer" style="margin:.4rem .6rem;">
+        <div class="portrait-frame-header">
+          <div class="portrait-avatar" style="width:32px;height:40px;font-size:.9rem;">${initials}</div>
+          <div class="portrait-frame-name">${T}</div>
+          <div class="portrait-status-dot"></div>
+        </div>
+        <div style="padding:.5rem .7rem;">
+          <div class="portrait-speech-bubble">${m.content}</div>
+          <div style="font-size:.58rem;color:#584030;margin-top:.2rem;">${m.time||''}</div>
+        </div>
       </div>`;
-    actions.innerHTML=`<button class="so-btn" onclick="sendPortraitMessage()">💬 傳訊息</button>
+    }).join('');
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><button class="back-btn" onclick="renderScrollPage('portrait')">←</button><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">${T}的肖像</span><span style="font-size:.58rem;color:#507050;margin-left:.3rem;">● 在框</span></div>${msgsHtml}`;
+    actions.innerHTML=`<button class="so-btn" onclick="sendPortraitMessage()">💬 與肖像對話</button>
       <button class="so-btn" onclick="renderScrollPage('portrait')">← 返回</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 預言家日報 ──
   } else if(page==='prophet'){
-    const articles=gameState.magicData.dailyProphet.articles;const targetName=getDisplayTargetName();
-    const era=gameState.playerEra||'';
-    const defaultArticles=[
-      {source:'預言家日報',badge:'頭版',content:era.includes('第二次')||era.includes('黑暗')?'【要聞】佛地魔重返的消息繼續引發廣泛恐慌，魔法部否認黑魔法攻擊事件':'【要聞】魔法部宣布新的魔法管制法規，巫師協議有所調整'},
-      {source:'奇士和魁地奇周刊',badge:'體育',content:'魁地奇賽季精彩繼續，本週決賽結果出爐…'},
-      {source:'女巫周刊',badge:'生活',content:'本週魔法生活指南：最新藥水配方與魔法植物照顧秘訣'},
+    const articles=gameState.magicData.dailyProphet.articles;
+    const isWarEra=ERA.includes('第二次')||ERA.includes('第一次')||ERA.includes('黑暗');
+    const defaultArticles=isWarEra?[
+      {headline:'魔法部否認學校遭受攻擊的謠言',byline:'記者：多洛雷斯·烏姆里奇',body:'魔法部發言人今日正式否認近日網傳的「佛地魔重返」說法，稱該謠言出自「躁動的青少年」……'},
+      {headline:'失蹤人口名單持續增加，魔法部：正積極調查',byline:'記者：魏麗（迫於壓力）',body:'過去一週共有七名巫師向魔法部提交失蹤人口報告，據了解失蹤者均為麻瓜出身……'},
+      {headline:'霍格莫德特別宵禁令正式實施',byline:'魔法部公告',body:'為維護治安，所有未成年巫師晚間八時後不得在霍格莫德無人陪同單獨外出……'},
+    ]:[
+      {headline:'轟轟烈烈！英格蘭奪得魁地奇世界盃冠軍',byline:'體育記者：賴塔·曼寧',body:'在昨晚令人窒息的決賽中，英格蘭國家隊捕手以驚人的俯衝捕獲金探子，擊敗保加利亞，英格蘭首奪世界盃……'},
+      {headline:'新學年開始！霍格華茲迎接新一屆新生',byline:'記者：柔依·費雪',body:'今日霍格華茲特快列車滿載新生從九又四分之三月台出發，新任黑魔法防禦術教授將首次亮相……'},
+      {headline:'對角巷魔杖店推出限量版橡木芯魔杖',byline:'廣告特刊',body:'奧利凡德魔杖店宣布今秋推出橡木芯限量系列，每根均由大師親手打磨，售完即止……'},
     ];
     const allArticles=articles.length?articles:defaultArticles;
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">📰</span><span class="app-name">預言家日報</span></div>
-      <div style="padding:.3rem 0;">
-        ${allArticles.slice(0,5).map(a=>`<div class="gazette-post"><div class="gz-source"><span>${a.source||'預言家日報'}</span><span class="gz-badge">${a.badge||'新聞'}</span></div><div class="gz-content">${a.content}</div><div class="gz-stats">🦉 ${Math.floor(Math.random()*5000+1000).toLocaleString()}  💬 ${Math.floor(Math.random()*200+50)}</div></div>`).join('')}
-      </div>`;
+    const dateStr=gameState.time?gameState.time.split(' ')[0]:'今日';
+    content.innerHTML=`
+      <div class="prophet-masthead">
+        <div class="prophet-title">預言家日報</div>
+        <div class="prophet-subtitle">Daily Prophet · 巫師界最權威媒體</div>
+      </div>
+      <div class="prophet-dateline"><span>${dateStr}</span><span>一便士</span></div>
+      ${allArticles.map((a,i)=>`
+        <div class="prophet-article">
+          ${i===0?`<div class="prophet-photo">[ 動態照片：${a.headline.slice(0,16)}… ]</div>`:''}
+          <div class="prophet-headline">${a.headline}</div>
+          <div class="prophet-byline">${a.byline||'本報記者'}</div>
+          <div class="prophet-body">${a.body}</div>
+        </div>`).join('')}`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 巫師廣播 ──
   } else if(page==='wireless'){
-    const era=gameState.playerEra||'';
     const broadcasts=gameState.magicData.wizardingWireless.broadcasts;
-    const defaultBroadcasts=era.includes('第二次')?[
-      {time:'23:00',content:'【秘密廣播】這裡是泡泡腦袋（Potterwatch）。我們正在播報真實的新聞，保持信仰，哈利波特還活著——'},
-      {time:'21:00',content:'魔法部官方廣播：請所有巫師配合新的保密措施，舉報可疑行為獎勵愉悅咒使用許可…'},
+    const isWarEra=ERA.includes('第二次');
+    const defaultBroadcasts=isWarEra?[
+      {station:'Potterwatch',freq:'931.1',time:'23:17',text:'這裡是泡泡腦袋。今晚的真實消息：哈利波特還活著。鳳凰社繼續抵抗。記住：保持信仰，不要屈服於恐懼——'},
+      {station:'Potterwatch',freq:'931.1',time:'23:21',text:'昨日確認：格蘭芬多巫師塔被食死人搜查，所幸無人受傷。請所有聽眾謹慎，避免使用禁忌之名……'},
+      {station:'魔法部廣播',freq:'989.0',time:'22:00',text:'【官方聲明】巫師界目前處於前所未有的安全時期。請市民配合管控措施，舉報可疑麻瓜出身巫師……'},
     ]:[
-      {time:'08:00',content:'早安！這裡是巫師廣播，今日哈格力德與禁忌森林…今日魔法天氣：霍格華茲上空有魔法性霧，能見度受影響'},
-      {time:'14:00',content:'音樂時間：向大家推薦霍格華茲最受歡迎的唱詩小組新作品…'},
+      {station:'全巫師廣播',freq:'820.0',time:'07:00',text:'早安！今日霍格華茲天氣：上空有魔法性薄霧，預計下午散開。魁地奇賽季即將開始，各院系請做好準備——'},
+      {station:'全巫師廣播',freq:'820.0',time:'12:30',text:'今日頭條：魔法部長阿不思·鄧不利多已確認出席本月底的國際巫師聯合會議。對角巷商圈本週末特別優惠……'},
+      {station:'音樂時段',freq:'820.0',time:'15:00',text:'現在為您播送：維克多·克魯姆最愛的保加利亞巫師民謠……（收音機裡傳出奇異的旋律）'},
     ];
     const allBroadcasts=broadcasts.length?broadcasts:defaultBroadcasts;
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">📻</span><span class="app-name">巫師廣播</span></div>
-      <div style="padding:.3rem 0;">
-        ${allBroadcasts.map(b=>`<div class="owl-msg"><div class="msg-from" style="font-size:.65rem;">${b.time||''}</div><div class="msg-content">${b.content}</div></div>`).join('')}
+    const bars=[12,18,14,20,10,16,22,8].map((h,i)=>`<div class="wireless-bar" style="height:${h}px;--sd:${0.8+i*0.15}s;"></div>`).join('');
+    content.innerHTML=`
+      <div class="wireless-set">
+        <div class="wireless-speaker-grill"></div>
+        <div class="wireless-display">
+          <div class="wireless-freq">頻率 ${allBroadcasts[0]?.freq||'820.0'} MHz</div>
+          <div class="wireless-station-name">${allBroadcasts[0]?.station||'全巫師廣播'}</div>
+          <div class="wireless-signal">${bars}</div>
+        </div>
+        <div class="wireless-speaker-grill" style="transform:scaleY(-1);"></div>
+      </div>
+      <div style="padding:.2rem 0;">
+        ${allBroadcasts.map((b,i)=>`
+          <div class="wireless-broadcast-item">
+            <div class="wireless-time-tag">${b.station||''} · ${b.time||''}</div>
+            ${i>0?'<div class="wireless-static-line"></div>':''}
+            <div class="wireless-text">${b.text}</div>
+          </div>`).join('')}
       </div>`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 火焰網路 ──
   } else if(page==='floo'){
-    const targetName=getDisplayTargetName();
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🔥</span><span class="app-name">火焰網路</span></div>
-      <div style="padding:.8rem;font-size:.78rem;color:#a09070;line-height:1.7;">
-        <div style="font-style:italic;color:#686050;margin-bottom:.8rem;">火焰網路允許巫師通過壁爐進行跨距離聯繫。</div>
-        ${targetName?`<div class="owl-msg" style="cursor:pointer;" onclick="doFlooContact()"><div class="msg-from" style="color:#a08040;">撥打連線</div><div class="msg-content">🔥 ${targetName}的壁爐</div></div>`:'<div style="color:#484040;font-style:italic;padding:1rem;text-align:center;">尚未有已建立連結的壁爐</div>'}
-        <div class="owl-msg"><div class="msg-from">常用地址</div><div class="msg-content" style="color:#686050;">🏰 霍格華茲院長室<br>🏚️ 黑魔法防禦術教授辦公室<br>🏠 韋斯萊家（若已知道）</div></div>
-      </div>`;
+    const isWarEra=ERA.includes('第二次')||ERA.includes('第一次');
+    const stdAddresses=[
+      {name:'霍格華茲院長室',loc:'霍格華茲城堡，蘇格蘭',icon:'🏰'},
+      {name:'黑魔法防禦術教室',loc:'霍格華茲，三樓',icon:'🚪'},
+      {name:'醫院翼病房',loc:'霍格華茲，七樓',icon:'🏥'},
+    ];
+    if(isWarEra) stdAddresses.push({name:'格里莫廣場12號',loc:'倫敦（鳳凰社本部）',icon:'🏚️'});
+    const flames=[
+      {h:24,top:'#60d0ff',bot:'#2080d0',fd:1.1},
+      {h:32,top:'#40c0ff',bot:'#1860c0',fd:0.9},
+      {h:28,top:'#80e0ff',bot:'#3090e0',fd:1.3},
+      {h:20,top:'#50c8ff',bot:'#2070c8',fd:1.0},
+      {h:36,top:'#30b8ff',bot:'#1050b8',fd:1.2},
+    ].map(f=>`<div class="floo-flame-el" style="width:10px;height:${f.h}px;--ft:${f.top};--fb:${f.bot};--fd:${f.fd}s;"></div>`).join('');
+    content.innerHTML=`
+      <div class="floo-hearth-outer">
+        <div class="floo-mantle">✦ 火焰網路 Floo Network ✦</div>
+        <div class="floo-firebox">${flames}</div>
+      </div>
+      <div class="floo-address-section">
+        <div class="floo-section-label">常用地址</div>
+        ${T?`<div class="floo-entry" onclick="doFlooContact()">
+          <div class="floo-entry-icon">🔥</div>
+          <div><div class="floo-entry-name">${T}</div><div class="floo-entry-location">（撥打連線）</div></div>
+        </div>`:''}
+        ${stdAddresses.map(a=>`<div class="floo-entry">
+          <div class="floo-entry-icon">${a.icon}</div>
+          <div><div class="floo-entry-name">${a.name}</div><div class="floo-entry-location">${a.loc}</div></div>
+        </div>`).join('')}
+      </div>
+      <div style="padding:.4rem .8rem;font-size:.62rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">請在壁爐前清晰說出目的地名稱，然後踏入火焰。切勿在破損壁爐或封閉網路中嘗試傳送。</div>`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 通知 ──
   } else if(page==='notifs'){
     const notifs=gameState.magicData.notifs;
     const iconMap={'貓頭鷹信':'🦉','守護神':'🌟','預言家日報':'📰','魔法肖像':'🖼️','火焰網路':'🔥','魔法廣播':'📻','回憶':'✦'};
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">📜</span><span class="app-name">通知記錄</span></div>
-      ${notifs.length?notifs.slice(0,10).map(n=>`<div class="notif-item"><div class="ni-icon">${iconMap[n.app]||'📜'}</div><div class="ni-body"><div class="ni-app">${n.app}</div><div class="ni-msg">${n.content}</div><div class="ni-time">${n.time||''}</div></div></div>`).join(''):'<div style="padding:1.5rem;text-align:center;color:#444;font-size:.76rem;font-style:italic;">暫無通知</div>'}`;
-    actions.innerHTML=`<button class="so-btn" onclick="clearMagicNotifs()">清除通知</button><button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    content.innerHTML=`
+      <div style="background:linear-gradient(90deg,#0e0c06,#161208);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;">
+        <span style="font-size:.9rem;">📜</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">通知記錄</span>
+      </div>
+      ${notifs.length?notifs.slice(0,10).map(n=>`
+        <div class="notif-item">
+          <div class="ni-icon">${iconMap[n.app]||'📜'}</div>
+          <div class="ni-body"><div class="ni-app">${n.app}</div><div class="ni-msg">${n.content}</div><div class="ni-time">${n.time||''}</div></div>
+        </div>`).join(''):'<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">暫無通知</div>'}`;
+    actions.innerHTML=`<button class="so-btn" onclick="clearMagicNotifs()">清除記錄</button><button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 掠奪者地圖 ──
   } else if(page==='marauder'){
-    const era=gameState.playerEra||'';const house=gameState.playerHouse||'';
-    const locations=era.includes('創立')?['梅林的塔','湖區','古老城堡東翼']:era.includes('哈利')||era.includes('第二次')?['大廳','禁忌森林邊緣','霍格莫德村','圖書館（受限區）','地牢（石內卜的領域）','天文台']:['霍格華茲大廳','黑魔法防禦術教室','赫敏的圖書館位子'];
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">🗺️</span><span class="app-name">掠奪者地圖</span></div>
-      <div style="padding:.8rem;background:linear-gradient(135deg,#100e08,#181408);margin:.5rem;border-radius:.2rem;border:1px solid #302810;font-family:'EB Garamond',serif;">
-        <div style="text-align:center;font-size:.65rem;color:#a08040;letter-spacing:.15em;margin-bottom:.8rem;font-style:italic;">✦ 我鄭重承認我企圖惡作劇 ✦</div>
-        <div style="font-size:.72rem;color:#a08040;margin-bottom:.5rem;">已知位置：</div>
-        ${locations.map(l=>`<div style="font-size:.76rem;color:#807060;padding:.2rem .4rem;margin:.2rem 0;">• ${l}</div>`).join('')}
-        <div style="margin-top:.8rem;font-size:.68rem;color:#505040;font-style:italic;">地圖持續更新中…</div>
+    const areas={
+      '霍格華茲城堡':[
+        {name:'大廳',note:'用餐時間熙攘'},
+        {name:'禁忌圖書館（受限區）',note:'深夜後有人活動'},
+        {name:'地牢走廊',note:'史萊哲林宿舍所在'},
+        {name:'天文台',note:'午夜後開放'},
+        {name:'醫院翼',note:'麥格教授值班中'},
+      ],
+      '校園外圍':[
+        {name:'禁忌森林邊緣',note:'警告：夜間危險'},
+        {name:'海格小屋',note:'燈光亮著'},
+        {name:'石楠地（魁地奇球場）',note:'目前空置'},
+      ],
+      '霍格莫德村':[
+        {name:'蜂蜜公爵糖果店',note:'週末開放'},
+        {name:'三把掃帚酒吧',note:'人聲鼎沸'},
+        {name:'尖叫棚屋',note:'（廢棄）'},
+      ],
+    };
+    if(ERA.includes('第二次')){
+      areas['霍格華茲城堡'].push({name:'需求屋（第七層走廊）',note:'有人在此藏匿'});
+      delete areas['霍格莫德村'];
+      areas['管制區域']=[{name:'食死人巡邏路線',note:'避開！'},{name:'鄧布利多辦公室',note:'已封鎖'}];
+    }
+    const areasHtml=Object.entries(areas).map(([area,locs])=>`
+      <div class="marauder-area-title">${area}</div>
+      ${locs.map(l=>`<div class="marauder-location">${l.name}<span style="font-size:.62rem;color:#706040;margin-left:.4rem;font-style:normal;">— ${l.note}</span></div>`).join('')}
+    `).join('');
+    content.innerHTML=`
+      <div class="marauder-scroll">
+        <div class="marauder-incantation-bar">
+          <div class="marauder-spell">「我鄭重承認我企圖惡作劇。」</div>
+        </div>
+        <div class="marauder-map-content">
+          <div style="font-size:.62rem;color:#807040;margin-bottom:.4rem;text-align:center;font-style:italic;">顯示${gameState.time||'當前'}已知位置</div>
+          ${areasHtml}
+        </div>
+        <div class="marauder-footer-text">地圖由：無名氏、蟲尾巴、月亮人、殺人犯 製作<br>惡作劇萬歲！</div>
       </div>`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
+  // ── 人脈 ──
   } else if(page==='contacts'){
-    const targetName=getDisplayTargetName();const npcs=gameState.npcs||{};const npcEntries=Object.entries(npcs);
-    const letters=gameState.magicData.owlPost.letters;const knownContacts=Object.keys(gameState.magicData.portraitChat.conversations).filter(n=>n!==targetName);
-    let friendHtml='';
-    if(targetName){friendHtml+=`<div style="font-size:.65rem;color:#585050;padding:.3rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">重要人物</div><div class="owl-msg" style="cursor:pointer;" onclick="renderScrollPage('owl-target')"><div class="msg-from" style="color:#a08040;">${targetName} <span style="font-size:.58rem;color:#4a6;">● 在線</span></div></div>`;}
-    if(npcEntries.length>0){friendHtml+=`<div style="font-size:.65rem;color:#585050;padding:.3rem .8rem;margin-top:.2rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">已識人物</div>`;npcEntries.forEach(([name,info])=>{if(name===targetName)return;friendHtml+=`<div class="owl-msg"><div class="msg-from">${name}${info.role?` <span style="font-size:.6rem;color:#666;">(${info.role})</span>`:''}</div></div>`;});}
-    if(!friendHtml) friendHtml='<div style="text-align:center;color:#444;font-size:.76rem;padding:1.5rem;font-style:italic;">通訊錄暫無人員<br>隨劇情推進會逐漸增加</div>';
-    content.innerHTML=`<div class="parchment-header"><span class="app-icon">👥</span><span class="app-name">魔法通訊錄</span></div><div style="padding:.3rem 0;">${friendHtml}</div>`;
+    const npcs=gameState.npcs||{};
+    let html='<div style="padding:.2rem 0;">';
+    if(T){
+      html+=`<div style="font-size:.6rem;color:#585050;padding:.3rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">核心角色</div>
+        <div class="letter-list-item" onclick="renderScrollPage('owl-target')">
+          <span class="letter-list-owl">⭐</span>
+          <div><div class="letter-list-from" style="color:#c8a040;">${T}</div>
+          <div class="letter-list-preview">${gameState.relationStatus||'重要人物'}</div></div>
+        </div>`;
+    }
+    const npcEntries=Object.entries(npcs);
+    if(npcEntries.length>0){
+      html+=`<div style="font-size:.6rem;color:#585050;padding:.3rem .8rem;margin-top:.15rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">已識人物</div>`;
+      npcEntries.filter(([n])=>n!==T).forEach(([name,info])=>{
+        html+=`<div class="letter-list-item"><span class="letter-list-owl">👤</span>
+          <div><div class="letter-list-from">${name}</div>
+          <div class="letter-list-preview">${info.role||''} ${info.relationship||''}</div></div>
+        </div>`;
+      });
+    }
+    if(!T&&!npcEntries.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">通訊錄尚無人員，隨劇情推進會逐漸增加</div>';
+    html+='</div>';
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">👥</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">魔法通訊錄</span></div>${html}`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
   }
 
-  // 綁定事件
+  // 事件委派重綁定
   setTimeout(function(){
-    const acts=document.getElementById('so-actions');if(!acts)return;
-    acts.querySelectorAll('button[onclick]').forEach(function(btn){const code=btn.getAttribute('onclick');if(!code)return;btn.removeAttribute('onclick');btn.addEventListener('click',function(){try{new Function(code)();}catch(e){}});});
-    const soContent=document.getElementById('so-content');if(!soContent)return;
-    soContent.querySelectorAll('[onclick]').forEach(function(el){const code=el.getAttribute('onclick');if(!code)return;el.removeAttribute('onclick');el.addEventListener('click',function(){try{new Function(code)();}catch(e){}});});
+    const acts=document.getElementById('so-actions');
+    if(acts) acts.querySelectorAll('button[onclick]').forEach(function(btn){
+      const code=btn.getAttribute('onclick');if(!code)return;
+      btn.removeAttribute('onclick');btn.addEventListener('click',function(){try{new Function(code)();}catch(e){}});
+    });
+    const soContent=document.getElementById('so-content');
+    if(soContent) soContent.querySelectorAll('[onclick]').forEach(function(el){
+      const code=el.getAttribute('onclick');if(!code)return;
+      el.removeAttribute('onclick');el.addEventListener('click',function(){try{new Function(code)();}catch(e){}});
+    });
   },0);
 }
 
@@ -2214,7 +2535,20 @@ window.randomizeProfile=async function(){
   if(btn){btn.textContent='✦ 隨機';btn.disabled=false;}
 };
 
-// ── data-fn 委派 ──
+// ── Header 溢出選單 ──
+window.toggleMoreMenu=function(){
+  const dd=document.getElementById('gh-dropdown');
+  if(dd) dd.classList.toggle('open');
+};
+window.closeMoreMenu=function(){
+  const dd=document.getElementById('gh-dropdown');
+  if(dd) dd.classList.remove('open');
+};
+// 點選單外部關閉
+document.addEventListener('click',function(e){
+  const wrap=document.getElementById('gh-more-wrap');
+  if(wrap&&!wrap.contains(e.target)) closeMoreMenu();
+});
 document.addEventListener('DOMContentLoaded',function(){
   var overlay=document.getElementById('scroll-overlay');if(!overlay)return;
   overlay.addEventListener('click',function(e){var el=e.target.closest('[data-fn]');if(!el)return;var fn=el.dataset.fn;var arg=el.dataset.arg;if(typeof window[fn]==='function'){e.stopPropagation();if(arg!==undefined)window[fn](arg);else window[fn]();}});
