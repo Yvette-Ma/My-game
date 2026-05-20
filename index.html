@@ -3038,9 +3038,11 @@ async function handlePlayerAction(playerChoice){
     }
 
     if(sceneOver){
-      // 清除場景背景，避免下一回合重複敘述
       gameState.currentSceneContext = '';
+      document.getElementById('options-panel').classList.add('disabled');
       await nextRound(playerChoice);
+      // nextRound 已呼叫 renderOptions，這裡不再呼叫
+      return;
     } else {
       const opts = parsedOptions.length >= 2
         ? [...parsedOptions, {label:'📱', text:'查看手機'}, {label:'D', text:'自定義（玩家自行輸入）'}]
@@ -3061,7 +3063,6 @@ async function handlePlayerAction(playerChoice){
       {label:'D', text:'自定義（玩家自行輸入）'}
     ]);
   }
-  document.getElementById('options-panel').classList.remove('disabled');
 }
 
 // ── 下一回合 ──
@@ -4639,6 +4640,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r59</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r60</div>
 </body>
 </html>
