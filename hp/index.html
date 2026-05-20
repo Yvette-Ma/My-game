@@ -1746,8 +1746,9 @@ function processAIResponse(raw,isFirst=false,retryCount=0){
     showNotifToast('貓頭鷹信',`${targetName}：${data.targetProactive.slice(0,30)}…`);
   }
   if(data.memoryTrigger&&data.memoryTrigger.title){
-    const mem={round:gameState.round,title:data.memoryTrigger.title,emoji:data.memoryTrigger.emoji||'⚡',content:data.event||data.narration||'',time:data.time||''};
-    gameState.memories=gameState.memories||[];gameState.memories.unshift(mem);showNotifToast('回憶',`✦ ${mem.emoji} ${mem.title}`);
+    const mem={round:gameState.round,title:data.memoryTrigger.title,emoji:data.memoryTrigger.emoji||'⚡',time:data.time||''};
+    gameState.memories=gameState.memories||[];gameState.memories.unshift(mem);showNotifToast('特殊時刻',`${mem.emoji} ${mem.title}`);
+  }
   }
   gameState.storyLog.push({type:'round_start',round:gameState.round});
   if(data.narration) addNarrationMsg(cleanMarkdown(data.narration));
@@ -1975,7 +1976,6 @@ window.showRecapRound=function(round){
           +'<span style="font-size:.76rem;color:'+accent+';background:rgba(0,0,0,.35);padding:.2rem .6rem;border-radius:1rem;border:1px solid '+border+';letter-spacing:.05em;font-family:\'Cinzel\',serif;">'+badge+'</span>'
         +'</div>'
         +'<div style="font-family:\'Cinzel\',serif;font-size:1rem;color:'+accent+';letter-spacing:.04em;margin-bottom:.5rem;line-height:1.4;">'+m.title+'</div>'
-        +(m.content?'<div style="font-size:.92rem;color:rgba(224,208,176,.8);line-height:1.75;font-style:italic;border-top:1px solid rgba(255,255,255,.07);padding-top:.5rem;">'+m.content.slice(0,160)+(m.content.length>160?'…':'')+'</div>':'')
         +(m.time?'<div style="font-size:.78rem;color:rgba(160,144,120,.5);margin-top:.45rem;font-style:italic;">'+m.time+'</div>':'')
       +'</div>'
     +'</div>';
@@ -2934,6 +2934,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.5</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.6</div>
 </body>
 </html>
