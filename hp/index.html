@@ -45,13 +45,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
   padding:.6rem 1.4rem;border-radius:.25rem;border:1px solid var(--border2);
   background:var(--bg3);color:var(--text);
-  font-family:'Cinzel',serif;font-size:.8rem;
+  font-family:'Cinzel',serif;font-size:.92rem;
   cursor:pointer;transition:all .25s;letter-spacing:.08em;
 }
 .btn:hover{background:var(--card);border-color:var(--gold3);}
 .btn-primary{background:var(--bg3);border-color:var(--gold3);}
 .btn-primary:hover{background:var(--parchment);border-color:var(--gold);}
-.btn-sm{padding:.35rem .8rem;font-size:.72rem;}
+.btn-sm{padding:.35rem .8rem;font-size:.84rem;}
 
 /* ════════════ SPLASH ════════════ */
 #screen-splash{align-items:center;justify-content:center;background:var(--bg);}
@@ -62,7 +62,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.8rem);
   color:var(--gold);letter-spacing:.15em;line-height:1.2;margin-bottom:.5rem;
 }
-.splash-sub{color:var(--text3);font-size:.8rem;letter-spacing:.12em;margin-bottom:.4rem;font-style:italic;}
+.splash-sub{color:var(--text3);font-size:.92rem;letter-spacing:.12em;margin-bottom:.4rem;font-style:italic;}
 .splash-divider{display:flex;align-items:center;gap:.8rem;margin:.8rem auto 1.5rem;max-width:240px;}
 .splash-divider::before,.splash-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border2));}
 .splash-divider::after{background:linear-gradient(90deg,var(--border2),transparent);}
@@ -72,9 +72,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 #screen-settings{background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;}
 .settings-inner{width:100%;max-width:540px;margin:0 auto;}
 .settings-title{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.2rem;}
-.settings-sub{color:var(--text3);font-size:.78rem;margin-bottom:1.5rem;font-style:italic;}
+.settings-sub{color:var(--text3);font-size:.9rem;margin-bottom:1.5rem;font-style:italic;}
 .s-section{margin-bottom:1.3rem;}
-.s-label{font-size:.7rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.4rem;display:block;text-transform:uppercase;font-family:'Cinzel',serif;}
+.s-label{font-size:.82rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.4rem;display:block;text-transform:uppercase;font-family:'Cinzel',serif;}
 .s-input{
   width:100%;padding:.65rem 1rem;border-radius:.25rem;
   background:var(--bg3);border:1px solid var(--border);
@@ -83,32 +83,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 }
 .s-input:focus{border-color:var(--gold3);}
 .s-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23c8a84a' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;}
-.s-note{font-size:.72rem;color:var(--text3);margin-top:.3rem;line-height:1.5;font-style:italic;}
+.s-note{font-size:.84rem;color:var(--text3);margin-top:.3rem;line-height:1.5;font-style:italic;}
 .s-row{display:flex;gap:.7rem;align-items:flex-start;}
 .s-row .s-section{flex:1;}
 .s-divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0;}
-.s-section-title{font-size:.72rem;color:var(--gold3);letter-spacing:.12em;margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.s-section-title{font-size:.84rem;color:var(--gold3);letter-spacing:.12em;margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;text-transform:uppercase;}
 .model-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
 .model-opt{
   padding:.5rem .7rem;border-radius:.25rem;border:1px solid var(--border);
-  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.78rem;color:var(--text2);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.9rem;color:var(--text2);
 }
 .model-opt:hover,.model-opt.selected{border-color:var(--gold3);background:var(--parchment);color:var(--text);}
 .identity-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.4rem;}
 .identity-opt{
   padding:.45rem .5rem;border-radius:.25rem;border:1px solid var(--border);
-  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.75rem;color:var(--text2);text-align:center;
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.88rem;color:var(--text2);text-align:center;
   font-family:'EB Garamond',serif;
 }
 .identity-opt:hover,.identity-opt.selected{border-color:var(--gold3);background:var(--parchment);color:var(--gold2);}
 .settings-footer{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem;flex-wrap:wrap;}
-#msg-settings{font-size:.78rem;color:var(--crimson2);margin-top:.5rem;min-height:1.2rem;}
+#msg-settings{font-size:.9rem;color:var(--crimson2);margin-top:.5rem;min-height:1.2rem;}
 
 /* ── 院系徽章 ── */
 .house-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;}
 .house-opt{
   padding:.6rem .7rem;border-radius:.25rem;border:1px solid var(--border);
-  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.78rem;color:var(--text2);
+  background:var(--bg3);cursor:pointer;transition:all .2s;font-size:.9rem;color:var(--text2);
   text-align:center;position:relative;overflow:hidden;
 }
 .house-opt::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;}
@@ -129,16 +129,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   gap:.5rem;min-height:44px;
 }
 .gh-left{display:flex;align-items:center;gap:.45rem;min-width:0;flex:1;overflow:hidden;}
-.gh-title{font-family:'Cinzel',serif;font-size:.72rem;color:var(--gold3);letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.gh-round{font-size:.65rem;color:var(--text3);background:var(--bg3);padding:.18rem .45rem;border-radius:.2rem;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
-.gh-time{font-size:.62rem;color:var(--text3);font-family:'EB Garamond',serif;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.gh-title{font-family:'Cinzel',serif;font-size:.9rem;color:var(--gold3);letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gh-round{font-size:.82rem;color:var(--text3);background:var(--bg3);padding:.18rem .45rem;border-radius:.2rem;border:1px solid var(--border);white-space:nowrap;flex-shrink:0;}
+.gh-time{font-size:.82rem;color:var(--text3);font-family:'EB Garamond',serif;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
 .gh-right{display:flex;align-items:center;gap:.3rem;flex-shrink:0;}
-.gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .5rem;border-radius:.25rem;cursor:pointer;font-size:.65rem;transition:all .2s;font-family:'EB Garamond',serif;white-space:nowrap;}
+.gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.4rem .75rem;border-radius:.25rem;cursor:pointer;font-size:.9rem;transition:all .2s;font-family:'EB Garamond',serif;white-space:nowrap;}
 .gh-btn:hover{border-color:var(--gold3);color:var(--gold3);}
 
 /* ── 溢出選單 ── */
 .gh-more-wrap{position:relative;display:inline-block;}
-.gh-more-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .5rem;border-radius:.25rem;cursor:pointer;font-size:.65rem;line-height:1;transition:all .2s;font-family:'EB Garamond',serif;white-space:nowrap;}
+.gh-more-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .5rem;border-radius:.25rem;cursor:pointer;font-size:.78rem;line-height:1;transition:all .2s;font-family:'EB Garamond',serif;white-space:nowrap;}
 .gh-more-btn:hover,.gh-more-btn.active{border-color:var(--gold3);color:var(--gold3);}
 .gh-dropdown{
   position:absolute;top:calc(100% + 4px);right:0;z-index:50;
@@ -148,46 +148,46 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden;
 }
 .gh-dropdown.open{display:flex;}
-.gh-dd-label{font-size:.55rem;color:var(--text3);letter-spacing:.1em;padding:.3rem .8rem .15rem;font-family:'Cinzel',serif;text-transform:uppercase;opacity:.6;}
+.gh-dd-label{font-size:.76rem;color:var(--text3);letter-spacing:.1em;padding:.3rem .8rem .15rem;font-family:'Cinzel',serif;text-transform:uppercase;opacity:.6;}
 .gh-dd-item{
-  padding:.45rem .8rem;font-size:.72rem;color:var(--text2);cursor:pointer;
+  padding:.6rem 1rem;font-size:.92rem;color:var(--text2);cursor:pointer;
   font-family:'EB Garamond',serif;transition:background .15s;white-space:nowrap;
   background:none;border:none;text-align:left;display:flex;align-items:center;gap:.45rem;
 }
 .gh-dd-item:hover{background:var(--bg3);color:var(--text);}
-.gh-dd-item .dd-badge{font-size:.55rem;background:var(--crimson);color:#fff;border-radius:1rem;padding:.05rem .3rem;margin-left:auto;}
+.gh-dd-item .dd-badge{font-size:.72rem;background:var(--crimson);color:#fff;border-radius:1rem;padding:.05rem .3rem;margin-left:auto;}
 .gh-dd-item.danger{color:var(--crimson2);}
 .gh-dd-sep{height:1px;background:var(--border);margin:.2rem 0;}
 .game-body{display:flex;flex:1;overflow:hidden;}
 .story-panel{flex:1;overflow-y:auto;padding:1.2rem 1rem 1rem;display:flex;flex-direction:column;gap:.8rem;}
 .story-msg{max-width:100%;font-size:clamp(.82rem,2.2vw,.94rem);line-height:1.9;}
-.story-msg.narration{color:var(--text2);font-size:.88rem;line-height:1.8;font-style:italic;}
+.story-msg.narration{color:var(--text2);font-size:1rem;line-height:1.8;font-style:italic;}
 .story-msg.scene-response{color:var(--text);border-left:2px solid var(--border);padding-left:.7rem;margin-left:.2rem;}
 .story-msg.event{
   background:var(--bg3);border:1px solid var(--border);border-radius:.25rem;
   padding:1rem 1.1rem;color:var(--text);
 }
 .story-msg.event .ev-tag{
-  font-size:.65rem;letter-spacing:.15em;color:var(--gold);
+  font-size:.78rem;letter-spacing:.15em;color:var(--gold);
   margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;
   font-family:'Cinzel',serif;text-transform:uppercase;
 }
 .story-msg.phone{
   background:var(--phone-bg);border:1px solid #1e1c28;
-  border-radius:.25rem;padding:0;overflow:hidden;font-family:'EB Garamond',serif;font-size:.8rem;
+  border-radius:.25rem;padding:0;overflow:hidden;font-family:'EB Garamond',serif;font-size:.92rem;
 }
 .phone-bar{
   background:#0e0c18;padding:.4rem .8rem;
   display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid #1a1828;font-size:.68rem;color:#585060;
+  border-bottom:1px solid #1a1828;font-size:.8rem;color:#585060;
 }
 .phone-content{padding:.8rem;color:#a09888;white-space:pre-wrap;line-height:1.7;}
-.story-msg.system{text-align:center;font-size:.72rem;color:var(--text3);padding:.3rem 0;letter-spacing:.1em;font-family:'Cinzel',serif;}
+.story-msg.system{text-align:center;font-size:.9rem;color:var(--text3);padding:.3rem 0;letter-spacing:.1em;font-family:'Cinzel',serif;}
 .story-msg.choice-made{
   background:var(--bg3);border:1px solid var(--border);
-  border-radius:.25rem;padding:.65rem 1rem;font-size:.8rem;color:var(--gold3);
+  border-radius:.25rem;padding:.65rem 1rem;font-size:.96rem;color:var(--gold3);
 }
-.typing-indicator{display:flex;align-items:center;gap:.4rem;padding:.5rem 0;font-size:.78rem;color:var(--text3);}
+.typing-indicator{display:flex;align-items:center;gap:.4rem;padding:.5rem 0;font-size:.9rem;color:var(--text3);}
 .typing-dots{display:flex;gap:.25rem;}
 .typing-dots span{width:4px;height:4px;border-radius:50%;background:var(--gold3);animation:typingDot 1.2s infinite;}
 .typing-dots span:nth-child(2){animation-delay:.2s;}
@@ -198,7 +198,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   position:fixed;top:70px;right:12px;z-index:100;
   background:var(--card);border:1px solid var(--border2);
   border-radius:.25rem;padding:.7rem 1rem;max-width:260px;
-  font-size:.76rem;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.6);
+  font-size:.88rem;color:var(--text2);box-shadow:0 8px 32px rgba(0,0,0,.6);
   animation:toastIn .35s ease forwards;pointer-events:none;
 }
 @keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
@@ -209,28 +209,28 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   background:var(--bg2);border-top:1px solid var(--border);
   display:flex;flex-direction:column;gap:.4rem;
 }
-.options-title{font-size:.62rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.1rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.options-title{font-size:.82rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.1rem;font-family:'Cinzel',serif;text-transform:uppercase;}
 .options-grid{display:flex;flex-direction:column;gap:.35rem;}
 .opt-btn{
   display:flex;align-items:flex-start;gap:.55rem;
-  padding:.55rem .8rem;border-radius:.25rem;
+  padding:.7rem 1rem;border-radius:.25rem;
   background:var(--bg3);border:1px solid var(--border);
   color:var(--text2);cursor:pointer;text-align:left;
-  font-family:'EB Garamond',serif;font-size:.82rem;line-height:1.5;
+  font-family:'EB Garamond',serif;font-size:1rem;line-height:1.5;
   transition:all .18s;width:100%;
 }
 .opt-btn:hover{background:var(--card);border-color:var(--gold3);color:var(--text);transform:translateX(3px);}
 .opt-btn.scroll-opt{border-color:rgba(200,168,74,.15);}
-.opt-label{font-size:.65rem;color:var(--text3);min-width:1.1rem;font-family:'Cinzel',serif;margin-top:.05rem;}
+.opt-label{font-size:.82rem;color:var(--text3);min-width:1.1rem;font-family:'Cinzel',serif;margin-top:.05rem;}
 .opt-text{flex:1;}
 .custom-input-row{display:flex;gap:.4rem;margin-top:.1rem;}
 .custom-input{
   flex:1;padding:.48rem .75rem;border-radius:.25rem;
   background:var(--bg3);border:1px solid var(--border);
-  color:var(--text);font-family:'EB Garamond',serif;font-size:.82rem;outline:none;
+  color:var(--text);font-family:'EB Garamond',serif;font-size:1rem;outline:none;
 }
 .custom-input:focus{border-color:var(--gold3);}
-.custom-send{padding:.48rem .9rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:.8rem;transition:background .2s;font-family:'EB Garamond',serif;}
+.custom-send{padding:.48rem .9rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:1rem;transition:background .2s;font-family:'EB Garamond',serif;}
 .custom-send:hover{background:var(--border);}
 .options-panel.disabled .opt-btn{opacity:.4;pointer-events:none;}
 
@@ -247,65 +247,65 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   display:flex;gap:.5rem;flex-wrap:wrap;
 }
 .so-btn{
-  padding:.4rem .8rem;border-radius:.25rem;border:1px solid #2a2838;
-  background:#141020;color:#706888;cursor:pointer;font-size:.73rem;
+  padding:.55rem 1rem;border-radius:.25rem;border:1px solid #2a2838;
+  background:#141020;color:#706888;cursor:pointer;font-size:.92rem;
   transition:all .2s;font-family:'EB Garamond',serif;
 }
 .so-btn:hover{border-color:var(--gold3);color:var(--gold3);}
 .so-close{
   padding:.4rem .8rem;border-radius:.25rem;border:1px solid var(--border);
-  background:var(--bg3);color:var(--text2);cursor:pointer;font-size:.73rem;
+  background:var(--bg3);color:var(--text2);cursor:pointer;font-size:.92rem;
 }
 
 /* ── 羊皮紙UI ── */
 .parchment-header{
   background:#0a0814;padding:.6rem .9rem;
   display:flex;align-items:center;gap:.6rem;
-  border-bottom:1px solid #1e1a28;font-size:.8rem;color:#a09888;
+  border-bottom:1px solid #1e1a28;font-size:.92rem;color:#a09888;
 }
 .parchment-header .app-icon{font-size:.95rem;}
-.parchment-header .app-name{font-weight:500;color:#c8b898;font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.06em;}
+.parchment-header .app-name{font-weight:500;color:#c8b898;font-family:'Cinzel',serif;font-size:.88rem;letter-spacing:.06em;}
 .parchment-header .back-btn{
-  margin-left:auto;font-size:.68rem;color:#706060;
+  margin-left:auto;font-size:.8rem;color:#706060;
   cursor:pointer;padding:.2rem .5rem;border-radius:.2rem;
   border:1px solid #2a2228;background:none;
 }
 .owl-msg{padding:.7rem .8rem;border-bottom:1px solid #18141c;}
-.owl-msg .msg-from{font-size:.7rem;color:#8a7a70;margin-bottom:.3rem;font-family:'Cinzel',serif;}
-.owl-msg .msg-content{font-size:.8rem;color:#c0b0a0;line-height:1.6;}
-.owl-msg .msg-time{font-size:.65rem;color:#504848;margin-top:.25rem;font-style:italic;}
+.owl-msg .msg-from{font-size:.82rem;color:#8a7a70;margin-bottom:.3rem;font-family:'Cinzel',serif;}
+.owl-msg .msg-content{font-size:.92rem;color:#c0b0a0;line-height:1.6;}
+.owl-msg .msg-time{font-size:.78rem;color:#504848;margin-top:.25rem;font-style:italic;}
 
 .portrait-msg-wrap{padding:.6rem .8rem;display:flex;flex-direction:column;gap:.4rem;}
 .portrait-bubble-row{display:flex;flex-direction:column;}
 .portrait-bubble-row.me{align-items:flex-end;}
 .portrait-bubble-row.other{align-items:flex-start;}
-.portrait-name{font-size:.6rem;color:#584848;margin-bottom:.15rem;padding:0 .2rem;font-style:italic;}
+.portrait-name{font-size:.76rem;color:#584848;margin-bottom:.15rem;padding:0 .2rem;font-style:italic;}
 .portrait-msg{
   max-width:78%;padding:.5rem .75rem;border-radius:.5rem;
-  font-size:.79rem;line-height:1.55;word-break:break-word;
+  font-size:.9rem;line-height:1.55;word-break:break-word;
 }
 .portrait-msg.from-other{background:#1e1828;color:#c0b0a0;border-bottom-left-radius:.15rem;}
 .portrait-msg.from-me{background:#2a2210;color:#e0c890;border-bottom-right-radius:.15rem;}
-.portrait-time{font-size:.58rem;color:#484040;margin-top:.1rem;padding:0 .2rem;font-style:italic;}
+.portrait-time{font-size:.74rem;color:#484040;margin-top:.1rem;padding:0 .2rem;font-style:italic;}
 
 .gazette-post{padding:.7rem .8rem;border-bottom:1px solid #18141c;}
-.gazette-post .gz-source{font-size:.7rem;color:#8870a0;margin-bottom:.2rem;display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;font-size:.65rem;}
-.gazette-post .gz-badge{font-size:.58rem;background:#1e1428;color:#806898;padding:.1rem .3rem;border-radius:.15rem;}
-.gazette-post .gz-content{font-size:.8rem;color:#b0a090;line-height:1.6;}
-.gazette-post .gz-stats{font-size:.65rem;color:#484040;margin-top:.25rem;}
+.gazette-post .gz-source{font-size:.82rem;color:#8870a0;margin-bottom:.2rem;display:flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;font-size:.86rem;}
+.gazette-post .gz-badge{font-size:.74rem;background:#1e1428;color:#806898;padding:.1rem .3rem;border-radius:.15rem;}
+.gazette-post .gz-content{font-size:.92rem;color:#b0a090;line-height:1.6;}
+.gazette-post .gz-stats{font-size:.78rem;color:#484040;margin-top:.25rem;}
 .notif-item{padding:.5rem .8rem;border-bottom:1px solid #18141c;display:flex;gap:.6rem;}
 .notif-item .ni-icon{font-size:.95rem;flex-shrink:0;}
 .notif-item .ni-body{flex:1;}
-.notif-item .ni-app{font-size:.63rem;color:#585050;margin-bottom:.12rem;font-family:'Cinzel',serif;}
-.notif-item .ni-msg{font-size:.76rem;color:#a09880;line-height:1.4;}
-.notif-item .ni-time{font-size:.6rem;color:#484040;margin-top:.1rem;font-style:italic;}
+.notif-item .ni-app{font-size:.78rem;color:#585050;margin-bottom:.12rem;font-family:'Cinzel',serif;}
+.notif-item .ni-msg{font-size:.96rem;color:#a09880;line-height:1.4;}
+.notif-item .ni-time{font-size:.76rem;color:#484040;margin-top:.1rem;font-style:italic;}
 .home-app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;padding:1rem .6rem;}
 .home-app{display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;}
 .home-app .app-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
-.home-app .app-lbl{font-size:.56rem;color:#706860;font-family:'Cinzel',serif;letter-spacing:.03em;text-align:center;}
-.home-app .app-sub{font-size:.5rem;color:#504840;text-align:center;margin-top:.05rem;font-style:italic;}
+.home-app .app-lbl{font-size:.82rem;color:#706860;font-family:'Cinzel',serif;letter-spacing:.03em;text-align:center;}
+.home-app .app-sub{font-size:.78rem;color:#504840;text-align:center;margin-top:.05rem;font-style:italic;}
 .home-app-wrap{position:relative;display:inline-block;}
-.app-badge{font-size:.52rem;background:#8a2838;color:#fff;border-radius:1rem;padding:.05rem .28rem;position:absolute;top:-4px;right:-4px;}
+.app-badge{font-size:.72rem;background:#8a2838;color:#fff;border-radius:1rem;padding:.05rem .28rem;position:absolute;top:-4px;right:-4px;}
 
 /* ── 載入遮罩 ── */
 #loading-overlay{
@@ -319,19 +319,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   animation:spin .9s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg);}}
-.lo-text{font-size:.82rem;color:var(--text3);font-style:italic;}
+.lo-text{font-size:.94rem;color:var(--text3);font-style:italic;}
 
 /* ── Auth ── */
 #auth-overlay{position:fixed;inset:0;z-index:300;background:rgba(14,12,16,.98);display:none;align-items:center;justify-content:center;}
 #auth-overlay.show{display:flex;}
 .auth-box{background:var(--card);border:1px solid var(--border2);border-radius:.25rem;padding:2rem;max-width:320px;width:90%;text-align:center;}
 .auth-title{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.5rem;}
-.auth-sub{font-size:.8rem;color:var(--text3);margin-bottom:1.5rem;line-height:1.6;font-style:italic;}
-.auth-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.8rem;border-radius:.25rem;background:#fff;color:#333;font-size:.88rem;font-weight:500;border:none;cursor:pointer;transition:opacity .2s;margin-bottom:.8rem;font-family:'EB Garamond',serif;}
+.auth-sub{font-size:.92rem;color:var(--text3);margin-bottom:1.5rem;line-height:1.6;font-style:italic;}
+.auth-btn{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.8rem;border-radius:.25rem;background:#fff;color:#333;font-size:1rem;font-weight:500;border:none;cursor:pointer;transition:opacity .2s;margin-bottom:.8rem;font-family:'EB Garamond',serif;}
 .auth-btn:hover{opacity:.9;}
-.auth-skip{font-size:.73rem;color:var(--text3);cursor:pointer;text-decoration:underline;}
+.auth-skip{font-size:.85rem;color:var(--text3);cursor:pointer;text-decoration:underline;}
 
-.save-indicator{font-size:.65rem;color:var(--teal2);opacity:0;transition:opacity .3s;}
+.save-indicator{font-size:.78rem;color:var(--teal2);opacity:0;transition:opacity .3s;}
 .save-indicator.show{opacity:1;}
 #model-test-result.ok{color:var(--teal2);}
 #model-test-result.err{color:var(--crimson2);}
@@ -344,10 +344,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 .memory-card.tier-3{background:linear-gradient(135deg,#201414,#181010);border-color:#3a1818;}
 .memory-card.tier-special{background:linear-gradient(135deg,#18102a,#200e20);border-color:#3a1858;}
 .memory-card-emoji{font-size:1.8rem;margin-bottom:.4rem;display:block;}
-.memory-card-title{font-size:.88rem;color:var(--text);margin-bottom:.2rem;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.05em;}
-.memory-card-meta{font-size:.66rem;color:var(--text3);margin-bottom:.5rem;font-style:italic;}
-.memory-card-excerpt{font-size:.76rem;color:var(--text2);line-height:1.6;border-top:1px solid rgba(255,255,255,.04);padding-top:.5rem;}
-.memory-card-badge{position:absolute;top:.6rem;right:.7rem;font-size:.58rem;padding:.1rem .4rem;border-radius:1rem;}
+.memory-card-title{font-size:1rem;color:var(--text);margin-bottom:.2rem;font-family:'Cinzel',serif;font-size:.9rem;letter-spacing:.05em;}
+.memory-card-meta{font-size:.78rem;color:var(--text3);margin-bottom:.5rem;font-style:italic;}
+.memory-card-excerpt{font-size:.88rem;color:var(--text2);line-height:1.6;border-top:1px solid rgba(255,255,255,.04);padding-top:.5rem;}
+.memory-card-badge{position:absolute;top:.6rem;right:.7rem;font-size:.74rem;padding:.1rem .4rem;border-radius:1rem;}
 .badge-moment{background:rgba(200,168,74,.15);color:#c8a848;}
 .badge-crisis{background:rgba(138,40,48,.2);color:#c07080;}
 .badge-milestone{background:rgba(90,56,120,.2);color:#a080c0;}
@@ -363,19 +363,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 #contact-panel{position:fixed;inset:0;z-index:70;background:rgba(14,12,16,.97);display:none;flex-direction:column;align-items:center;justify-content:center;}
 #contact-panel.open{display:flex;}
 .contact-box{background:var(--bg3);border:1px solid var(--border2);border-radius:.25rem;padding:1.5rem;max-width:360px;width:90%;}
-.contact-title{font-size:.85rem;color:var(--gold);margin-bottom:1rem;text-align:center;font-family:'Cinzel',serif;letter-spacing:.08em;}
+.contact-title{font-size:.96rem;color:var(--gold);margin-bottom:1rem;text-align:center;font-family:'Cinzel',serif;letter-spacing:.08em;}
 .contact-opts{display:flex;flex-direction:column;gap:.5rem;}
-.contact-opt{padding:.6rem 1rem;border-radius:.25rem;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:.8rem;text-align:left;transition:all .2s;font-family:'EB Garamond',serif;}
+.contact-opt{padding:.6rem 1rem;border-radius:.25rem;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;font-size:.92rem;text-align:left;transition:all .2s;font-family:'EB Garamond',serif;}
 .contact-opt:hover{border-color:var(--gold3);color:var(--text);}
 
 /* ── 設定檔卡片 ── */
 .profile-card{background:var(--bg3);border:1px solid var(--border);border-radius:.25rem;padding:.65rem .9rem;display:flex;align-items:center;gap:.7rem;cursor:pointer;transition:border-color .2s;}
 .profile-card:hover{border-color:var(--gold3);}
 .profile-card-info{flex:1;}
-.profile-card-name{font-size:.82rem;color:var(--text);}
-.profile-card-meta{font-size:.68rem;color:var(--text3);margin-top:.1rem;font-style:italic;}
+.profile-card-name{font-size:.94rem;color:var(--text);}
+.profile-card-meta{font-size:.8rem;color:var(--text3);margin-top:.1rem;font-style:italic;}
 .profile-card-btns{display:flex;gap:.4rem;}
-.profile-card-btn{font-size:.68rem;padding:.22rem .5rem;border-radius:.2rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;}
+.profile-card-btn{font-size:.8rem;padding:.22rem .5rem;border-radius:.2rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;}
 .profile-card-btn:hover{border-color:var(--border2);color:var(--text2);}
 .profile-card-btn.danger{color:var(--crimson2);}
 
@@ -383,7 +383,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 #twist-panel{position:fixed;inset:0;z-index:70;background:rgba(14,12,16,.96);display:none;align-items:center;justify-content:center;}
 
 /* ── 回憶覆蓋 ── */
-#memories-overlay{position:fixed;inset:0;z-index:60;background:rgba(12,10,16,.97);display:none;flex-direction:column;overflow:hidden;}
+
 
 /* ── 劇情回顧 ── */
 #recap-overlay{position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;}
@@ -395,55 +395,55 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 .letter-wrap{margin:.5rem .7rem;background:linear-gradient(160deg,#1e1a10,#16130b);border:1px solid #3a2e14;border-radius:.2rem;position:relative;overflow:hidden;}
 .letter-wrap::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(80,60,20,.07) 27px,rgba(80,60,20,.07) 28px);pointer-events:none;}
 .letter-seal{display:flex;align-items:center;justify-content:space-between;padding:.5rem .8rem .3rem;border-bottom:1px solid rgba(100,75,30,.3);}
-.letter-from{font-family:'Cinzel',serif;font-size:.68rem;color:#a08040;letter-spacing:.06em;}
-.letter-date{font-size:.6rem;color:#685840;font-style:italic;}
-.letter-body{padding:.65rem .85rem .8rem;font-size:.82rem;color:#c0a870;line-height:1.85;font-style:italic;position:relative;z-index:1;}
+.letter-from{font-family:'Cinzel',serif;font-size:.8rem;color:#a08040;letter-spacing:.06em;}
+.letter-date{font-size:.76rem;color:#685840;font-style:italic;}
+.letter-body{padding:.65rem .85rem .8rem;font-size:.94rem;color:#c0a870;line-height:1.85;font-style:italic;position:relative;z-index:1;}
 .letter-list-item{padding:.5rem .8rem;border-bottom:1px solid rgba(80,60,20,.2);cursor:pointer;display:flex;align-items:center;gap:.55rem;transition:background .15s;}
 .letter-list-item:hover{background:rgba(80,60,20,.12);}
 .letter-list-owl{font-size:1rem;flex-shrink:0;}
-.letter-list-from{font-family:'Cinzel',serif;font-size:.7rem;color:#a08840;letter-spacing:.04em;margin-bottom:.12rem;}
-.letter-list-preview{font-size:.7rem;color:#706050;font-style:italic;}
+.letter-list-from{font-family:'Cinzel',serif;font-size:.82rem;color:#a08840;letter-spacing:.04em;margin-bottom:.12rem;}
+.letter-list-preview{font-size:.82rem;color:#706050;font-style:italic;}
 
 /* 魔法肖像 — 金框畫像 */
 .portrait-frame-outer{margin:.5rem .7rem;border:3px solid #4a3818;border-radius:.2rem;background:#0a0806;box-shadow:inset 0 0 20px rgba(0,0,0,.5),0 0 0 1px #2a1e0a,0 2px 8px rgba(0,0,0,.4);}
 .portrait-frame-header{padding:.45rem .75rem;background:linear-gradient(90deg,#1a1208,#221808,#1a1208);border-bottom:1px solid #3a2a10;display:flex;align-items:center;gap:.5rem;}
-.portrait-frame-name{font-family:'Cinzel',serif;font-size:.7rem;color:#c8a050;letter-spacing:.08em;}
+.portrait-frame-name{font-family:'Cinzel',serif;font-size:.82rem;color:#c8a050;letter-spacing:.08em;}
 .portrait-status-dot{width:5px;height:5px;border-radius:50%;background:#507050;margin-left:auto;flex-shrink:0;}
 .portrait-scene{padding:.7rem .8rem;display:flex;gap:.7rem;align-items:flex-start;}
 .portrait-avatar{width:52px;height:64px;flex-shrink:0;background:linear-gradient(160deg,#1a1208,#2a1e10);border:1px solid #4a3820;border-radius:.1rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#a08040;font-family:'Cinzel',serif;}
 .portrait-dialogue{flex:1;}
-.portrait-speech-bubble{background:linear-gradient(135deg,#131008,#1a1508);border:1px solid #3a2a10;border-radius:.15rem;padding:.55rem .7rem;font-size:.8rem;color:#c8b080;line-height:1.7;font-style:italic;position:relative;}
-.portrait-speech-bubble::before{content:'◀';position:absolute;left:-.6rem;top:.6rem;font-size:.5rem;color:#3a2a10;}
-.portrait-speaker-name{font-family:'Cinzel',serif;font-size:.6rem;color:#806030;margin-top:.25rem;letter-spacing:.06em;}
+.portrait-speech-bubble{background:linear-gradient(135deg,#131008,#1a1508);border:1px solid #3a2a10;border-radius:.15rem;padding:.55rem .7rem;font-size:1rem;color:#c8b080;line-height:1.7;font-style:italic;position:relative;}
+.portrait-speech-bubble::before{content:'◀';position:absolute;left:-.6rem;top:.6rem;font-size:.7rem;color:#3a2a10;}
+.portrait-speaker-name{font-family:'Cinzel',serif;font-size:.76rem;color:#806030;margin-top:.25rem;letter-spacing:.06em;}
 
 /* 預言家日報 — 報紙版面 */
 .prophet-masthead{background:linear-gradient(180deg,#0e0c06,#161208);border-bottom:2px solid #5a4020;padding:.6rem .8rem .5rem;text-align:center;}
 .prophet-title{font-family:'Cinzel',serif;font-size:1rem;color:#c8a040;letter-spacing:.2em;text-shadow:0 0 10px rgba(200,160,64,.25);}
-.prophet-subtitle{font-size:.55rem;color:#806840;letter-spacing:.25em;margin-top:.1rem;text-transform:uppercase;}
-.prophet-dateline{display:flex;justify-content:space-between;padding:.28rem .8rem;font-size:.6rem;color:#605040;border-bottom:1px solid #3a2810;font-style:italic;}
+.prophet-subtitle{font-size:.8rem;color:#806840;letter-spacing:.25em;margin-top:.1rem;text-transform:uppercase;}
+.prophet-dateline{display:flex;justify-content:space-between;padding:.28rem .8rem;font-size:.76rem;color:#605040;border-bottom:1px solid #3a2810;font-style:italic;}
 .prophet-article{padding:.6rem .8rem;border-bottom:1px solid #2a2010;}
-.prophet-headline{font-family:'Cinzel',serif;font-size:.76rem;color:#c0a050;letter-spacing:.04em;margin-bottom:.3rem;line-height:1.4;}
-.prophet-byline{font-size:.58rem;color:#604830;margin-bottom:.28rem;font-style:italic;}
-.prophet-body{font-size:.76rem;color:#a09060;line-height:1.7;}
-.prophet-photo{width:100%;height:40px;background:linear-gradient(135deg,#1a1408,#0e0c06);border:1px solid #3a2810;border-radius:.1rem;margin:.25rem 0;display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#403020;letter-spacing:.1em;font-style:italic;}
+.prophet-headline{font-family:'Cinzel',serif;font-size:.88rem;color:#c0a050;letter-spacing:.04em;margin-bottom:.3rem;line-height:1.4;}
+.prophet-byline{font-size:.74rem;color:#604830;margin-bottom:.28rem;font-style:italic;}
+.prophet-body{font-size:.88rem;color:#a09060;line-height:1.7;}
+.prophet-photo{width:100%;height:40px;background:linear-gradient(135deg,#1a1408,#0e0c06);border:1px solid #3a2810;border-radius:.1rem;margin:.25rem 0;display:flex;align-items:center;justify-content:center;font-size:.74rem;color:#403020;letter-spacing:.1em;font-style:italic;}
 
 /* 巫師廣播 — 木製收音機 */
 .wireless-set{margin:.5rem .7rem;background:linear-gradient(180deg,#1c1008,#140c04);border:1px solid #5a2810;border-radius:.35rem;overflow:hidden;}
 .wireless-speaker-grill{height:6px;background:repeating-linear-gradient(90deg,#3a1808,#3a1808 2px,#1c0c04 2px,#1c0c04 4px);opacity:.6;}
 .wireless-display{padding:.5rem .8rem;background:#080604;border-bottom:1px solid #3a1a08;}
-.wireless-freq{font-size:.55rem;color:#804010;font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:.1rem;}
-.wireless-station-name{font-size:.78rem;color:#e08030;font-family:'Courier New',monospace;}
+.wireless-freq{font-size:.8rem;color:#804010;font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:.1rem;}
+.wireless-station-name{font-size:.9rem;color:#e08030;font-family:'Courier New',monospace;}
 .wireless-signal{display:flex;gap:2px;align-items:flex-end;margin-top:.2rem;}
 .wireless-bar{width:3px;background:#805020;border-radius:1px;animation:signalBar var(--sd,1s) ease-in-out infinite alternate;}
 @keyframes signalBar{from{opacity:.3;}to{opacity:.9;}}
 .wireless-broadcast-item{padding:.45rem .8rem;border-bottom:1px solid #2a1208;}
-.wireless-time-tag{font-size:.6rem;color:#804828;font-family:'Courier New',monospace;margin-bottom:.18rem;}
-.wireless-text{font-size:.77rem;color:#b07840;line-height:1.65;}
+.wireless-time-tag{font-size:.76rem;color:#804828;font-family:'Courier New',monospace;margin-bottom:.18rem;}
+.wireless-text{font-size:.88rem;color:#b07840;line-height:1.65;}
 .wireless-static-line{height:1px;background:repeating-linear-gradient(90deg,#301808,#301808 2px,transparent 2px,transparent 5px);margin:.15rem 0;opacity:.4;}
 
 /* 火焰網路 — 壁爐連線 */
 .floo-hearth-outer{margin:.5rem .7rem;background:linear-gradient(180deg,#0c0804,#160e04);border:2px solid #4a2808;border-radius:.25rem;overflow:hidden;}
-.floo-mantle{padding:.4rem .8rem;background:linear-gradient(90deg,#1a0e06,#221408,#1a0e06);border-bottom:1px solid #3a1e08;font-family:'Cinzel',serif;font-size:.65rem;color:#a06020;letter-spacing:.1em;text-align:center;}
+.floo-mantle{padding:.4rem .8rem;background:linear-gradient(90deg,#1a0e06,#221408,#1a0e06);border-bottom:1px solid #3a1e08;font-family:'Cinzel',serif;font-size:.86rem;color:#a06020;letter-spacing:.1em;text-align:center;}
 .floo-firebox{
   height:56px;background:radial-gradient(ellipse at 50% 100%,#4a2008 0%,#2a1004 40%,#0a0602 100%);
   display:flex;align-items:flex-end;justify-content:center;gap:3px;padding:0 .5rem .3rem;
@@ -456,12 +456,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 }
 @keyframes floFlicker{from{transform:scaleY(.85) scaleX(.9);opacity:.6;}to{transform:scaleY(1.1) scaleX(1);opacity:1;}}
 .floo-address-section{padding:.4rem 0;}
-.floo-section-label{font-size:.6rem;color:#704020;letter-spacing:.1em;padding:.2rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.floo-section-label{font-size:.76rem;color:#704020;letter-spacing:.1em;padding:.2rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;}
 .floo-entry{padding:.45rem .85rem;border-bottom:1px solid rgba(80,40,8,.25);cursor:pointer;display:flex;align-items:center;gap:.55rem;transition:background .15s;}
 .floo-entry:hover{background:rgba(80,40,8,.2);}
-.floo-entry-icon{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2a1608,#1a0c04);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;border:1px solid #5a2808;}
-.floo-entry-name{font-family:'Cinzel',serif;font-size:.7rem;color:#c07030;letter-spacing:.04em;}
-.floo-entry-location{font-size:.6rem;color:#704020;font-style:italic;}
+.floo-entry-icon{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2a1608,#1a0c04);display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;border:1px solid #5a2808;}
+.floo-entry-name{font-family:'Cinzel',serif;font-size:.82rem;color:#c07030;letter-spacing:.04em;}
+.floo-entry-location{font-size:.76rem;color:#704020;font-style:italic;}
 
 /* 掠奪者地圖 — 手繪羊皮卷 */
 .marauder-scroll{
@@ -476,13 +476,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='2' cy='2' r='.5' fill='rgba(100,80,20,.08)'/%3E%3C/svg%3E");
 }
 .marauder-incantation-bar{text-align:center;padding:.5rem .6rem .35rem;border-bottom:1px dashed rgba(140,110,40,.35);}
-.marauder-spell{font-family:'EB Garamond',serif;font-style:italic;font-size:.68rem;color:#a08830;letter-spacing:.1em;}
+.marauder-spell{font-family:'EB Garamond',serif;font-style:italic;font-size:.8rem;color:#a08830;letter-spacing:.1em;}
 .marauder-map-content{padding:.5rem .7rem;}
-.marauder-area-title{font-family:'Cinzel',serif;font-size:.62rem;color:#907030;letter-spacing:.08em;text-transform:uppercase;margin:.4rem 0 .2rem;padding-bottom:.15rem;border-bottom:1px dashed rgba(140,110,40,.25);}
-.marauder-location{padding:.22rem .4rem .22rem .8rem;font-size:.75rem;color:#a09050;font-style:italic;position:relative;line-height:1.5;}
+.marauder-area-title{font-family:'Cinzel',serif;font-size:.76rem;color:#907030;letter-spacing:.08em;text-transform:uppercase;margin:.4rem 0 .2rem;padding-bottom:.15rem;border-bottom:1px dashed rgba(140,110,40,.25);}
+.marauder-location{padding:.22rem .4rem .22rem .8rem;font-size:.88rem;color:#a09050;font-style:italic;position:relative;line-height:1.5;}
 .marauder-location::before{content:'';position:absolute;left:.3rem;top:.55rem;width:5px;height:5px;border-radius:50%;background:#c8a040;animation:mapPulse 2.5s ease-in-out infinite;opacity:.7;}
 @keyframes mapPulse{0%,100%{opacity:.2;transform:scale(.8);}50%{opacity:.9;transform:scale(1.1);}}
-.marauder-footer-text{text-align:center;padding:.35rem .6rem;border-top:1px dashed rgba(140,110,40,.3);font-size:.58rem;color:#605030;font-style:italic;}
+.marauder-footer-text{text-align:center;padding:.35rem .6rem;border-top:1px dashed rgba(140,110,40,.3);font-size:.74rem;color:#605030;font-style:italic;}
 
 /* ══ END 各通訊介面 CSS ══ */
 
@@ -491,7 +491,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   .story-panel{padding:1.2rem 1.6rem;}
   .options-panel{padding:.7rem 1.4rem .9rem;}
   .story-msg{font-size:.93rem;}
-  .opt-btn{font-size:.85rem;}
+  .opt-btn{font-size:.96rem;}
   .gh-time{max-width:none;}
 }
 @media(min-width:1024px){
@@ -513,15 +513,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
     <span class="splash-rune">⚡</span>
     <h1 class="splash-title">霍格華茲秘史</h1>
     <p class="splash-sub">The Secret Chronicles of the Wizarding World</p>
-    <div class="splash-divider"><span style="font-size:.65rem;color:var(--text3);letter-spacing:.15em;">✦ ✦ ✦</span></div>
+    <div class="splash-divider"><span style="font-size:.78rem;color:var(--text3);letter-spacing:.15em;">✦ ✦ ✦</span></div>
     <div class="splash-btn-row">
       <button class="btn btn-primary" onclick="startNewGame()">踏入魔法世界</button>
       <button class="btn" onclick="continueGame()">繼續傳說</button>
     </div>
     <div style="margin-top:.8rem;">
-      <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.7rem;color:var(--text3);">已儲存角色</button>
+      <button class="btn btn-sm" onclick="showProfileManager()" style="font-size:.82rem;color:var(--text3);">已儲存角色</button>
     </div>
-    <p style="margin-top:1.5rem;font-size:.68rem;color:var(--text3);font-style:italic;">以 Google 帳號登入以同步存檔至雲端</p>
+    <p style="margin-top:1.5rem;font-size:.8rem;color:var(--text3);font-style:italic;">以 Google 帳號登入以同步存檔至雲端</p>
   </div>
 </div>
 
@@ -543,7 +543,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   <div class="settings-inner">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;">
       <div class="settings-title">創建角色</div>
-      <button class="btn btn-sm" onclick="randomizeProfile()" style="font-size:.7rem;">✦ 隨機</button>
+      <button class="btn btn-sm" onclick="randomizeProfile()" style="font-size:.82rem;">✦ 隨機</button>
     </div>
     <p class="settings-sub">填寫你的巫師檔案，選擇你的主線，開始你在魔法世界的傳說</p>
 
@@ -578,8 +578,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
         <select class="s-input s-select" id="input-model" style="flex:1;" onchange="onModelChange()"><option value="">— 請先載入模型列表 —</option></select>
         <button class="btn btn-sm" id="btn-test-model" onclick="testModel()" style="display:none;white-space:nowrap;">測試</button>
       </div>
-      <input class="s-input" id="input-model-manual" placeholder="或手動輸入模型名稱（選填）" style="margin-top:.4rem;font-size:.8rem;">
-      <div id="model-test-result" style="font-size:.73rem;margin-top:.4rem;min-height:1rem;"></div>
+      <input class="s-input" id="input-model-manual" placeholder="或手動輸入模型名稱（選填）" style="margin-top:.4rem;font-size:.92rem;">
+      <div id="model-test-result" style="font-size:.85rem;margin-top:.4rem;min-height:1rem;"></div>
       <p class="s-note" id="model-hint" style="margin-top:.2rem;"></p>
     </div>
 
@@ -612,12 +612,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
       <div class="s-section">
         <span class="s-label">Hogwarts 學院</span>
         <div class="house-grid" id="house-grid">
-          <div class="house-opt" data-house="gryffindor" onclick="selectHouse(this,'葛來分多')">🦁 葛來分多<br><small style="font-size:.6rem;color:#706060;">勇敢·騎士精神</small></div>
-          <div class="house-opt" data-house="slytherin" onclick="selectHouse(this,'史萊哲林')">🐍 史萊哲林<br><small style="font-size:.6rem;color:#606860;">野心·機敏</small></div>
-          <div class="house-opt" data-house="ravenclaw" onclick="selectHouse(this,'雷文克勞')">🦅 雷文克勞<br><small style="font-size:.6rem;color:#606070;">智慧·學識</small></div>
-          <div class="house-opt" data-house="hufflepuff" onclick="selectHouse(this,'赫夫帕夫')">🦡 赫夫帕夫<br><small style="font-size:.6rem;color:#706840;">忠誠·勤勉</small></div>
+          <div class="house-opt" data-house="gryffindor" onclick="selectHouse(this,'葛來分多')">🦁 葛來分多<br><small style="font-size:.76rem;color:#706060;">勇敢·騎士精神</small></div>
+          <div class="house-opt" data-house="slytherin" onclick="selectHouse(this,'史萊哲林')">🐍 史萊哲林<br><small style="font-size:.76rem;color:#606860;">野心·機敏</small></div>
+          <div class="house-opt" data-house="ravenclaw" onclick="selectHouse(this,'雷文克勞')">🦅 雷文克勞<br><small style="font-size:.76rem;color:#606070;">智慧·學識</small></div>
+          <div class="house-opt" data-house="hufflepuff" onclick="selectHouse(this,'赫夫帕夫')">🦡 赫夫帕夫<br><small style="font-size:.76rem;color:#706840;">忠誠·勤勉</small></div>
         </div>
-        <input class="s-input" id="input-house" placeholder="或填寫其他歸屬（如：無學院、奧克頓等）" style="margin-top:.4rem;font-size:.8rem;">
+        <input class="s-input" id="input-house" placeholder="或填寫其他歸屬（如：無學院、奧克頓等）" style="margin-top:.4rem;font-size:.92rem;">
       </div>
     </div>
 
@@ -682,7 +682,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
         <div class="identity-opt" onclick="selectEra(this,'戰後重建時期（1998-2010年代）')">🌅 戰後重建時期</div>
         <div class="identity-opt" onclick="selectEra(this,'下一代巫師時代（2017年左右）')">✨ 下一代時期</div>
       </div>
-      <input class="s-input" id="input-era" placeholder="或自填時代背景..." style="margin-top:.4rem;font-size:.8rem;">
+      <input class="s-input" id="input-era" placeholder="或自填時代背景..." style="margin-top:.4rem;font-size:.92rem;">
     </div>
 
     <div class="s-section">
@@ -697,7 +697,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
         <div class="identity-opt" onclick="selectFaction(this,'魔法生物聚居地')">🦄 魔法生物方</div>
         <div class="identity-opt" onclick="selectFaction(this,'秘密組織成員')">🌑 秘密組織</div>
       </div>
-      <input class="s-input" id="input-faction" placeholder="或自填陣營..." style="margin-top:.4rem;font-size:.8rem;">
+      <input class="s-input" id="input-faction" placeholder="或自填陣營..." style="margin-top:.4rem;font-size:.92rem;">
     </div>
 
     <hr class="s-divider">
@@ -787,7 +787,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
     <div class="settings-footer" style="flex-wrap:wrap;gap:.5rem;">
       <button class="btn" id="btn-back-splash" onclick="showScreen('screen-splash')">← 返回</button>
       <button class="btn" id="btn-back-game" onclick="showScreen('screen-game')" style="display:none;">← 返回遊戲</button>
-      <button class="btn" onclick="saveProfilePreset()" style="font-size:.75rem;">儲存角色</button>
+      <button class="btn" onclick="saveProfilePreset()" style="font-size:.88rem;">儲存角色</button>
       <button class="btn btn-primary" id="btn-start-game" onclick="confirmSettings()">踏入魔法世界 ✦</button>
       <button class="btn btn-primary" id="btn-save-settings" onclick="saveSettingsOnly()" style="display:none;">儲存設定 ✓</button>
     </div>
@@ -798,24 +798,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 <div id="screen-casting" class="screen" style="background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;">
   <div style="width:100%;max-width:520px;margin:0 auto;">
     <div style="font-size:1rem;color:var(--gold);margin-bottom:.3rem;font-family:'Cinzel',serif;letter-spacing:.1em;">命運之人</div>
-    <p style="font-size:.78rem;color:var(--text3);margin-bottom:.8rem;line-height:1.6;font-style:italic;">根據你的設定與主線類型，以下是可能在你的故事中扮演重要角色的人物。</p>
+    <p style="font-size:.9rem;color:var(--text3);margin-bottom:.8rem;line-height:1.6;font-style:italic;">根據你的設定與主線類型，以下是可能在你的故事中扮演重要角色的人物。</p>
     <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
       <div id="cast-mode-auto" class="identity-opt selected" onclick="setCastMode('auto')" style="flex:1;text-align:center;min-width:120px;padding:.5rem;">
-        劇情自由發展<br><span style="font-size:.62rem;color:var(--text3);">不預設核心角色</span>
+        劇情自由發展<br><span style="font-size:.76rem;color:var(--text3);">不預設核心角色</span>
       </div>
       <div id="cast-mode-pick" class="identity-opt" onclick="setCastMode('pick')" style="flex:1;text-align:center;min-width:120px;padding:.5rem;">
-        指定核心角色<br><span style="font-size:.62rem;color:var(--text3);">故事主軸圍繞此人</span>
+        指定核心角色<br><span style="font-size:.76rem;color:var(--text3);">故事主軸圍繞此人</span>
       </div>
     </div>
-    <div style="font-size:.7rem;color:var(--text3);margin-bottom:.8rem;padding:.4rem .6rem;background:var(--bg3);border-radius:.2rem;border:1px solid var(--border);font-style:italic;" id="cast-hint">
+    <div style="font-size:.82rem;color:var(--text3);margin-bottom:.8rem;padding:.4rem .6rem;background:var(--bg3);border-radius:.2rem;border:1px solid var(--border);font-style:italic;" id="cast-hint">
       所有人都可能成為你故事的一部分，由劇情自然決定各自的定位。長按任一人設為重點配角（固定出現）。
     </div>
     <div id="casting-list" style="display:flex;flex-direction:column;gap:.8rem;"></div>
-    <div id="casting-loading" style="text-align:center;color:var(--text3);font-size:.82rem;padding:2rem;">
+    <div id="casting-loading" style="text-align:center;color:var(--text3);font-size:.94rem;padding:2rem;">
       <div style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--gold3);animation:spin .8s linear infinite;margin:0 auto 1rem;"></div>
       水晶球中映現出命運之人…
     </div>
-    <div id="casting-error" style="display:none;color:var(--crimson2);font-size:.8rem;text-align:center;padding:1rem;"></div>
+    <div id="casting-error" style="display:none;color:var(--crimson2);font-size:.92rem;text-align:center;padding:1rem;"></div>
   </div>
 </div>
 
@@ -839,7 +839,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
           <button class="gh-dd-item" id="dd-portrait" onclick="openComm('portrait');closeAllMenus()" style="display:none;">🖼️ 魔法肖像</button>
           <button class="gh-dd-item" id="dd-prophet"  onclick="openComm('prophet');closeAllMenus()"  style="display:none;">📰 預言家日報</button>
           <button class="gh-dd-item" id="dd-wireless" onclick="openComm('wireless');closeAllMenus()" style="display:none;">📻 巫師廣播</button>
-          <div id="dd-msg-empty" style="padding:.5rem .8rem;font-size:.65rem;color:var(--text3);font-style:italic;">尚無消息</div>
+          <div id="dd-msg-empty" style="padding:.5rem .8rem;font-size:.78rem;color:var(--text3);font-style:italic;">尚無消息</div>
         </div>
       </div>
 
@@ -850,7 +850,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
           <div class="gh-dd-label">日誌</div>
           <button class="gh-dd-item" onclick="openComm('contacts');closeAllMenus()">👥 人脈</button>
           <button class="gh-dd-item" onclick="openComm('notifs');closeAllMenus()">📜 通知 <span class="dd-badge" id="badge-notif" style="display:none;"></span></button>
-          <button class="gh-dd-item" onclick="openMemories();closeAllMenus()">✦ 回憶</button>
+          <button class="gh-dd-item" onclick="openRecap();closeAllMenus()">📖 劇情回顧</button>
         </div>
       </div>
 
@@ -861,7 +861,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
           <div class="gh-dd-label">探索</div>
           <button class="gh-dd-item" id="dd-floo"     onclick="openComm('floo');closeAllMenus()"     style="display:none;">🔥 火焰網路</button>
           <button class="gh-dd-item" id="dd-marauder" onclick="openComm('marauder');closeAllMenus()" style="display:none;">🗺️ 掠奪者地圖</button>
-          <div id="dd-exp-empty" style="padding:.5rem .8rem;font-size:.65rem;color:var(--text3);font-style:italic;">尚無可用</div>
+          <div id="dd-exp-empty" style="padding:.5rem .8rem;font-size:.78rem;color:var(--text3);font-style:italic;">尚無可用</div>
         </div>
       </div>
 
@@ -870,7 +870,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
         <button class="gh-more-btn" onclick="toggleMoreMenu()" title="更多">⋯</button>
         <div class="gh-dropdown" id="gh-dropdown">
           <button class="gh-dd-item" onclick="showSettingsFromGame();closeMoreMenu()">⚙ 設定</button>
-          <button class="gh-dd-item" onclick="openRecap();closeMoreMenu()">📖 劇情回顧</button>
           <button class="gh-dd-item" onclick="replayRound();closeMoreMenu()">↺ 重玩此回合</button>
           <button class="gh-dd-item" onclick="openTwist();closeMoreMenu()">✦ 改寫命運</button>
           <div class="gh-dd-sep"></div>
@@ -907,7 +906,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
       <button class="contact-opt" onclick="doContact('floo')">🔥 以火焰網路聯繫</button>
     </div>
     <button onclick="document.getElementById('contact-panel').classList.remove('open')"
-      style="width:100%;margin-top:.8rem;padding:.5rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.76rem;font-family:'EB Garamond',serif;">取消</button>
+      style="width:100%;margin-top:.8rem;padding:.5rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.88rem;font-family:'EB Garamond',serif;">取消</button>
   </div>
 </div>
 <div class="ending-aura aura-unknown" id="ending-aura"></div>
@@ -915,32 +914,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 <!-- ════ 扭轉劇情面板 ════ -->
 <div id="twist-panel" style="position:fixed;inset:0;z-index:70;background:rgba(14,12,16,.96);display:none;align-items:center;justify-content:center;">
   <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:.25rem;padding:1.5rem;max-width:380px;width:90%;">
-    <div style="font-size:.85rem;color:var(--gold);margin-bottom:.4rem;font-family:'Cinzel',serif;letter-spacing:.08em;">改寫命運</div>
-    <p style="font-size:.73rem;color:var(--text3);margin-bottom:.9rem;line-height:1.6;font-style:italic;">告訴魔法世界你想要的走向，它會重新生成當前回合，保留之前的故事脈絡。</p>
-    <textarea id="twist-input" style="width:100%;padding:.7rem;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:.2rem;font-size:.8rem;line-height:1.6;resize:none;outline:none;font-family:'EB Garamond',serif;" rows="3" placeholder="例如：讓石內卜露出一絲感情、讓對峙場面更緊張、加入一個神秘的不速之客…"></textarea>
+    <div style="font-size:.96rem;color:var(--gold);margin-bottom:.4rem;font-family:'Cinzel',serif;letter-spacing:.08em;">改寫命運</div>
+    <p style="font-size:.85rem;color:var(--text3);margin-bottom:.9rem;line-height:1.6;font-style:italic;">告訴魔法世界你想要的走向，它會重新生成當前回合，保留之前的故事脈絡。</p>
+    <textarea id="twist-input" style="width:100%;padding:.7rem;background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:.2rem;font-size:.92rem;line-height:1.6;resize:none;outline:none;font-family:'EB Garamond',serif;" rows="3" placeholder="例如：讓石內卜露出一絲感情、讓對峙場面更緊張、加入一個神秘的不速之客…"></textarea>
     <div style="display:flex;gap:.5rem;margin-top:.8rem;justify-content:flex-end;">
-      <button onclick="document.getElementById('twist-panel').style.display='none'" style="padding:.5rem 1rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.78rem;font-family:'EB Garamond',serif;">取消</button>
-      <button onclick="applyTwist()" style="padding:.5rem 1rem;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:.2rem;cursor:pointer;font-size:.78rem;font-family:'EB Garamond',serif;">改寫命運</button>
+      <button onclick="document.getElementById('twist-panel').style.display='none'" style="padding:.5rem 1rem;background:none;border:1px solid var(--border);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.9rem;font-family:'EB Garamond',serif;">取消</button>
+      <button onclick="applyTwist()" style="padding:.5rem 1rem;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:.2rem;cursor:pointer;font-size:.9rem;font-family:'EB Garamond',serif;">改寫命運</button>
     </div>
   </div>
 </div>
 
 <!-- ════ 回憶覆蓋 ════ -->
-<div id="memories-overlay" style="position:fixed;inset:0;z-index:60;background:rgba(12,10,16,.97);display:none;flex-direction:column;overflow:hidden;">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--border);">
-    <span style="font-size:.9rem;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.08em;">回憶的羊皮卷</span>
-    <button onclick="document.getElementById('memories-overlay').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--text3);padding:.28rem .6rem;border-radius:.2rem;cursor:pointer;font-size:.72rem;">關閉</button>
-  </div>
-  <div id="memories-list" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem;">
-    <p style="color:var(--text3);font-size:.8rem;text-align:center;margin-top:2rem;font-style:italic;">還沒有特別的回憶。繼續你們的故事吧 ✦</p>
-  </div>
-</div>
-
-<!-- ════ 劇情回顧 ════ -->
+<!-- ════ 劇情回顧（含特殊時刻）════ -->
 <div id="recap-overlay" style="position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0;">
-    <span style="font-size:.85rem;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.06em;">劇情回顧</span>
-    <button onclick="document.getElementById('recap-overlay').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--text3);padding:.25rem .6rem;border-radius:.2rem;cursor:pointer;font-size:.7rem;">關閉</button>
+    <span style="font-size:.96rem;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.06em;">劇情回顧</span>
+    <button onclick="document.getElementById('recap-overlay').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--text3);padding:.25rem .6rem;border-radius:.2rem;cursor:pointer;font-size:.82rem;">關閉</button>
   </div>
   <div id="recap-rounds" style="display:flex;gap:.4rem;padding:.6rem .8rem;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0;scrollbar-width:none;"></div>
   <div id="recap-content" style="flex:1;overflow-y:auto;padding:.8rem 1rem;"></div>
@@ -956,7 +945,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 // ── 全域錯誤捕捉 ──
 window.onerror = function(msg, src, line, col, err){
   var d = document.createElement('div');
-  d.style.cssText = 'position:fixed;bottom:24px;right:10px;background:rgba(40,20,20,.85);color:#c07070;padding:4px 8px;z-index:99999;font-size:.6rem;border-radius:3px;max-width:260px;word-break:break-all;pointer-events:none;';
+  d.style.cssText = 'position:fixed;bottom:24px;right:10px;background:rgba(40,20,20,.85);color:#c07070;padding:4px 8px;z-index:99999;font-size:.76rem;border-radius:3px;max-width:260px;word-break:break-all;pointer-events:none;';
   d.textContent = 'err:'+line+' '+msg.slice(0,60);
   document.body && document.body.appendChild(d);
   setTimeout(()=>d.remove(), 8000);
@@ -1335,7 +1324,7 @@ async function runCasting(){
   } catch(e){
     loadDiv.style.display='none';
     errDiv.textContent='選角失敗：'+e.message+' — 請檢查 API Key 後重試';errDiv.style.display='';
-    errDiv.innerHTML+='<br><button onclick="runCasting()" style="margin-top:.5rem;padding:.35rem .8rem;background:none;border:1px solid var(--border2);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.75rem;font-family:\'EB Garamond\',serif;">重試</button>';
+    errDiv.innerHTML+='<br><button onclick="runCasting()" style="margin-top:.5rem;padding:.35rem .8rem;background:none;border:1px solid var(--border2);color:var(--text3);border-radius:.2rem;cursor:pointer;font-size:.88rem;font-family:\'EB Garamond\',serif;">重試</button>';
   }
 }
 
@@ -1345,18 +1334,18 @@ function renderCastingList(candidates){
     const card=document.createElement('div');
     card.style.cssText='background:var(--bg3);border:1px solid var(--border);border-radius:.25rem;padding:.9rem 1rem;cursor:pointer;transition:all .2s;user-select:none;';
     card.dataset.name=c.name;card.dataset.role='';
-    const badge=c.isOriginal?'<span style="font-size:.58rem;background:rgba(90,56,120,.2);color:#a080c0;padding:.1rem .4rem;border-radius:.2rem;margin-left:.4rem;">原創</span>':(c.isCanon?'<span style="font-size:.58rem;background:rgba(200,168,74,.15);color:#a08830;padding:.1rem .4rem;border-radius:.2rem;margin-left:.4rem;">正典</span>':'');
+    const badge=c.isOriginal?'<span style="font-size:.74rem;background:rgba(90,56,120,.2);color:#a080c0;padding:.1rem .4rem;border-radius:.2rem;margin-left:.4rem;">原創</span>':(c.isCanon?'<span style="font-size:.74rem;background:rgba(200,168,74,.15);color:#a08830;padding:.1rem .4rem;border-radius:.2rem;margin-left:.4rem;">正典</span>':'');
     card.innerHTML=`
       <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.35rem;">
         <div style="width:38px;height:38px;border-radius:50%;background:var(--parchment);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🧙</div>
         <div>
-          <div style="font-size:.85rem;color:var(--text);font-family:'Cinzel',serif;font-size:.78rem;">${c.name}${badge}</div>
-          <div style="font-size:.68rem;color:var(--text3);margin-top:.1rem;font-style:italic;">${c.affiliation||''} · ${c.age||'?'}歲</div>
+          <div style="font-size:.96rem;color:var(--text);font-family:'Cinzel',serif;font-size:.9rem;">${c.name}${badge}</div>
+          <div style="font-size:.8rem;color:var(--text3);margin-top:.1rem;font-style:italic;">${c.affiliation||''} · ${c.age||'?'}歲</div>
         </div>
-        <div id="cast-role-${i}" style="margin-left:auto;font-size:.65rem;color:var(--text3);min-width:40px;text-align:right;"></div>
+        <div id="cast-role-${i}" style="margin-left:auto;font-size:.78rem;color:var(--text3);min-width:40px;text-align:right;"></div>
       </div>
-      <div style="font-size:.78rem;color:var(--text2);margin-bottom:.25rem;font-style:italic;">${c.vibe||''}</div>
-      <div style="font-size:.72rem;color:var(--text3);">${c.hookDesc||''}</div>`;
+      <div style="font-size:.9rem;color:var(--text2);margin-bottom:.25rem;font-style:italic;">${c.vibe||''}</div>
+      <div style="font-size:.84rem;color:var(--text3);">${c.hookDesc||''}</div>`;
     card._updateStyle=function(){
       if(card.dataset.role==='main'){card.style.borderColor='var(--gold3)';card.style.background='var(--parchment)';document.getElementById('cast-role-'+i).textContent='核心角色';}
       else if(card.dataset.role==='side'){card.style.borderColor='var(--border2)';card.style.background='var(--bg3)';document.getElementById('cast-role-'+i).textContent='重點配角';}
@@ -1380,8 +1369,8 @@ function renderCastingList(candidates){
   });
   const footer=document.createElement('div');
   footer.style.cssText='display:flex;gap:.6rem;justify-content:flex-end;margin-top:.5rem;flex-wrap:wrap;';
-  footer.innerHTML=`<button class="btn" onclick="showScreen('screen-settings')" style="font-size:.75rem;">← 重設定</button>
-    <button class="btn btn-primary" onclick="finishCasting()" style="font-size:.8rem;">確認命運 ✦</button>`;
+  footer.innerHTML=`<button class="btn" onclick="showScreen('screen-settings')" style="font-size:.88rem;">← 重設定</button>
+    <button class="btn btn-primary" onclick="finishCasting()" style="font-size:.92rem;">確認命運 ✦</button>`;
   list.appendChild(footer);
 }
 
@@ -1787,7 +1776,7 @@ let toastTimeout;
 function showNotifToast(app,content){
   let toast=document.querySelector('.notif-toast');
   if(!toast){toast=document.createElement('div');toast.className='notif-toast';document.body.appendChild(toast);}
-  toast.innerHTML=`<div class="nt-app" style="font-size:.65rem;color:var(--text3);margin-bottom:.2rem;">📜 ${escapeHtml(app)}</div><div class="nt-msg" style="color:var(--text);">${escapeHtml(content)}</div>`;
+  toast.innerHTML=`<div class="nt-app" style="font-size:.78rem;color:var(--text3);margin-bottom:.2rem;">📜 ${escapeHtml(app)}</div><div class="nt-msg" style="color:var(--text);">${escapeHtml(content)}</div>`;
   toast.style.display='block';clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{toast.style.display='none';},4000);
 }
 
@@ -1915,25 +1904,85 @@ window.applyTwist=async function(){
 };
 
 window.openRecap=function(){
-  var overlay=document.getElementById('recap-overlay');var roundsEl=document.getElementById('recap-rounds');var contentEl=document.getElementById('recap-content');
+  var overlay=document.getElementById('recap-overlay');
+  var roundsEl=document.getElementById('recap-rounds');
+  var contentEl=document.getElementById('recap-content');
   if(!overlay||!roundsEl||!contentEl)return;
-  var log=gameState.storyLog||[];var byRound={};var currentRound=1;
-  log.forEach(function(entry){if(entry.type==='round_start')currentRound=entry.round||currentRound;if(!byRound[currentRound])byRound[currentRound]=[];byRound[currentRound].push(entry);});
+
+  var log=gameState.storyLog||[];
+  var byRound={};var currentRound=1;
+  log.forEach(function(entry){
+    if(entry.type==='round_start')currentRound=entry.round||currentRound;
+    if(!byRound[currentRound])byRound[currentRound]=[];
+    byRound[currentRound].push(entry);
+  });
   var rounds=Object.keys(byRound).map(Number).sort(function(a,b){return a-b;});
-  if(rounds.length===0){roundsEl.innerHTML='<span style="font-size:.72rem;color:#555;">尚無回顧內容</span>';contentEl.innerHTML='';overlay.style.display='flex';return;}
-  roundsEl.innerHTML=rounds.map(function(r){return'<button onclick="showRecapRound('+r+')" id="recap-btn-'+r+'" style="flex-shrink:0;font-size:.68rem;padding:.3rem .6rem;border-radius:1rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;font-family:\'Cinzel\',serif;">第'+r+'回合</button>';}).join('');
-  showRecapRound(rounds[rounds.length-1]);overlay.style.display='flex';
+
+  // 建立回憶索引（依回合）
+  var memsByRound={};
+  (gameState.memories||[]).forEach(function(m){
+    if(!memsByRound[m.round])memsByRound[m.round]=[];
+    memsByRound[m.round].push(m);
+  });
+
+  if(rounds.length===0){
+    roundsEl.innerHTML='<span style="font-size:.84rem;color:#555;padding:.4rem;">尚無回顧內容</span>';
+    contentEl.innerHTML='';
+    overlay.style.display='flex';
+    return;
+  }
+
+  // 回合標籤：有特殊時刻的回合加上標記
+  roundsEl.innerHTML=rounds.map(function(r){
+    var hasMem=memsByRound[r]&&memsByRound[r].length>0;
+    return'<button onclick="showRecapRound('+r+')" id="recap-btn-'+r+'" style="flex-shrink:0;font-size:.78rem;padding:.28rem .55rem;border-radius:1rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;font-family:\'Cinzel\',serif;position:relative;">'
+      +(hasMem?'<span style="position:absolute;top:-3px;right:-3px;width:6px;height:6px;border-radius:50%;background:var(--gold3);"></span>':'')
+      +'第'+r+'回合</button>';
+  }).join('');
+
+  showRecapRound(rounds[rounds.length-1]);
+  overlay.style.display='flex';
 };
+
 window.showRecapRound=function(round){
-  document.querySelectorAll('[id^="recap-btn-"]').forEach(function(btn){btn.style.background='none';btn.style.color='var(--text3)';btn.style.borderColor='var(--border)';});
-  var activeBtn=document.getElementById('recap-btn-'+round);if(activeBtn){activeBtn.style.background='var(--bg3)';activeBtn.style.color='var(--text)';activeBtn.style.borderColor='var(--gold3)';}
+  document.querySelectorAll('[id^="recap-btn-"]').forEach(function(btn){
+    btn.style.background='none';btn.style.color='var(--text3)';btn.style.borderColor='var(--border)';
+  });
+  var activeBtn=document.getElementById('recap-btn-'+round);
+  if(activeBtn){activeBtn.style.background='var(--bg3)';activeBtn.style.color='var(--text)';activeBtn.style.borderColor='var(--gold3)';}
+
   var log=gameState.storyLog||[];var currentRound=1;var entries=[];
-  log.forEach(function(entry){if(entry.type==='round_start')currentRound=entry.round||currentRound;if(currentRound===round)entries.push(entry);});
-  var html=entries.map(function(e){
-    if(e.type==='narration'||e.type==='event')return'<div style="font-size:.8rem;color:var(--text2);line-height:1.75;margin-bottom:.6rem;padding:.6rem .8rem;background:var(--bg3);border-radius:.2rem;border-left:2px solid var(--border2);">'+e.text+'</div>';
-    if(e.type==='choice')return'<div style="font-size:.75rem;color:var(--text3);padding:.3rem .6rem;margin:.3rem 0;display:flex;align-items:center;gap:.4rem;"><span style="color:var(--gold3);">▸</span>'+e.text+'</div>';return'';
+  log.forEach(function(entry){
+    if(entry.type==='round_start')currentRound=entry.round||currentRound;
+    if(currentRound===round)entries.push(entry);
+  });
+
+  // 該回合的特殊時刻
+  var mems=(gameState.memories||[]).filter(function(m){return m.round===round;});
+
+  var memHtml=mems.map(function(m){
+    var isSpecial=m.title.includes('初吻')||m.title.includes('守護神')||m.title.includes('誓言')||m.title.includes('告白');
+    var isCrisis=m.title.includes('背叛')||m.title.includes('危機')||m.title.includes('戰鬥')||m.title.includes('對峙');
+    var color=isSpecial?'var(--purple2)':isCrisis?'var(--crimson2)':'var(--gold3)';
+    return'<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.6rem .8rem;margin-bottom:.4rem;background:var(--bg3);border-radius:.2rem;border-left:2px solid '+color+';">'
+      +'<span style="font-size:1.1rem;flex-shrink:0;">'+m.emoji+'</span>'
+      +'<div><div style="font-family:\'Cinzel\',serif;font-size:.82rem;color:'+color+';letter-spacing:.04em;margin-bottom:.15rem;">'+m.title+'</div>'
+      +(m.content?'<div style="font-size:.88rem;color:var(--text2);line-height:1.6;">'+m.content.slice(0,120)+(m.content.length>120?'…':'')+'</div>':'')
+      +'</div></div>';
+  }).join('');
+
+  var storyHtml=entries.map(function(e){
+    if(e.type==='narration'||e.type==='event')
+      return'<div style="font-size:.92rem;color:var(--text2);line-height:1.75;margin-bottom:.5rem;padding:.55rem .8rem;background:rgba(255,255,255,.02);border-radius:.2rem;border-left:2px solid var(--border2);">'+e.text+'</div>';
+    if(e.type==='choice')
+      return'<div style="font-size:.86rem;color:var(--text3);padding:.25rem .6rem;margin:.2rem 0;display:flex;align-items:center;gap:.35rem;"><span style="color:var(--gold3);">▸</span>'+e.text+'</div>';
+    return'';
   }).filter(Boolean).join('');
-  document.getElementById('recap-content').innerHTML=html||'<div style="padding:2rem;text-align:center;color:#444;font-size:.76rem;">此回合尚無記錄</div>';
+
+  document.getElementById('recap-content').innerHTML=
+    (memHtml?'<div style="font-size:.76rem;color:var(--gold3);letter-spacing:.1em;padding:.4rem .8rem .2rem;font-family:\'Cinzel\',serif;text-transform:uppercase;opacity:.8;">✦ 特殊時刻</div>'+memHtml:'')
+    +(storyHtml?'<div style="font-size:.76rem;color:var(--text3);letter-spacing:.1em;padding:.4rem .8rem .2rem;font-family:\'Cinzel\',serif;text-transform:uppercase;opacity:.8;">劇情記錄</div>'+storyHtml:'')
+    ||'<div style="padding:2rem;text-align:center;color:#444;font-size:.88rem;">此回合尚無記錄</div>';
   document.getElementById('recap-content').scrollTop=0;
 };
 
@@ -2060,9 +2109,9 @@ function renderScrollPage(page){
         <div class="letter-list-preview">${l.content.slice(0,30)}…</div></div>
       </div>`;
     });
-    if(!hasT&&!others.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">貓頭鷹尚未帶來任何信件</div>';
+    if(!hasT&&!others.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.88rem;font-style:italic;">貓頭鷹尚未帶來任何信件</div>';
     html+='</div>';
-    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">貓頭鷹信</span></div>${html}`;
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.82rem;color:#c8a040;letter-spacing:.08em;">貓頭鷹信</span></div>${html}`;
     actions.innerHTML=`${T?`<button class="so-btn" onclick="renderScrollPage('owl-target')">✍️ 與${T}的往來信件</button>`:''}
       <button class="so-btn" onclick="closeScroll()">← 關閉</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
@@ -2071,7 +2120,7 @@ function renderScrollPage(page){
   } else if(page==='owl-target'){
     const letters=gameState.magicData.owlPost.letters.filter(l=>l.from===T||l.from==='me');
     if(!T||letters.length===0){
-      content.innerHTML=`<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">還沒有和${T||'此人'}互通信件</div>`;
+      content.innerHTML=`<div style="padding:2rem;text-align:center;color:#504030;font-size:.88rem;font-style:italic;">還沒有和${T||'此人'}互通信件</div>`;
       actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('owl')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
       return;
     }
@@ -2085,7 +2134,7 @@ function renderScrollPage(page){
         <div class="letter-body">${l.content}</div>
       </div>`;
     }).join('');
-    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><button class="back-btn" onclick="renderScrollPage('owl')">←</button><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">${T}</span></div>${lettersHtml}`;
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><button class="back-btn" onclick="renderScrollPage('owl')">←</button><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.82rem;color:#c8a040;letter-spacing:.08em;">${T}</span></div>${lettersHtml}`;
     actions.innerHTML=`<button class="so-btn" onclick="sendOwlMessage()">✍️ 寫回信</button>
       <button class="so-btn" onclick="renderScrollPage('owl')">← 返回</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
@@ -2099,7 +2148,7 @@ function renderScrollPage(page){
       const last=(chats[T]||[]).slice(-1)[0];
       html+=`<div class="letter-list-item" onclick="renderScrollPage('portrait-target')" style="border-left:2px solid #4a3818;">
         <span class="letter-list-owl">🖼️</span>
-        <div><div class="letter-list-from" style="color:#c8a050;">${T} <span style="font-size:.58rem;color:#507050;">● 在框</span></div>
+        <div><div class="letter-list-from" style="color:#c8a050;">${T} <span style="font-size:.74rem;color:#507050;">● 在框</span></div>
         <div class="letter-list-preview">${last?last.content.slice(0,30)+'…':'點擊查看'}</div></div>
       </div>`;
     }
@@ -2110,9 +2159,9 @@ function renderScrollPage(page){
         <div class="letter-list-preview">${last?last.content.slice(0,25)+'…':''}</div></div>
       </div>`;
     });
-    if(!hasT&&!Object.keys(chats).length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">尚無魔法肖像通話記錄</div>';
+    if(!hasT&&!Object.keys(chats).length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.88rem;font-style:italic;">尚無魔法肖像通話記錄</div>';
     html+='</div>';
-    content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">魔法肖像</span></div>${html}`;
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.82rem;color:#c8a040;letter-spacing:.08em;">魔法肖像</span></div>${html}`;
     actions.innerHTML=`${T?`<button class="so-btn" onclick="renderScrollPage('portrait-target')">🖼️ 喚醒${T}的肖像</button>`:''}
       <button class="so-btn" onclick="closeScroll()">← 關閉</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
@@ -2121,14 +2170,14 @@ function renderScrollPage(page){
   } else if(page==='portrait-target'){
     const msgs=(gameState.magicData.portraitChat.conversations[T]||[]);
     if(!T||msgs.length===0){
-      content.innerHTML=`<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">尚未與${T||'此人'}的肖像建立連結</div>`;
+      content.innerHTML=`<div style="padding:2rem;text-align:center;color:#504030;font-size:.88rem;font-style:italic;">尚未與${T||'此人'}的肖像建立連結</div>`;
       actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('portrait')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
       return;
     }
     const initials=T?T.charAt(0).toUpperCase():'?';
     const msgsHtml=msgs.slice(-5).map(m=>{
       const isMe=m.from==='me';
-      if(isMe) return`<div style="text-align:right;padding:.3rem .5rem .5rem;"><div style="display:inline-block;background:#1a1508;border:1px solid #3a2a10;border-radius:.15rem;padding:.45rem .65rem;font-size:.79rem;color:#c8b080;line-height:1.65;font-style:italic;max-width:85%;text-align:left;">${m.content}</div><div style="font-size:.58rem;color:#584030;margin-top:.15rem;">${m.time||''}</div></div>`;
+      if(isMe) return`<div style="text-align:right;padding:.3rem .5rem .5rem;"><div style="display:inline-block;background:#1a1508;border:1px solid #3a2a10;border-radius:.15rem;padding:.45rem .65rem;font-size:.9rem;color:#c8b080;line-height:1.65;font-style:italic;max-width:85%;text-align:left;">${m.content}</div><div style="font-size:.74rem;color:#584030;margin-top:.15rem;">${m.time||''}</div></div>`;
       return`<div class="portrait-frame-outer" style="margin:.4rem .6rem;">
         <div class="portrait-frame-header">
           <div class="portrait-avatar" style="width:32px;height:40px;font-size:.9rem;">${initials}</div>
@@ -2137,11 +2186,11 @@ function renderScrollPage(page){
         </div>
         <div style="padding:.5rem .7rem;">
           <div class="portrait-speech-bubble">${m.content}</div>
-          <div style="font-size:.58rem;color:#584030;margin-top:.2rem;">${m.time||''}</div>
+          <div style="font-size:.74rem;color:#584030;margin-top:.2rem;">${m.time||''}</div>
         </div>
       </div>`;
     }).join('');
-    content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><button class="back-btn" onclick="renderScrollPage('portrait')">←</button><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">${T}的肖像</span><span style="font-size:.58rem;color:#507050;margin-left:.3rem;">● 在框</span></div>${msgsHtml}`;
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><button class="back-btn" onclick="renderScrollPage('portrait')">←</button><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.82rem;color:#c8a040;letter-spacing:.08em;">${T}的肖像</span><span style="font-size:.74rem;color:#507050;margin-left:.3rem;">● 在框</span></div>${msgsHtml}`;
     actions.innerHTML=`<button class="so-btn" onclick="sendPortraitMessage()">💬 與肖像對話</button>
       <button class="so-btn" onclick="renderScrollPage('portrait')">← 返回</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
@@ -2257,26 +2306,26 @@ function renderScrollPage(page){
             <div style="flex:1;">
               <div class="floo-entry-name" style="color:#d07030;">${a.name}</div>
               <div class="floo-entry-location">${a.loc||''}</div>
-              ${a.note?`<div style="font-size:.58rem;color:#604828;margin-top:.06rem;font-style:italic;">${a.note}</div>`:''}
+              ${a.note?`<div style="font-size:.74rem;color:#604828;margin-top:.06rem;font-style:italic;">${a.note}</div>`:''}
             </div>
-            <div style="font-size:.62rem;color:#905028;padding-left:.4rem;white-space:nowrap;">前往 ▶</div>
+            <div style="font-size:.76rem;color:#905028;padding-left:.4rem;white-space:nowrap;">前往 ▶</div>
           </div>`).join('')
-        :`<div style="padding:.8rem .8rem;font-size:.62rem;color:#504030;font-style:italic;line-height:1.6;">
+        :`<div style="padding:.8rem .8rem;font-size:.76rem;color:#504030;font-style:italic;line-height:1.6;">
             尚無已知地址。<br>${emptyHint}。
           </div>`}
         ${restrictedAddresses.length?`
-        <div style="font-size:.58rem;color:#504030;padding:.3rem .8rem .1rem;letter-spacing:.05em;font-family:'Cinzel',serif;text-transform:uppercase;margin-top:.2rem;opacity:.6;">管制地址（無法進入）</div>
+        <div style="font-size:.74rem;color:#504030;padding:.3rem .8rem .1rem;letter-spacing:.05em;font-family:'Cinzel',serif;text-transform:uppercase;margin-top:.2rem;opacity:.6;">管制地址（無法進入）</div>
         ${restrictedAddresses.map(a=>`
           <div class="floo-entry" style="opacity:.4;cursor:not-allowed;">
             <div class="floo-entry-icon">${a.icon}</div>
             <div>
               <div class="floo-entry-name" style="text-decoration:line-through;text-decoration-color:#6a3020;">${a.name}</div>
               <div class="floo-entry-location">${a.loc}</div>
-              <div style="font-size:.58rem;color:#5a2818;margin-top:.06rem;">⚠ ${a.reason}</div>
+              <div style="font-size:.74rem;color:#5a2818;margin-top:.06rem;">⚠ ${a.reason}</div>
             </div>
           </div>`).join('')}`:''}
       </div>
-      <div style="padding:.4rem .8rem;font-size:.58rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">火焰網路由魔法部管控登記。請在壁爐前清晰說出目的地名稱，撒下一把火爐粉，踏入翠綠火焰。${isSecondWar?'<span style="color:#7a2010;"> ⚠ 戰時期間：魔法部正在監控火焰網路通訊。</span>':''}</div>`;
+      <div style="padding:.4rem .8rem;font-size:.74rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">火焰網路由魔法部管控登記。請在壁爐前清晰說出目的地名稱，撒下一把火爐粉，踏入翠綠火焰。${isSecondWar?'<span style="color:#7a2010;"> ⚠ 戰時期間：魔法部正在監控火焰網路通訊。</span>':''}</div>`;
     actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 通知 ──
@@ -2285,14 +2334,14 @@ function renderScrollPage(page){
     const iconMap={'貓頭鷹信':'🦉','守護神':'🌟','預言家日報':'📰','魔法肖像':'🖼️','火焰網路':'🔥','魔法廣播':'📻','回憶':'✦'};
     content.innerHTML=`
       <div style="background:linear-gradient(90deg,#0e0c06,#161208);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;">
-        <span style="font-size:.9rem;">📜</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">通知記錄</span>
+        <span style="font-size:.9rem;">📜</span><span style="font-family:'Cinzel',serif;font-size:.82rem;color:#c8a040;letter-spacing:.08em;">通知記錄</span>
       </div>
       
       ${notifs.length?notifs.slice(0,10).map(n=>`
         <div class="notif-item">
           <div class="ni-icon">${iconMap[n.app]||'📜'}</div>
           <div class="ni-body"><div class="ni-app">${n.app}</div><div class="ni-msg">${n.content}</div><div class="ni-time">${n.time||''}</div></div>
-        </div>`).join(''):'<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">暫無通知</div>'}`;
+        </div>`).join(''):'<div style="padding:2rem;text-align:center;color:#504030;font-size:.88rem;font-style:italic;">暫無通知</div>'}`;
     actions.innerHTML=`<button class="so-btn" onclick="clearMagicNotifs()">清除記錄</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 掠奪者地圖 ──
@@ -2418,7 +2467,7 @@ function renderScrollPage(page){
       ${locs.map(l=>`
         <div class="marauder-location">
           <span class="marauder-dot"></span>${l.name}
-          <span style="font-size:.6rem;color:${l.danger?'#8a3020':'#706040'};margin-left:.35rem;font-style:normal;">${l.danger?'⚠ ':''} ${l.note}</span>
+          <span style="font-size:.76rem;color:${l.danger?'#8a3020':'#706040'};margin-left:.35rem;font-style:normal;">${l.danger?'⚠ ':''} ${l.note}</span>
         </div>`).join('')}
     `).join('');
 
@@ -2429,7 +2478,7 @@ function renderScrollPage(page){
           <div class="marauder-spell">${mapIncantation}</div>
         </div>
         <div class="marauder-map-content">
-          <div style="font-size:.6rem;color:#807040;margin-bottom:.5rem;text-align:center;font-style:italic;">${mapTitle} · ${gameState.time||'當前時刻'}</div>
+          <div style="font-size:.76rem;color:#807040;margin-bottom:.5rem;text-align:center;font-style:italic;">${mapTitle} · ${gameState.time||'當前時刻'}</div>
           ${areasHtml}
         </div>
         <div class="marauder-footer-text">${mapCredit}</div>
@@ -2441,7 +2490,7 @@ function renderScrollPage(page){
     const npcs=gameState.npcs||{};
     let html='<div style="padding:.2rem 0;">';
     if(T){
-      html+=`<div style="font-size:.6rem;color:#585050;padding:.3rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">核心角色</div>
+      html+=`<div style="font-size:.76rem;color:#585050;padding:.3rem .8rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">核心角色</div>
         <div class="letter-list-item" onclick="renderScrollPage('owl-target')">
           <span class="letter-list-owl">⭐</span>
           <div><div class="letter-list-from" style="color:#c8a040;">${T}</div>
@@ -2450,7 +2499,7 @@ function renderScrollPage(page){
     }
     const npcEntries=Object.entries(npcs);
     if(npcEntries.length>0){
-      html+=`<div style="font-size:.6rem;color:#585050;padding:.3rem .8rem;margin-top:.15rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">已識人物</div>`;
+      html+=`<div style="font-size:.76rem;color:#585050;padding:.3rem .8rem;margin-top:.15rem;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:.08em;">已識人物</div>`;
       npcEntries.filter(([n])=>n!==T).forEach(([name,info])=>{
         html+=`<div class="letter-list-item"><span class="letter-list-owl">👤</span>
           <div><div class="letter-list-from">${name}</div>
@@ -2458,9 +2507,9 @@ function renderScrollPage(page){
         </div>`;
       });
     }
-    if(!T&&!npcEntries.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">通訊錄尚無人員，隨劇情推進會逐漸增加</div>';
+    if(!T&&!npcEntries.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.88rem;font-style:italic;">通訊錄尚無人員，隨劇情推進會逐漸增加</div>';
     html+='</div>';
-    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">👥</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">通訊錄</span></div>${html}`;
+    content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">👥</span><span style="font-family:'Cinzel',serif;font-size:.82rem;color:#c8a040;letter-spacing:.08em;">通訊錄</span></div>${html}`;
     actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
   }
 }
@@ -2637,20 +2686,7 @@ function updateEndingAura(){
 }
 
 // ── 回憶 ──
-window.openMemories=function(){
-  const overlay=document.getElementById('memories-overlay');const list=document.getElementById('memories-list');const mems=gameState.memories||[];
-  if(!mems.length){list.innerHTML='<p style="color:var(--text3);font-size:.8rem;text-align:center;margin-top:2rem;padding:1rem;font-style:italic;">還沒有特別的回憶。繼續你們的故事吧 ✦</p>';}
-  else{
-    list.innerHTML=mems.map(m=>{
-      const isSpecial=m.title.includes('初吻')||m.title.includes('守護神')||m.title.includes('誓言')||m.title.includes('告白');
-      const isCrisis=m.title.includes('背叛')||m.title.includes('危機')||m.title.includes('戰鬥')||m.title.includes('對峙');
-      const tier=isSpecial?'tier-special':isCrisis?'tier-3':m.round>20?'tier-2':'tier-1';
-      const badge=isSpecial?'<span class="memory-card-badge badge-milestone">里程碑</span>':isCrisis?'<span class="memory-card-badge badge-crisis">危機</span>':'<span class="memory-card-badge badge-moment">時刻</span>';
-      return`<div class="memory-card ${tier}">${badge}<span class="memory-card-emoji">${m.emoji}</span><div class="memory-card-title">${m.title}</div><div class="memory-card-meta">第 ${m.round} 回合 · ${m.time||''}</div>${m.content?`<div class="memory-card-excerpt">${m.content.slice(0,100)}${m.content.length>100?'…':''}</div>`:''}</div>`;
-    }).join('');
-  }
-  overlay.style.display='flex';
-};
+
 
 // ── 存檔/讀檔 ──
 async function saveGame(){
@@ -2823,7 +2859,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     // 關閉所有浮層
     document.getElementById('twist-panel').style.display='none';
-    document.getElementById('memories-overlay').style.display='none';
+    
     document.getElementById('recap-overlay').style.display='none';
     document.getElementById('scroll-overlay').classList.remove('open');
     document.getElementById('contact-panel').classList.remove('open');
@@ -2874,6 +2910,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.2</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.4</div>
 </body>
 </html>
