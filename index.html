@@ -3522,12 +3522,33 @@ async function renderPhonePage(page){
 
   } else if(page==='ins'){
     content.innerHTML = renderINSHome();
-    actions.innerHTML = `
-      <button class="po-btn" onclick="renderPhonePage('ins-bf')">${getDisplayBfName()?getDisplayBfName()+'的主頁':'偶像主頁'}</button>
-      <button class="po-btn" onclick="renderPhonePage('ins-mypage')">👤 我的主頁</button>
-      <button class="po-btn" onclick="renderPhonePage('ins-dm')">💌 私信</button>
-      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
-      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+    // IG 底部 Tab Bar（仿真實 Instagram）
+    const igBfName = getDisplayBfName();
+    actions.innerHTML = '<div style="display:flex;justify-content:space-around;align-items:center;width:100%;padding:.1rem 0;">'
+      // 首頁
+      +'<button onclick="renderPhonePage('ins')" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.3rem .5rem;">'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="white" stroke-width="1.5"/></svg>'
+      +'</button>'
+      // 搜尋
+      +'<button style="background:none;border:none;cursor:pointer;padding:.3rem .5rem;">'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'
+      +'</button>'
+      // 偶像主頁（＋鈕位置）
+      +(igBfName?'<button onclick="renderPhonePage('ins-bf')" style="background:none;border:none;cursor:pointer;padding:.3rem .5rem;">'
+        +makeAvatar(igBfName,28)
+        +'</button>':'<button style="background:none;border:none;cursor:pointer;padding:.3rem .5rem;opacity:.3;">'
+        +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>'
+        +'</button>')
+      // 私信
+      +'<button onclick="renderPhonePage('ins-dm')" style="background:none;border:none;cursor:pointer;padding:.3rem .5rem;">'
+      +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2"/></svg>'
+      +'</button>'
+      // 我的主頁
+      +'<button onclick="renderPhonePage('ins-mypage')" style="background:none;border:none;cursor:pointer;padding:.3rem .5rem;">'
+      +makeAvatar(gameState.playerName||'我',28)
+      +'</button>'
+      +'</div>'
+      +'<button class="po-close" onclick="closePhone()" style="margin-left:.5rem;">繼續</button>';
 
   } else if(page==='ins-bf'){
     const bfForIns = getDisplayBfName();
@@ -3751,6 +3772,32 @@ async function renderPhonePage(page){
       <button class="po-btn" onclick="renderPhonePage('kakao')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
+  } else if(page.startsWith('kakao-chat-')){
+    // 個別聊天頁
+    const chatName = decodeURIComponent(page.replace('kakao-chat-',''));
+    const chatMsgs = (gameState.phoneData.kakao.chats[chatName]||[]);
+    const bubbles = chatMsgs.map(function(m){
+      const isMe = m.from==='me';
+      return '<div style="display:flex;flex-direction:column;align-items:'+(isMe?'flex-end':'flex-start')+';margin:.25rem .8rem;">'
+        +(!isMe?'<div style="font-size:.62rem;color:#666;margin-bottom:.1rem;">'+chatName+'</div>':'')
+        +'<div style="max-width:75%;padding:.45rem .7rem;border-radius:'+(isMe?'.8rem .8rem 0 .8rem':'.8rem .8rem .8rem 0')+';background:'+(isMe?'#f5c518':'#2a2a3a')+';color:'+(isMe?'#000':'#c8c8e0')+';font-size:.8rem;line-height:1.5;">'+m.text+'</div>'
+        +'<div style="font-size:.58rem;color:#555;margin-top:.1rem;">'+( m.time||'')+'</div>'
+        +'</div>';
+    }).join('');
+    const chatNpcInfo = (gameState.npcs||{})[chatName];
+    const chatRole = chatNpcInfo && chatNpcInfo.role ? chatNpcInfo.role : '';
+    content.innerHTML = '<div style="background:#1a1a1a;border-bottom:1px solid #222;padding:.55rem .8rem;display:flex;align-items:center;gap:.6rem;">'
+      +makeAvatar(chatName, 32)
+      +'<div>'
+      +'<div style="font-size:.85rem;color:#eee;font-weight:600;">'+chatName+'</div>'
+      +(chatRole?'<div style="font-size:.62rem;color:#555;">'+chatRole+'</div>':'')
+      +'</div>'
+      +'</div>'
+      +(bubbles||'<div style="padding:2rem;text-align:center;color:#444;font-size:.78rem;">尚無對話記錄</div>');
+    actions.innerHTML = `
+      <button class="po-btn" onclick="renderPhonePage('kakao')">← 返回</button>
+      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+
   } else if(page==='kakao-friends'){
     const bfNameF = getDisplayBfName();
     const storyStartF = gameState.storyStart || '';
@@ -3833,13 +3880,11 @@ async function renderPhonePage(page){
           <div class="wv-stats">❤️ 128,492  💬 4,231</div>
         </div>
         <div class="weverse-post">
-          <div class="wv-user"><span style="color:#6060a0;">粉絲 A</span></div>
-          <div class="wv-content">歐巴今天的表演太帥了😭❤️</div>
+          <div class="wv-user"><span style="color:#6060a0;">caratForever</span></div>
+          <div class="wv-content">오빠 오늘 무대 너무 멋있었어요!! 😭❤️</div>
           <div class="wv-stats">❤️ 2,103</div>
         </div>`}`;
-    actions.innerHTML = `
-      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
-      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+    actions.innerHTML = '<button class="po-close" onclick="closePhone()">繼續遊戲</button>';
 
   } else if(page==='youtube'){
     const ytName = getDisplayBfName();
@@ -4727,6 +4772,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r63</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r66</div>
 </body>
 </html>
