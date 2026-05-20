@@ -1963,26 +1963,50 @@ window.showRecapRound=function(round){
   var memHtml=mems.map(function(m){
     var isSpecial=m.title.includes('初吻')||m.title.includes('守護神')||m.title.includes('誓言')||m.title.includes('告白');
     var isCrisis=m.title.includes('背叛')||m.title.includes('危機')||m.title.includes('戰鬥')||m.title.includes('對峙');
-    var color=isSpecial?'var(--purple2)':isCrisis?'var(--crimson2)':'var(--gold3)';
-    return'<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.6rem .8rem;margin-bottom:.4rem;background:var(--bg3);border-radius:.2rem;border-left:2px solid '+color+';">'
-      +'<span style="font-size:1.1rem;flex-shrink:0;">'+m.emoji+'</span>'
-      +'<div><div style="font-family:\'Cinzel\',serif;font-size:.82rem;color:'+color+';letter-spacing:.04em;margin-bottom:.15rem;">'+m.title+'</div>'
-      +(m.content?'<div style="font-size:.88rem;color:var(--text2);line-height:1.6;">'+m.content.slice(0,120)+(m.content.length>120?'…':'')+'</div>':'')
-      +'</div></div>';
+    var accent=isSpecial?'#a080c0':isCrisis?'#b84050':'#c8a84a';
+    var bg=isSpecial?'linear-gradient(135deg,#18102a,#200e20)':isCrisis?'linear-gradient(135deg,#201414,#181010)':'linear-gradient(135deg,#1c1810,#141210)';
+    var border=isSpecial?'#3a1858':isCrisis?'#3a1818':'#3a2e18';
+    var badge=isSpecial?'里程碑':isCrisis?'危機時刻':'重要時刻';
+    return'<div style="margin-bottom:.9rem;border-radius:.3rem;overflow:hidden;border:1px solid '+border+';box-shadow:0 2px 12px rgba(0,0,0,.4);">'
+      +'<div style="height:3px;background:'+accent+';opacity:.85;"></div>'
+      +'<div style="background:'+bg+';padding:.9rem 1rem;">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">'
+          +'<span style="font-size:1.5rem;line-height:1;">'+m.emoji+'</span>'
+          +'<span style="font-size:.76rem;color:'+accent+';background:rgba(0,0,0,.35);padding:.2rem .6rem;border-radius:1rem;border:1px solid '+border+';letter-spacing:.05em;font-family:\'Cinzel\',serif;">'+badge+'</span>'
+        +'</div>'
+        +'<div style="font-family:\'Cinzel\',serif;font-size:1rem;color:'+accent+';letter-spacing:.04em;margin-bottom:.5rem;line-height:1.4;">'+m.title+'</div>'
+        +(m.content?'<div style="font-size:.92rem;color:rgba(224,208,176,.8);line-height:1.75;font-style:italic;border-top:1px solid rgba(255,255,255,.07);padding-top:.5rem;">'+m.content.slice(0,160)+(m.content.length>160?'…':'')+'</div>':'')
+        +(m.time?'<div style="font-size:.78rem;color:rgba(160,144,120,.5);margin-top:.45rem;font-style:italic;">'+m.time+'</div>':'')
+      +'</div>'
+    +'</div>';
   }).join('');
 
   var storyHtml=entries.map(function(e){
     if(e.type==='narration'||e.type==='event')
-      return'<div style="font-size:.92rem;color:var(--text2);line-height:1.75;margin-bottom:.5rem;padding:.55rem .8rem;background:rgba(255,255,255,.02);border-radius:.2rem;border-left:2px solid var(--border2);">'+e.text+'</div>';
+      return'<div style="font-size:.92rem;color:var(--text2);line-height:1.8;margin-bottom:.5rem;padding:.6rem .9rem;background:rgba(255,255,255,.015);border-radius:.2rem;border-left:2px solid var(--border);">'+e.text+'</div>';
     if(e.type==='choice')
-      return'<div style="font-size:.86rem;color:var(--text3);padding:.25rem .6rem;margin:.2rem 0;display:flex;align-items:center;gap:.35rem;"><span style="color:var(--gold3);">▸</span>'+e.text+'</div>';
+      return'<div style="font-size:.86rem;color:var(--text3);padding:.3rem .7rem;margin:.15rem 0;display:flex;align-items:center;gap:.4rem;">'
+        +'<span style="color:var(--gold3);">▸</span>'
+        +'<span style="font-style:italic;">'+e.text+'</span>'
+      +'</div>';
     return'';
   }).filter(Boolean).join('');
 
+  // 分隔線標題樣式
+  function sectionDivider(label,gold){
+    var c=gold?'var(--gold3)':'var(--text3)';
+    var grad=gold?'var(--gold3)':'var(--border)';
+    return'<div style="padding:.65rem .8rem .35rem;display:flex;align-items:center;gap:.6rem;">'
+      +'<div style="flex:1;height:1px;background:linear-gradient(90deg,'+grad+',transparent);opacity:.35;"></div>'
+      +'<span style="font-family:\'Cinzel\',serif;font-size:.8rem;color:'+c+';letter-spacing:.12em;white-space:nowrap;'+(gold?'':'opacity:.6;')+'">'+label+'</span>'
+      +'<div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,'+grad+');opacity:.35;"></div>'
+    +'</div>';
+  }
+
   document.getElementById('recap-content').innerHTML=
-    (memHtml?'<div style="font-size:.76rem;color:var(--gold3);letter-spacing:.1em;padding:.4rem .8rem .2rem;font-family:\'Cinzel\',serif;text-transform:uppercase;opacity:.8;">✦ 特殊時刻</div>'+memHtml:'')
-    +(storyHtml?'<div style="font-size:.76rem;color:var(--text3);letter-spacing:.1em;padding:.4rem .8rem .2rem;font-family:\'Cinzel\',serif;text-transform:uppercase;opacity:.8;">劇情記錄</div>'+storyHtml:'')
-    ||'<div style="padding:2rem;text-align:center;color:#444;font-size:.88rem;">此回合尚無記錄</div>';
+    (memHtml ? sectionDivider('✦ 特殊時刻',true)+'<div style="padding:.1rem .6rem .5rem;">'+memHtml+'</div>' : '')
+    +(storyHtml ? sectionDivider('劇情記錄',false)+'<div style="padding:.1rem .6rem .5rem;">'+storyHtml+'</div>' : '')
+    ||'<div style="padding:2.5rem;text-align:center;color:#444;font-size:.9rem;font-style:italic;">此回合尚無記錄</div>';
   document.getElementById('recap-content').scrollTop=0;
 };
 
@@ -2910,6 +2934,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.4</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.5</div>
 </body>
 </html>
