@@ -807,15 +807,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     </div>
     <div class="gh-right">
       <span class="save-indicator" id="save-indicator">已同步</span>
-      <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫他</button>
-      <button class="gh-btn" onclick="openPhoneOverlay('home')">手機</button>
-      <button class="gh-btn" onclick="openMemories()">回憶</button>
-      <button class="gh-btn" onclick="showSettingsFromGame()">設定</button>
-      <button class="gh-btn" onclick="openRecap()">回顧</button>
-      <button class="gh-btn" onclick="replayRound()">重玩</button>
-      <button class="gh-btn" onclick="openTwist()">扭轉</button>
-      <button class="gh-btn" onclick="exitGame()">退出</button>
-      <button class="gh-btn" onclick="signOutUser()" style="color:var(--rose2);">登出</button>
+      <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫</button>
+      <button class="gh-btn" onclick="openPhoneOverlay('home')">📱 手機</button>
+      <button class="gh-btn" onclick="openDiary()">📖 日記</button>
+      <button class="gh-btn gh-more-btn" onclick="toggleMoreMenu()" id="gh-more-btn">⋯</button>
     </div>
   </div>
 
@@ -856,6 +851,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   </div>
 </div>
 <div class="ending-aura aura-unknown" id="ending-aura"></div>
+
+<!-- 更多選單 -->
+<div id="more-menu" style="
+  display:none;position:fixed;top:44px;right:.5rem;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:.8rem;z-index:80;min-width:130px;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);overflow:hidden;
+">
+  <button class="more-menu-item" onclick="openTwist();toggleMoreMenu()">✦ 扭轉劇情</button>
+  <button class="more-menu-item" onclick="replayRound();toggleMoreMenu()">↺ 重玩此回合</button>
+  <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
+  <button class="more-menu-item" onclick="showSettingsFromGame();toggleMoreMenu()">⚙ 設定</button>
+  <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
+  <button class="more-menu-item" onclick="exitGame();toggleMoreMenu()">← 退出遊戲</button>
+  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);">⏻ 登出</button>
+</div>
 
 <!-- 扭轉劇情面板 -->
 <div id="twist-panel" style="
@@ -1460,19 +1471,16 @@ window.continueGame = async function(){
     renderAllStory();
     updateHeader();
     // 讀取後恢復上次的選項，不自動推進
-    addSystemMsg('存檔讀取完成，從第 ' + gameState.round + ' 回合繼續。');
     updateHeader();
-    // 恢復上次的選項（若有存檔的選項就用，否則給預設選項）
+    // 恢復上次的選項
     const lastOpts = gameState.lastRenderedOptions;
     if(lastOpts && lastOpts.length > 0){
       renderOptions(lastOpts);
     } else {
-      renderOptions([
-        {label:'A', text:'繼續故事'},
-        {label:'B', text:'回顧一下剛才發生的事'},
-        {label:'📱', text:'查看手機'},
-        {label:'D', text:'自定義（玩家自行輸入）'}
-      ]);
+      // 無上次選項就直接重新生成
+      const savedRound = gameState.round;
+      gameState.round = Math.max(1, savedRound - 1);
+      await nextRound('繼續');
     }
   } else {
     alert('找不到存檔，請開始新遊戲。');
@@ -2056,6 +2064,85 @@ window.toggleOptions = function(){
     // 收合時自動滾動到最新劇情
     var panel = document.getElementById('story-panel');
     if(panel) panel.scrollTop = panel.scrollHeight;
+  }
+};
+
+// ── 更多選單開關 ──
+window.toggleMoreMenu = function(){
+  var menu = document.getElementById('more-menu');
+  if(!menu) return;
+  var isOpen = menu.style.display !== 'none';
+  menu.style.display = isOpen ? 'none' : 'block';
+  // 點擊其他地方關閉
+  if(!isOpen){
+    setTimeout(function(){
+      document.addEventListener('click', function closeMenu(e){
+        if(!e.target.closest('#more-menu') && !e.target.closest('#gh-more-btn')){
+          menu.style.display = 'none';
+          document.removeEventListener('click', closeMenu);
+        }
+      });
+    }, 10);
+  }
+};
+
+// ── 日記：合併回憶剪貼簿 + 劇情回顧 ──
+window.openDiary = function(){
+  // 用 tab 切換的方式呈現
+  var overlay = document.getElementById('recap-overlay');
+  if(!overlay) return;
+
+  // 加入 Tab 列（若尚未加入）
+  var tabBar = overlay.querySelector('#diary-tabs');
+  if(!tabBar){
+    var header = overlay.querySelector('div:first-child');
+    tabBar = document.createElement('div');
+    tabBar.id = 'diary-tabs';
+    tabBar.style.cssText = 'display:flex;border-bottom:1px solid var(--border);flex-shrink:0;';
+    tabBar.innerHTML =
+      '<button id="tab-recap" onclick="switchDiaryTab('recap')" style="flex:1;padding:.5rem;background:none;border:none;border-bottom:2px solid var(--border2);color:var(--text);font-size:.78rem;cursor:pointer;">劇情回顧</button>'
+      +'<button id="tab-memories" onclick="switchDiaryTab('memories')" style="flex:1;padding:.5rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-size:.78rem;cursor:pointer;">回憶剪貼簿</button>';
+    overlay.insertBefore(tabBar, overlay.children[1]);
+  }
+
+  overlay.style.display = 'flex';
+  switchDiaryTab('recap');
+};
+
+window.switchDiaryTab = function(tab){
+  var recapBtn = document.getElementById('tab-recap');
+  var memBtn = document.getElementById('tab-memories');
+  var roundsEl = document.getElementById('recap-rounds');
+  var contentEl = document.getElementById('recap-content');
+
+  if(tab === 'recap'){
+    if(recapBtn){ recapBtn.style.borderBottomColor='var(--border2)'; recapBtn.style.color='var(--text)'; }
+    if(memBtn){ memBtn.style.borderBottomColor='transparent'; memBtn.style.color='var(--text3)'; }
+    if(roundsEl) roundsEl.style.display='flex';
+    // 顯示劇情回顧
+    openRecap();
+  } else {
+    if(memBtn){ memBtn.style.borderBottomColor='var(--border2)'; memBtn.style.color='var(--text)'; }
+    if(recapBtn){ recapBtn.style.borderBottomColor='transparent'; recapBtn.style.color='var(--text3)'; }
+    if(roundsEl) roundsEl.style.display='none';
+    // 顯示回憶剪貼簿
+    var mems = gameState.memories || [];
+    if(!contentEl) return;
+    if(!mems.length){
+      contentEl.innerHTML = '<div style="padding:2rem;text-align:center;color:#444;font-size:.78rem;">尚無回憶，繼續推進故事吧</div>';
+      return;
+    }
+    contentEl.innerHTML = mems.map(function(m){
+      var color = m.tier==='S'?'#e8b800':m.tier==='A'?'#c084fc':m.tier==='B'?'#60a5fa':'#888';
+      return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:.7rem;padding:.8rem 1rem;margin-bottom:.6rem;">'
+        +'<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;">'
+        +'<span style="font-size:1rem;">'+(m.emoji||'✨')+'</span>'
+        +'<span style="font-size:.78rem;color:'+color+';font-weight:600;">'+m.title+'</span>'
+        +'<span style="margin-left:auto;font-size:.65rem;color:#555;">第'+m.round+'回合</span>'
+        +'</div>'
+        +'<div style="font-size:.76rem;color:var(--text2);line-height:1.65;">'+m.content+'</div>'
+        +'</div>';
+    }).join('');
   }
 };
 
@@ -4640,6 +4727,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r60</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">v20260519-r62</div>
 </body>
 </html>
