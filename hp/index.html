@@ -205,11 +205,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 
 /* 選項區 */
 .options-panel{
-  flex-shrink:0;padding:.6rem .8rem .8rem;
+  flex-shrink:0;padding:0;
   background:var(--bg2);border-top:1px solid var(--border);
-  display:flex;flex-direction:column;gap:.4rem;
+  display:flex;flex-direction:column;
+  transition:max-height .25s ease;
 }
-.options-title{font-size:.82rem;color:var(--text3);letter-spacing:.12em;margin-bottom:.1rem;font-family:'Cinzel',serif;text-transform:uppercase;}
+.options-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.5rem .9rem;cursor:pointer;user-select:none;
+  border-bottom:1px solid transparent;transition:border-color .2s;
+}
+.options-toggle:hover{background:rgba(255,255,255,.02);}
+.options-toggle.open{border-bottom-color:var(--border);}
+.options-toggle-label{font-size:.82rem;color:var(--text3);letter-spacing:.1em;font-family:'Cinzel',serif;text-transform:uppercase;}
+.options-toggle-arrow{font-size:.7rem;color:var(--text3);transition:transform .2s;}
+.options-toggle.open .options-toggle-arrow{transform:rotate(180deg);}
+.options-body{display:flex;flex-direction:column;gap:.35rem;padding:.5rem .8rem .7rem;overflow:hidden;}
+.options-body.collapsed{display:none;}
+.options-title{display:none;}/* 舊標題隱藏，改用 toggle */
 .options-grid{display:flex;flex-direction:column;gap:.35rem;}
 .opt-btn{
   display:flex;align-items:flex-start;gap:.55rem;
@@ -223,14 +236,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 .opt-btn.scroll-opt{border-color:rgba(200,168,74,.15);}
 .opt-label{font-size:.82rem;color:var(--text3);min-width:1.1rem;font-family:'Cinzel',serif;margin-top:.05rem;}
 .opt-text{flex:1;}
-.custom-input-row{display:flex;gap:.4rem;margin-top:.1rem;}
+.custom-input-row{display:flex;gap:.4rem;}
 .custom-input{
-  flex:1;padding:.48rem .75rem;border-radius:.25rem;
+  flex:1;padding:.55rem .85rem;border-radius:.25rem;
   background:var(--bg3);border:1px solid var(--border);
   color:var(--text);font-family:'EB Garamond',serif;font-size:1rem;outline:none;
 }
 .custom-input:focus{border-color:var(--gold3);}
-.custom-send{padding:.48rem .9rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:1rem;transition:background .2s;font-family:'EB Garamond',serif;}
+.custom-send{padding:.55rem 1rem;border-radius:.25rem;background:var(--border2);border:none;color:var(--text);cursor:pointer;font-size:1rem;transition:background .2s;font-family:'EB Garamond',serif;}
 .custom-send:hover{background:var(--border);}
 .options-panel.disabled .opt-btn{opacity:.4;pointer-events:none;}
 
@@ -883,8 +896,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
     <div class="story-panel" id="story-panel"></div>
   </div>
   <div class="options-panel" id="options-panel">
-    <div class="options-title">▸ 選擇你的行動</div>
-    <div class="options-grid" id="options-grid"></div>
+    <div class="options-toggle open" id="options-toggle" onclick="toggleOptionsPanel()">
+      <span class="options-toggle-label">▸ 選擇你的行動</span>
+      <span class="options-toggle-arrow">▾</span>
+    </div>
+    <div class="options-body" id="options-body">
+      <div class="options-grid" id="options-grid"></div>
+    </div>
   </div>
 </div>
 
@@ -1533,6 +1551,13 @@ ${gameState.pendingEndingHint?'【結局暗示】請在本回合加入一個隱�
 6. 玩家的選擇要有真實的後果，包括好的和壞的
 7. 魔法世界的現實：危險是真實的，黑魔法有代價，血統歧視是真實存在的社會問題
 8. 適時加入魔法世界特有事件：巫師考試、魁地奇比賽、魔法部公告、《預言家日報》頭條等
+9. 【霍格華茲課程正確性】魔法課程內容必須符合原著設定：
+   - 一年級：飛行課（葛夫夫人）、魔藥學（石內卜）、變形術（麥教授）、咒語課（花林教授）、草藥學（史普勞特）、天文學、黑魔法防禦術、魔法史（賓斯教授）
+   - 飄浮咒（Wingardium Leviosa）是一年級咒語課內容，不是變形術
+   - 變形術課教授的是把物品變形（如：火柴變針、動物與人類的互換變形等），不教攻擊性或飛行類咒語
+   - 魔藥課不用魔杖，而是按配方炮製藥水
+   - 高年級才接觸的內容（守護神咒、黑魔法防禦進階術）不應出現在低年級場景
+   - 若玩家設定了年齡和年級，課程內容必須嚴格對應
 9. 核心角色的言行方式必須符合其人設，保持OC一致性
 10. 記憶庫中的細節在適當時機自然提起
 11. 每3-4回合穿插一個純粹關於玩家自身的事件（個人成長、挑戰、目標推進）
@@ -1782,7 +1807,8 @@ function showNotifToast(app,content){
 
 // ── 選項渲染 ──
 function renderOptions(opts){
-  gameState.lastRenderedOptions=opts; // 儲存供繼續遊戲恢復用
+  gameState.lastRenderedOptions=opts;
+  expandOptionsPanel(); // 新選項出現時自動展開
   const grid=document.getElementById('options-grid');const panel=document.getElementById('options-panel');
   grid.innerHTML='';panel.classList.remove('disabled');
   opts.forEach(opt=>{
@@ -2814,6 +2840,22 @@ window.goToLocation=function(locationName){
   handlePlayerAction(`前往${locationName}`);
 };
 
+// ── 選項面板收合 ──
+window.toggleOptionsPanel=function(){
+  const toggle=document.getElementById('options-toggle');
+  const body=document.getElementById('options-body');
+  if(!toggle||!body)return;
+  const isOpen=!body.classList.contains('collapsed');
+  body.classList.toggle('collapsed',isOpen);
+  toggle.classList.toggle('open',!isOpen);
+};
+function expandOptionsPanel(){
+  const body=document.getElementById('options-body');
+  const toggle=document.getElementById('options-toggle');
+  if(body) body.classList.remove('collapsed');
+  if(toggle) toggle.classList.add('open');
+}
+
 // ── Header 溢出選單 ──
 window.toggleMoreMenu=function(){
   const dd=document.getElementById('gh-dropdown');
@@ -2933,6 +2975,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.7</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.8</div>
 </body>
 </html>
