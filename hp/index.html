@@ -2129,13 +2129,44 @@ function renderScrollPage(page){
 
   // ── 火焰網路 ──
   } else if(page==='floo'){
-    const isWarEra=ERA.includes('第二次')||ERA.includes('第一次');
-    const stdAddresses=[
-      {name:'霍格華茲院長室',loc:'霍格華茲城堡，蘇格蘭',icon:'🏰'},
-      {name:'黑魔法防禦術教室',loc:'霍格華茲，三樓',icon:'🚪'},
-      {name:'醫院翼病房',loc:'霍格華茲，七樓',icon:'🏥'},
-    ];
-    if(isWarEra) stdAddresses.push({name:'格里莫廣場12號',loc:'倫敦（鳳凰社本部）',icon:'🏚️'});
+    // 依時代建立正典地址庫
+    // 火焰網路規則（原著）：
+    // - 須在火焰網路登記才能使用（魔法部管控）
+    // - 戰爭期間部分地址被監控或封鎖
+    // - 霍格華茲壁爐在5年級前通常對學生關閉（除院長室）
+    // - 韋斯萊家（洞穴屋）、對角巷（破釜酒吧）等為常見中繼站
+    const isFirstWar=ERA.includes('第一次');
+    const isSecondWar=ERA.includes('第二次');
+    const isHarryEra=ERA.includes('哈利');
+    const isPostWar=ERA.includes('重建')||ERA.includes('下一代');
+    const isEarlyEra=ERA.includes('創立')||ERA.includes('中世紀')||ERA.includes('保密');
+
+    // 依時代建立可用地址（點擊可前往）
+    let availAddresses=[];
+    // 霍格華茲內部（幾乎各時代都有，但院長室為主）
+    availAddresses.push({name:'破釜酒吧',loc:'斜角巷入口，倫敦',icon:'🍺',note:'火焰網路主要中繼站，各時代通用',available:!isEarlyEra});
+    if(isFirstWar||isHarryEra||isSecondWar||isPostWar){
+      availAddresses.push({name:'韋斯萊家（洞穴屋）',loc:'德文郡，奧特利聖卡奇波',icon:'🏡',note:'韋斯萊家族壁爐，與其有交情者可用',available:true});
+    }
+    if(isSecondWar||isFirstWar){
+      availAddresses.push({name:'格里莫廣場12號',loc:'倫敦，鳳凰社本部',icon:'🏚️',note:'鳳凰社成員專用，地址受保密咒保護',available:true});
+    }
+    if(isHarryEra||isPostWar){
+      availAddresses.push({name:'盧平家',loc:'威爾斯，偏遠地區',icon:'🌲',note:'盧平夫婦的住所',available:true});
+    }
+    if(isPostWar){
+      availAddresses.push({name:'魔法部地下一層',loc:'倫敦，魔法部大廈',icon:'⚖️',note:'戰後重開放，需登記身份',available:true});
+    }
+    availAddresses=availAddresses.filter(a=>a.available);
+
+    // 受限或封鎖地址（僅供展示）
+    let restrictedAddresses=[];
+    restrictedAddresses.push({name:'霍格華茲院長室',loc:'霍格華茲城堡，七樓',icon:'🏰',reason:isSecondWar?'已封鎖（伏地魔掌控期間）':'僅供院長及教職人員使用'});
+    restrictedAddresses.push({name:'魔法部神秘事務部',loc:'倫敦，魔法部地下九層',icon:'🔒',reason:'一般巫師禁止進入'});
+    if(isSecondWar){
+      restrictedAddresses.push({name:'馬份莊園',loc:'威爾特郡',icon:'💀',reason:'食死人根據地，火焰網路受監控'});
+    }
+
     const flames=[
       {h:24,top:'#60d0ff',bot:'#2080d0',fd:1.1},
       {h:32,top:'#40c0ff',bot:'#1860c0',fd:0.9},
@@ -2143,27 +2174,41 @@ function renderScrollPage(page){
       {h:20,top:'#50c8ff',bot:'#2070c8',fd:1.0},
       {h:36,top:'#30b8ff',bot:'#1050b8',fd:1.2},
     ].map(f=>`<div class="floo-flame-el" style="width:10px;height:${f.h}px;--ft:${f.top};--fb:${f.bot};--fd:${f.fd}s;"></div>`).join('');
+
     content.innerHTML=`
       <div style="background:#0a0806;border-bottom:1px solid #2a1a08;padding:.4rem .8rem;font-size:.6rem;color:#806040;font-style:italic;display:flex;align-items:center;gap:.4rem;">
-        <span>🔥</span>點擊核心角色的地址可以即時聯繫，AI 將生成一段通話回應。標準地址為背景參考，不可撥打。
+        <span>🔥</span>點擊<span style="color:#c07030;margin:0 .2rem;">可前往的地址</span>，即以火焰網路傳送為行動推進劇情。封鎖地址僅供參考。
       </div>
       <div class="floo-hearth-outer">
         <div class="floo-mantle">✦ 火焰網路 Floo Network ✦</div>
         <div class="floo-firebox">${flames}</div>
       </div>
       <div class="floo-address-section">
-        <div class="floo-section-label">常用地址</div>
-        ${T?`<div class="floo-entry" onclick="doFlooContact()" style="border-left:2px solid #c07030;cursor:pointer;">
-          <div class="floo-entry-icon" style="background:linear-gradient(135deg,#3a1808,#281004);border-color:#8a4018;">🔥</div>
-          <div style="flex:1;"><div class="floo-entry-name" style="color:#e08040;">${T}</div><div class="floo-entry-location">點擊撥打連線 ▶</div></div>
-        </div>`:'<div style="padding:.5rem .8rem;font-size:.6rem;color:#504030;font-style:italic;">劇情推進後，核心角色的壁爐地址將在此出現</div>'}
-        <div style="font-size:.58rem;color:#504030;padding:.25rem .8rem .1rem;letter-spacing:.06em;font-family:'Cinzel',serif;text-transform:uppercase;opacity:.7;">背景地址（無法撥打）</div>
-        ${stdAddresses.map(a=>`<div class="floo-entry" style="opacity:.55;cursor:default;">
-          <div class="floo-entry-icon">${a.icon}</div>
-          <div><div class="floo-entry-name">${a.name}</div><div class="floo-entry-location">${a.loc}</div></div>
-        </div>`).join('')}
+        <div class="floo-section-label">可前往的地址</div>
+        ${availAddresses.length?availAddresses.map(a=>`
+          <div class="floo-entry" onclick="flooTravelTo('${a.name}')" style="cursor:pointer;border-left:2px solid #8a4018;">
+            <div class="floo-entry-icon" style="background:linear-gradient(135deg,#2a1606,#1a0e04);border-color:#7a3010;">${a.icon}</div>
+            <div style="flex:1;">
+              <div class="floo-entry-name" style="color:#d07030;">${a.name}</div>
+              <div class="floo-entry-location">${a.loc}</div>
+              <div style="font-size:.58rem;color:#604828;margin-top:.08rem;font-style:italic;">${a.note}</div>
+            </div>
+            <div style="font-size:.62rem;color:#905028;padding-left:.4rem;white-space:nowrap;">前往 ▶</div>
+          </div>`).join('')
+        :'<div style="padding:.6rem .8rem;font-size:.62rem;color:#504030;font-style:italic;">目前時代尚無可用的火焰網路地址</div>'}
+        ${restrictedAddresses.length?`
+        <div style="font-size:.58rem;color:#504030;padding:.3rem .8rem .1rem;letter-spacing:.05em;font-family:'Cinzel',serif;text-transform:uppercase;margin-top:.2rem;opacity:.6;">封鎖／管制地址</div>
+        ${restrictedAddresses.map(a=>`
+          <div class="floo-entry" style="opacity:.45;cursor:not-allowed;">
+            <div class="floo-entry-icon">${a.icon}</div>
+            <div>
+              <div class="floo-entry-name" style="text-decoration:line-through;text-decoration-color:#6a3020;">${a.name}</div>
+              <div class="floo-entry-location">${a.loc}</div>
+              <div style="font-size:.58rem;color:#5a2818;margin-top:.06rem;">⚠ ${a.reason}</div>
+            </div>
+          </div>`).join('')}`:''}
       </div>
-      <div style="padding:.4rem .8rem;font-size:.58rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">請在壁爐前清晰說出目的地名稱，然後踏入火焰。切勿在破損壁爐或封閉網路中嘗試傳送。</div>`;
+      <div style="padding:.4rem .8rem;font-size:.58rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">火焰網路由魔法部管控登記。請在壁爐前清晰說出目的地名稱，撒下一把火焰粉，踏入翠綠火焰。${isSecondWar?'<span style="color:#7a2010;"> ⚠ 戰時期間：魔法部正在監控火焰網路通訊。</span>':''}</div>`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 通知 ──
@@ -2184,53 +2229,144 @@ function renderScrollPage(page){
 
   // ── 掠奪者地圖 ──
   } else if(page==='marauder'){
-    const areas={
-      '霍格華茲城堡':[
-        {name:'大廳',note:'用餐時間熙攘'},
-        {name:'禁忌圖書館（受限區）',note:'深夜後有人活動'},
-        {name:'地牢走廊',note:'史萊哲林宿舍所在'},
-        {name:'天文台',note:'午夜後開放'},
-        {name:'醫院翼',note:'麥格教授值班中'},
-      ],
-      '校園外圍':[
-        {name:'禁忌森林邊緣',note:'警告：夜間危險'},
-        {name:'海格小屋',note:'燈光亮著'},
-        {name:'石楠地（魁地奇球場）',note:'目前空置'},
-      ],
-      '霍格莫德村':[
-        {name:'蜂蜜公爵糖果店',note:'週末開放'},
-        {name:'三把掃帚酒吧',note:'人聲鼎沸'},
-        {name:'尖叫棚屋',note:'（廢棄）'},
-      ],
-    };
-    if(ERA.includes('第二次')){
-      areas['霍格華茲城堡'].push({name:'需求屋（第七層走廊）',note:'有人在此藏匿'});
-      delete areas['霍格莫德村'];
-      areas['管制區域']=[{name:'食死人巡邏路線',note:'避開！'},{name:'鄧布利多辦公室',note:'已封鎖'}];
+    // 依時代建立地圖地點資料庫
+    let areas={};
+    if(ERA.includes('創立')||ERA.includes('中世紀')){
+      areas['霍格華茲城堡（建設初期）']=[
+        {name:'大廳（尚在修建）',note:'石匠與工人出入'},
+        {name:'地下室',note:'隱藏魔法陣'},
+        {name:'北塔',note:'薩拉查·史萊哲林的私人區域',danger:true},
+        {name:'圖書館（草創期）',note:'藏書數量稀少'},
+      ];
+      areas['城堡外圍']=[
+        {name:'禁忌森林',note:'古老魔法生物聚居',danger:true},
+        {name:'湖畔',note:'水中生物尚未被馴化',danger:true},
+      ];
+    } else if(ERA.includes('保密')||ERA.includes('1692')){
+      areas['霍格華茲城堡']=[
+        {name:'大廳',note:'師生用膳，外人禁入'},
+        {name:'圖書館',note:'書籍受保密法令限制'},
+        {name:'四樓走廊',note:'通往主教室區'},
+        {name:'地牢',note:'史萊哲林學院所在'},
+      ];
+      areas['外部世界']=[
+        {name:'麻瓜村落',note:'保密法令剛頒布，接觸危險',danger:true},
+        {name:'巫師聚集地（秘密）',note:'需持通行符進入'},
+      ];
+    } else if(ERA.includes('第一次')){
+      areas['霍格華茲城堡']=[
+        {name:'大廳',note:'氣氛緊張，失蹤學生家屬消息傳入'},
+        {name:'圖書館（黑魔法區）',note:'近期書籍被翻查'},
+        {name:'天文台',note:'夜間可遠眺黑暗標記方向',danger:true},
+        {name:'需求屋（第七層走廊）',note:'藏匿秘密的地方'},
+        {name:'地牢',note:'史萊哲林學院，部分學生已離校'},
+      ];
+      areas['校園外圍']=[
+        {name:'禁忌森林',note:'有報告指食死人在此活動',danger:true},
+        {name:'海格小屋',note:'海格守衛中，燈光徹夜亮著'},
+        {name:'魁地奇球場',note:'季賽取消'},
+      ];
+      areas['倫敦']=[
+        {name:'對角巷',note:'部分店鋪已關門，氣氛肅殺'},
+        {name:'霍格莫德',note:'宵禁實施，三把掃帚提早打烊'},
+      ];
+    } else if(ERA.includes('哈利')){
+      areas['霍格華茲城堡']=[
+        {name:'大廳',note:'用餐時間熙攘，院系旗幟懸掛'},
+        {name:'圖書館',note:'赫敏的第二個家'},
+        {name:'圖書館受限區',note:'需特別許可才可進入',danger:true},
+        {name:'需求屋（第七層走廊）',note:'想要什麼它就變成什麼'},
+        {name:'地牢（魔藥教室）',note:'石內卜教授的領域'},
+        {name:'天文台',note:'每週三深夜課程'},
+        {name:'院長室（七樓）',note:'鳳凰展翅像後方'},
+        {name:'醫院翼',note:'龐弗雷夫人值班中'},
+        {name:'黑魔法防禦術教室（三樓）',note:'每年教授都不同'},
+      ];
+      areas['校園外圍']=[
+        {name:'禁忌森林',note:'學生禁止進入',danger:true},
+        {name:'海格小屋',note:'門口總有奇怪生物'},
+        {name:'石楠地（魁地奇球場）',note:'葛來分多練習時段'},
+        {name:'溫室（草藥學）',note:'史普勞特教授在此'},
+        {name:'湖畔',note:'人魚與巨烏賊出沒'},
+      ];
+      areas['霍格莫德村']=[
+        {name:'蜂蜜公爵糖果店',note:'種類最齊全的魔法糖果'},
+        {name:'三把掃帚酒吧',note:'蘿絲瑪塔的飛天掃帚啤酒'},
+        {name:'豬頭酒吧',note:'阿不福斯·鄧不利多的地盤'},
+        {name:'薛瑞克的書店',note:'二手魔法書'},
+        {name:'尖叫棚屋',note:'曾是盧平的藏身處',danger:true},
+        {name:'霍格莫德火車站',note:'霍格華茲特快列車終點'},
+      ];
+    } else if(ERA.includes('第二次')){
+      areas['霍格華茲城堡（食死人管控期）']=[
+        {name:'大廳',note:'食死人監控，舉報箱已設置',danger:true},
+        {name:'圖書館',note:'部分書籍被沒收，黑魔法書移到正架'},
+        {name:'需求屋（第七層走廊）',note:'鄧布利多軍秘密基地'},
+        {name:'地牢',note:'卡羅兄妹的刑罰室',danger:true},
+        {name:'院長室',note:'史內普院長，進入極度危險',danger:true},
+        {name:'醫院翼',note:'龐弗雷夫人私下庇護受傷學生'},
+      ];
+      areas['校園外圍']=[
+        {name:'禁忌森林',note:'半人馬與抵抗成員藏匿處'},
+        {name:'海格小屋',note:'海格已離開，空置'},
+        {name:'魁地奇球場',note:'食死人監控訓練'},
+      ];
+      areas['外部世界']=[
+        {name:'格里莫廣場12號',note:'鳳凰社廢棄總部，已遭入侵',danger:true},
+        {name:'對角巷',note:'氣氛肅殺，部分店鋪強制關閉'},
+        {name:'聥靜地（Shell Cottage）',note:'比爾與芙蓉的安全屋'},
+        {name:'馬份莊園',note:'食死人司令部，絕對禁止接近',danger:true},
+      ];
+    } else {
+      // 戰後/下一代
+      areas['霍格華茲城堡']=[
+        {name:'大廳',note:'修復完成，新院系旗幟懸掛'},
+        {name:'圖書館',note:'部分戰時被毀書籍已復原'},
+        {name:'需求屋',note:'戰爭期間曾大火，現已修復'},
+        {name:'院長室',note:'金妮（或新任院長）的辦公室'},
+        {name:'醫院翼',note:'照常運作'},
+      ];
+      areas['霍格莫德村']=[
+        {name:'蜂蜜公爵糖果店',note:'重新開張，戰後特別款糖果'},
+        {name:'三把掃帚酒吧',note:'蘿絲瑪塔依舊在吧台'},
+        {name:'豬頭酒吧',note:'阿不福斯仍在此'},
+      ];
+      areas['外部世界']=[
+        {name:'對角巷',note:'重建完成，景氣逐漸回升'},
+        {name:'魔法部',note:'金斯利·夏克博特任部長，全面改革中'},
+        {name:'聖芒戈魔法疾病與傷害醫院',note:'戰後傷患照護'},
+      ];
     }
+    // 依時代決定地圖標題（掠奪者地圖在1977年由四人幫製作）
+    const hasMaraudersMap=ERA.includes('哈利')||ERA.includes('第二次')||ERA.includes('重建')||ERA.includes('下一代');
+    const mapTitle=hasMaraudersMap?'掠奪者地圖':'霍格華茲平面圖';
+    const mapCredit=hasMaraudersMap?'地圖由：無名氏、蟲尾巴、月亮人、殺人犯 製作 · 惡作劇萬歲！':'霍格華茲建校留存文獻，列明城堡已知區域';
+    const mapIncantation=hasMaraudersMap?'「我鄭重承認我企圖惡作劇。」':'（施展現形咒 Aparecium）';
+
+    // 依時代顯示已知地點（純展示，無「前往」按鈕）
+    // 使用行動選項或自定義輸入前往地點
     const areasHtml=Object.entries(areas).map(([area,locs])=>`
       <div class="marauder-area-title">${area}</div>
       ${locs.map(l=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:.18rem .2rem .18rem 0;">
-          <div class="marauder-location" style="flex:1;padding-right:.4rem;">${l.name}
-            <span style="font-size:.6rem;color:#706040;margin-left:.35rem;font-style:normal;">— ${l.note}</span>
-          </div>
-          <button onclick="goToLocation('${l.name}')" style="flex-shrink:0;font-size:.58rem;padding:.15rem .45rem;background:none;border:1px solid rgba(140,110,40,.35);color:#907040;border-radius:.2rem;cursor:pointer;font-family:'EB Garamond',serif;white-space:nowrap;transition:all .2s;" onmouseover="this.style.borderColor='rgba(200,160,64,.7)';this.style.color='#c8a040';" onmouseout="this.style.borderColor='rgba(140,110,40,.35)';this.style.color='#907040';">前往</button>
+        <div class="marauder-location">
+          <span class="marauder-dot"></span>${l.name}
+          <span style="font-size:.6rem;color:${l.danger?'#8a3020':'#706040'};margin-left:.35rem;font-style:normal;">${l.danger?'⚠ ':''} ${l.note}</span>
         </div>`).join('')}
     `).join('');
+
     content.innerHTML=`
       <div style="background:#0a0806;border-bottom:1px solid #2a2010;padding:.4rem .8rem;font-size:.6rem;color:#807040;font-style:italic;display:flex;align-items:center;gap:.4rem;">
-        <span>🗺️</span>點擊「前往」關閉地圖並以前往該地點作為行動，推進當回合劇情。
+        <span>🗺️</span>地圖僅供查看。若想前往某地點，請關閉通訊器後使用下方「直接輸入」行動。
       </div>
       <div class="marauder-scroll">
         <div class="marauder-incantation-bar">
-          <div class="marauder-spell">「我鄭重承認我企圖惡作劇。」</div>
+          <div class="marauder-spell">${mapIncantation}</div>
         </div>
         <div class="marauder-map-content">
-          <div style="font-size:.6rem;color:#807040;margin-bottom:.4rem;text-align:center;font-style:italic;">顯示${gameState.time||'當前'}已知位置 · 點選地點可前往</div>
+          <div style="font-size:.6rem;color:#807040;margin-bottom:.5rem;text-align:center;font-style:italic;">${mapTitle} · ${gameState.time||'當前時刻'}</div>
           ${areasHtml}
         </div>
-        <div class="marauder-footer-text">地圖由：無名氏、蟲尾巴、月亮人、殺人犯 製作<br>惡作劇萬歲！</div>
+        <div class="marauder-footer-text">${mapCredit}</div>
       </div>`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
@@ -2295,15 +2431,18 @@ async function sendPortraitMessage(){
   hideLoading();renderScrollPage('portrait-target');
 }
 
+// ── 火焰網路：前往指定地點 ──
+window.flooTravelTo=function(locationName){
+  closeScroll();
+  disableOptions();
+  addChoiceMsg(`【火焰網路】前往${locationName}`);
+  gameState.lastChoiceText=`透過火焰網路前往${locationName}`;
+  handlePlayerAction(`透過火焰網路，撒下一把火焰粉，踏入翠綠火焰，前往${locationName}`);
+};
+
 async function doFlooContact(){
-  const targetName=gameState.bfName||'對方';
-  closeScroll();addChoiceMsg(`【火焰網路】撥打連線至${targetName}`);disableOptions();
-  showLoading('火焰網路連線中…');
-  try {
-    const resp=await callAI(`玩家透過火焰網路壁爐聯繫${targetName}。\n請描述：1.${targetName}的反應（接通/未在壁爐旁等）2.對話內容（1-2句）3.這次聯繫的氛圍\n以純文字敘述，符合魔法世界背景，100字內，不要JSON。`);
-    addNarrationMsg(cleanMarkdown(resp));
-  } catch(e){addSystemMsg('火焰網路連線失敗：'+e.message);}
-  hideLoading();document.getElementById('options-panel').classList.remove('disabled');
+  // 保留相容性：若有舊版呼叫，導向火焰網路頁
+  openScrollOverlay('floo');
 }
 
 // ── 主動聯繫 ──
@@ -2669,6 +2808,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v1.6</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v1.7</div>
 </body>
 </html>
