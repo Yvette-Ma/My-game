@@ -686,7 +686,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
     <div class="s-section">
       <span class="s-label">陣營立場</span>
       <div class="identity-grid" id="faction-grid">
-        <div class="identity-opt" onclick="selectFaction(this,'鳳凰社成員（光明陣營）')">🔥 鳳凰社</div>
+        <div class="identity-opt" onclick="selectFaction(this,'鳳凰會成員（光明陣營）')">🔥 鳳凰會</div>
         <div class="identity-opt" onclick="selectFaction(this,'食死人（黑暗陣營）')">💀 食死人</div>
         <div class="identity-opt" onclick="selectFaction(this,'魔法部官員（中立/制度方）')">⚖️ 魔法部</div>
         <div class="identity-opt" onclick="selectFaction(this,'霍格華茲師生（學術方）')">🏰 霍格華茲</div>
@@ -1276,7 +1276,7 @@ async function runCasting(){
       "name": "角色全名",
       "age": 年齡數字,
       "role": "在故事中的可能角色定位（如：神秘盟友、潛在對象、宿敵、導師）",
-      "affiliation": "所屬陣營（如：鳳凰社、食死人、魔法部、霍格華茲）",
+      "affiliation": "所屬陣營（如：鳳凰會、食死人、魔法部、霍格華茲）",
       "vibe": "一句話性格描述",
       "hookDesc": "與玩家可能發生的故事類型描述（30字內）",
       "isCanon": true或false,
@@ -2069,7 +2069,7 @@ function renderScrollPage(page){
       {headline:'失蹤人口名單持續增加，魔法部：正積極調查',byline:'記者：魏麗（迫於壓力）',body:'過去一週共有七名巫師向魔法部提交失蹤人口報告，據了解失蹤者均為麻瓜出身……'},
       {headline:'霍格莫德特別宵禁令正式實施',byline:'魔法部公告',body:'為維護治安，所有未成年巫師晚間八時後不得在霍格莫德無人陪同單獨外出……'},
     ]:[
-      {headline:'轟轟烈烈！英格蘭奪得魁地奇世界盃冠軍',byline:'體育記者：賴塔·曼寧',body:'在昨晚令人窒息的決賽中，英格蘭國家隊捕手以驚人的俯衝捕獲金探子，擊敗保加利亞，英格蘭首奪世界盃……'},
+      {headline:'轟轟烈烈！英格蘭奪得魁地奇世界盃冠軍',byline:'體育記者：賴塔·曼寧',body:'在昨晚令人窒息的決賽中，英格蘭國家隊捕手以驚人的俯衝捕獲金探球，擊敗保加利亞，英格蘭首奪世界盃……'},
       {headline:'新學年開始！霍格華茲迎接新一屆新生',byline:'記者：柔依·費雪',body:'今日霍格華茲特快列車滿載新生從九又四分之三月台出發，新任黑魔法防禦術教授將首次亮相……'},
       {headline:'對角巷魔杖店推出限量版橡木芯魔杖',byline:'廣告特刊',body:'奧利凡德魔杖店宣布今秋推出橡木芯限量系列，每根均由大師親手打磨，售完即止……'},
     ];
@@ -2096,13 +2096,13 @@ function renderScrollPage(page){
     const broadcasts=gameState.magicData.wizardingWireless.broadcasts;
     const isWarEra=ERA.includes('第二次');
     const defaultBroadcasts=isWarEra?[
-      {station:'Potterwatch',freq:'931.1',time:'23:17',text:'這裡是泡泡腦袋。今晚的真實消息：哈利波特還活著。鳳凰社繼續抵抗。記住：保持信仰，不要屈服於恐懼——'},
+      {station:'Potterwatch',freq:'931.1',time:'23:17',text:'這裡是泡泡腦袋。今晚的真實消息：哈利波特還活著。鳳凰會繼續抵抗。記住：保持信仰，不要屈服於恐懼——'},
       {station:'Potterwatch',freq:'931.1',time:'23:21',text:'昨日確認：格蘭芬多巫師塔被食死人搜查，所幸無人受傷。請所有聽眾謹慎，避免使用禁忌之名……'},
       {station:'魔法部廣播',freq:'989.0',time:'22:00',text:'【官方聲明】巫師界目前處於前所未有的安全時期。請市民配合管控措施，舉報可疑麻瓜出身巫師……'},
     ]:[
       {station:'全巫師廣播',freq:'820.0',time:'07:00',text:'早安！今日霍格華茲天氣：上空有魔法性薄霧，預計下午散開。魁地奇賽季即將開始，各院系請做好準備——'},
       {station:'全巫師廣播',freq:'820.0',time:'12:30',text:'今日頭條：魔法部長阿不思·鄧不利多已確認出席本月底的國際巫師聯合會議。對角巷商圈本週末特別優惠……'},
-      {station:'音樂時段',freq:'820.0',time:'15:00',text:'現在為您播送：維克多·克魯姆最愛的保加利亞巫師民謠……（收音機裡傳出奇異的旋律）'},
+      {station:'音樂時段',freq:'820.0',time:'15:00',text:'現在為您播送：維克多·克倫最愛的保加利亞巫師民謠……（收音機裡傳出奇異的旋律）'},
     ];
     const allBroadcasts=broadcasts.length?broadcasts:defaultBroadcasts;
     const bars=[12,18,14,20,10,16,22,8].map((h,i)=>`<div class="wireless-bar" style="height:${h}px;--sd:${0.8+i*0.15}s;"></div>`).join('');
@@ -2134,7 +2134,7 @@ function renderScrollPage(page){
     // - 須在火焰網路登記才能使用（魔法部管控）
     // - 戰爭期間部分地址被監控或封鎖
     // - 霍格華茲壁爐在5年級前通常對學生關閉（除院長室）
-    // - 韋斯萊家（洞穴屋）、對角巷（破釜酒吧）等為常見中繼站
+    // - 韋斯萊家（隱穴）、對角巷（破釜酒吧）等為常見中繼站
     const isFirstWar=ERA.includes('第一次');
     const isSecondWar=ERA.includes('第二次');
     const isHarryEra=ERA.includes('哈利');
@@ -2144,12 +2144,12 @@ function renderScrollPage(page){
     // 依時代建立可用地址（點擊可前往）
     let availAddresses=[];
     // 霍格華茲內部（幾乎各時代都有，但院長室為主）
-    availAddresses.push({name:'破釜酒吧',loc:'斜角巷入口，倫敦',icon:'🍺',note:'火焰網路主要中繼站，各時代通用',available:!isEarlyEra});
+    availAddresses.push({name:'破釜酒吧',loc:'對角巷入口，倫敦',icon:'🍺',note:'火焰網路主要中繼站，各時代通用',available:!isEarlyEra});
     if(isFirstWar||isHarryEra||isSecondWar||isPostWar){
-      availAddresses.push({name:'韋斯萊家（洞穴屋）',loc:'德文郡，奧特利聖卡奇波',icon:'🏡',note:'韋斯萊家族壁爐，與其有交情者可用',available:true});
+      availAddresses.push({name:'韋斯萊家（隱穴）',loc:'德文郡，奧特利聖卡奇波',icon:'🏡',note:'韋斯萊家族壁爐，與其有交情者可用',available:true});
     }
     if(isSecondWar||isFirstWar){
-      availAddresses.push({name:'格里莫廣場12號',loc:'倫敦，鳳凰社本部',icon:'🏚️',note:'鳳凰社成員專用，地址受保密咒保護',available:true});
+      availAddresses.push({name:'格里莫廣場12號',loc:'倫敦，鳳凰會本部',icon:'🏚️',note:'鳳凰會成員專用，地址受保密咒保護',available:true});
     }
     if(isHarryEra||isPostWar){
       availAddresses.push({name:'盧平家',loc:'威爾斯，偏遠地區',icon:'🌲',note:'盧平夫婦的住所',available:true});
@@ -2208,7 +2208,7 @@ function renderScrollPage(page){
             </div>
           </div>`).join('')}`:''}
       </div>
-      <div style="padding:.4rem .8rem;font-size:.58rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">火焰網路由魔法部管控登記。請在壁爐前清晰說出目的地名稱，撒下一把火焰粉，踏入翠綠火焰。${isSecondWar?'<span style="color:#7a2010;"> ⚠ 戰時期間：魔法部正在監控火焰網路通訊。</span>':''}</div>`;
+      <div style="padding:.4rem .8rem;font-size:.58rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">火焰網路由魔法部管控登記。請在壁爐前清晰說出目的地名稱，撒下一把火爐粉，踏入翠綠火焰。${isSecondWar?'<span style="color:#7a2010;"> ⚠ 戰時期間：魔法部正在監控火焰網路通訊。</span>':''}</div>`;
     actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 通知 ──
@@ -2273,7 +2273,7 @@ function renderScrollPage(page){
     } else if(ERA.includes('哈利')){
       areas['霍格華茲城堡']=[
         {name:'大廳',note:'用餐時間熙攘，院系旗幟懸掛'},
-        {name:'圖書館',note:'赫敏的第二個家'},
+        {name:'圖書館',note:'妙麗的第二個家'},
         {name:'圖書館受限區',note:'需特別許可才可進入',danger:true},
         {name:'需求屋（第七層走廊）',note:'想要什麼它就變成什麼'},
         {name:'地牢（魔藥教室）',note:'石內卜教授的領域'},
@@ -2301,9 +2301,9 @@ function renderScrollPage(page){
       areas['霍格華茲城堡（食死人管控期）']=[
         {name:'大廳',note:'食死人監控，舉報箱已設置',danger:true},
         {name:'圖書館',note:'部分書籍被沒收，黑魔法書移到正架'},
-        {name:'需求屋（第七層走廊）',note:'鄧布利多軍秘密基地'},
+        {name:'需求屋（第七層走廊）',note:'鄧不利多軍秘密基地'},
         {name:'地牢',note:'卡羅兄妹的刑罰室',danger:true},
-        {name:'院長室',note:'史內普院長，進入極度危險',danger:true},
+        {name:'院長室',note:'石內卜院長，進入極度危險',danger:true},
         {name:'醫院翼',note:'龐弗雷夫人私下庇護受傷學生'},
       ];
       areas['校園外圍']=[
@@ -2312,9 +2312,9 @@ function renderScrollPage(page){
         {name:'魁地奇球場',note:'食死人監控訓練'},
       ];
       areas['外部世界']=[
-        {name:'格里莫廣場12號',note:'鳳凰社廢棄總部，已遭入侵',danger:true},
+        {name:'格里莫廣場12號',note:'鳳凰會廢棄總部，已遭入侵',danger:true},
         {name:'對角巷',note:'氣氛肅殺，部分店鋪強制關閉'},
-        {name:'聥靜地（Shell Cottage）',note:'比爾與芙蓉的安全屋'},
+        {name:'貝殼小屋（Shell Cottage）',note:'比爾與芙麗的安全屋'},
         {name:'馬份莊園',note:'食死人司令部，絕對禁止接近',danger:true},
       ];
     } else {
@@ -2333,7 +2333,7 @@ function renderScrollPage(page){
       ];
       areas['外部世界']=[
         {name:'對角巷',note:'重建完成，景氣逐漸回升'},
-        {name:'魔法部',note:'金斯利·夏克博特任部長，全面改革中'},
+        {name:'魔法部',note:'金斯利·薛克伯特任部長，全面改革中'},
         {name:'聖芒戈魔法疾病與傷害醫院',note:'戰後傷患照護'},
       ];
     }
@@ -2437,7 +2437,7 @@ window.flooTravelTo=function(locationName){
   disableOptions();
   addChoiceMsg(`【火焰網路】前往${locationName}`);
   gameState.lastChoiceText=`透過火焰網路前往${locationName}`;
-  handlePlayerAction(`透過火焰網路，撒下一把火焰粉，踏入翠綠火焰，前往${locationName}`);
+  handlePlayerAction(`透過火焰網路，撒下一把火爐粉，踏入翠綠火焰，前往${locationName}`);
 };
 
 async function doFlooContact(){
@@ -2808,6 +2808,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v1.7</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v1.8</div>
 </body>
 </html>
