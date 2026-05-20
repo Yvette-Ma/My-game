@@ -2038,64 +2038,8 @@ function renderScrollPage(page){
   const T=getDisplayTargetName();
   const ERA=gameState.playerEra||'';
 
-  // ── 首頁 ──
-  if(page==='home'){
-    const nc=gameState.magicData.notifs.length;
-    const lc=gameState.magicData.owlPost.letters.length;
-    const unlocked=gameState.unlockedComm||[];
-    const hasAny=unlocked.length>0;
-
-    // 所有可能的功能定義
-    const allFeatures=[
-      {key:'owl',     icon:'🦉', label:'貓頭鷹信', bg:'#1e1a10,#2a2210', badge:lc},
-      {key:'portrait',icon:'🖼️', label:'魔法肖像', bg:'#141820,#0e1018'},
-      {key:'prophet', icon:'📰', label:'預言家日報',bg:'#141208,#1a1608'},
-      {key:'wireless',icon:'📻', label:'巫師廣播',  bg:'#1a1008,#221408'},
-      {key:'floo',    icon:'🔥', label:'火焰網路',  bg:'#0e1608,#121e0a'},
-      {key:'marauder',icon:'🗺️', label:'掠奪者地圖',bg:'#181608,#201c0a'},
-    ];
-    // notifs 和 contacts 只要有任何功能解鎖就顯示
-    const showMeta=hasAny;
-
-    const featureHtml=allFeatures
-      .filter(f=>unlocked.includes(f.key))
-      .map(f=>`
-        <div class="home-app" onclick="renderScrollPage('${f.key}')">
-          <div class="home-app-wrap">
-            <div class="app-ico" style="background:linear-gradient(135deg,${f.bg});">${f.icon}</div>
-            ${f.badge>0?`<span class="app-badge">${f.badge}</span>`:''}
-          </div>
-          <div class="app-lbl">${f.label}</div>
-        </div>`).join('');
-
-    const metaHtml=showMeta?`
-      <div class="home-app" onclick="renderScrollPage('notifs')">
-        <div class="home-app-wrap">
-          <div class="app-ico" style="background:linear-gradient(135deg,#141020,#1a1428);">📜</div>
-          ${nc>0?`<span class="app-badge">${nc}</span>`:''}
-        </div>
-        <div class="app-lbl">通知</div>
-      </div>
-      <div class="home-app" onclick="renderScrollPage('contacts')">
-        <div class="home-app-wrap"><div class="app-ico" style="background:linear-gradient(135deg,#141020,#0e0c1a);">👥</div></div>
-        <div class="app-lbl">人脈</div>
-      </div>`:'';
-
-    content.innerHTML=`
-      <div style="background:linear-gradient(180deg,#0e0c06,#161208);padding:.6rem .8rem .4rem;border-bottom:1px solid #3a2810;text-align:center;">
-        <div style="font-family:'Cinzel',serif;font-size:.8rem;color:#c8a040;letter-spacing:.18em;">✦ 巫師羊皮卷 ✦</div>
-        <div style="font-size:.6rem;color:#605040;font-style:italic;margin-top:.15rem;">${gameState.time||''}</div>
-      </div>
-      ${hasAny
-        ?`<div class="home-app-grid" style="grid-template-columns:repeat(${Math.min(4,unlocked.length+2)},1fr);">${featureHtml}${metaHtml}</div>`
-        :`<div style="padding:2.5rem 1.2rem;text-align:center;color:#504030;font-size:.78rem;line-height:2;font-style:italic;">
-            此卷尚無記錄。<br>
-            <span style="font-size:.65rem;color:#3a2818;">隨著故事推進，你所接觸的魔法媒介將在此留下印記。</span>
-          </div>`}`;
-    actions.innerHTML=`<button class="so-close" onclick="closeScroll()">收起羊皮卷</button>`;
-
   // ── 貓頭鷹信 列表 ──
-  } else if(page==='owl'){
+  if(page==='owl'){
     const letters=gameState.magicData.owlPost.letters;
     const tLetters=T?letters.filter(l=>l.from===T):[];
     const hasT=T&&tLetters.length>0;
@@ -2120,7 +2064,7 @@ function renderScrollPage(page){
     html+='</div>';
     content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🦉</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">貓頭鷹信</span></div>${html}`;
     actions.innerHTML=`${T?`<button class="so-btn" onclick="renderScrollPage('owl-target')">✍️ 與${T}的往來信件</button>`:''}
-      <button class="so-btn" onclick="renderScrollPage('home')">← 返回</button>
+      <button class="so-btn" onclick="closeScroll()">← 關閉</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 貓頭鷹信 對話 ──
@@ -2170,7 +2114,7 @@ function renderScrollPage(page){
     html+='</div>';
     content.innerHTML=`<div style="background:linear-gradient(90deg,#0a0806,#141208,#0a0806);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">🖼️</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">魔法肖像</span></div>${html}`;
     actions.innerHTML=`${T?`<button class="so-btn" onclick="renderScrollPage('portrait-target')">🖼️ 喚醒${T}的肖像</button>`:''}
-      <button class="so-btn" onclick="renderScrollPage('home')">← 返回</button>
+      <button class="so-btn" onclick="closeScroll()">← 關閉</button>
       <button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 魔法肖像 對話 ──
@@ -2231,7 +2175,7 @@ function renderScrollPage(page){
           <div class="prophet-byline">${a.byline||'本報記者'}</div>
           <div class="prophet-body">${a.body}</div>
         </div>`).join('')}`;
-    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 巫師廣播 ──
   } else if(page==='wireless'){
@@ -2267,7 +2211,7 @@ function renderScrollPage(page){
             <div class="wireless-text">${b.text}</div>
           </div>`).join('')}
       </div>`;
-    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 火焰網路 ──
   } else if(page==='floo'){
@@ -2333,7 +2277,7 @@ function renderScrollPage(page){
           </div>`).join('')}`:''}
       </div>
       <div style="padding:.4rem .8rem;font-size:.58rem;color:#504030;font-style:italic;border-top:1px solid rgba(80,40,8,.2);">火焰網路由魔法部管控登記。請在壁爐前清晰說出目的地名稱，撒下一把火爐粉，踏入翠綠火焰。${isSecondWar?'<span style="color:#7a2010;"> ⚠ 戰時期間：魔法部正在監控火焰網路通訊。</span>':''}</div>`;
-    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 通知 ──
   } else if(page==='notifs'){
@@ -2349,7 +2293,7 @@ function renderScrollPage(page){
           <div class="ni-icon">${iconMap[n.app]||'📜'}</div>
           <div class="ni-body"><div class="ni-app">${n.app}</div><div class="ni-msg">${n.content}</div><div class="ni-time">${n.time||''}</div></div>
         </div>`).join(''):'<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">暫無通知</div>'}`;
-    actions.innerHTML=`<button class="so-btn" onclick="clearMagicNotifs()">清除記錄</button><button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    actions.innerHTML=`<button class="so-btn" onclick="clearMagicNotifs()">清除記錄</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 掠奪者地圖 ──
   } else if(page==='marauder'){
@@ -2490,7 +2434,7 @@ function renderScrollPage(page){
         </div>
         <div class="marauder-footer-text">${mapCredit}</div>
       </div>`;
-    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
 
   // ── 人脈 ──
   } else if(page==='contacts'){
@@ -2517,7 +2461,7 @@ function renderScrollPage(page){
     if(!T&&!npcEntries.length) html+='<div style="padding:2rem;text-align:center;color:#504030;font-size:.76rem;font-style:italic;">通訊錄尚無人員，隨劇情推進會逐漸增加</div>';
     html+='</div>';
     content.innerHTML=`<div style="background:linear-gradient(90deg,#0e0c06,#161208,#0e0c06);padding:.5rem .8rem;border-bottom:1px solid #3a2810;display:flex;align-items:center;gap:.5rem;"><span style="font-size:.9rem;">👥</span><span style="font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;letter-spacing:.08em;">通訊錄</span></div>${html}`;
-    actions.innerHTML=`<button class="so-btn" onclick="renderScrollPage('home')">← 返回</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
+    actions.innerHTML=`<button class="so-btn" onclick="closeScroll()">← 關閉</button><button class="so-close" onclick="closeScroll()">繼續遊戲</button>`;
   }
 }
 
@@ -2930,6 +2874,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.1</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.68rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.2</div>
 </body>
 </html>
