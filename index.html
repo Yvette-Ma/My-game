@@ -856,7 +856,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <div id="more-menu" style="
   display:none;position:fixed;top:40px;right:4px;
   background:var(--bg3);border:1px solid var(--border2);
-  border-radius:.7rem;z-index:200;width:130px;
+  border-radius:.7rem;z-index:200;width:120px;
   box-shadow:0 4px 24px rgba(0,0,0,.7);overflow:hidden;
   font-size:.74rem;
 ">
@@ -866,7 +866,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   <button class="more-menu-item" onclick="showSettingsFromGame();toggleMoreMenu()">設定</button>
   <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
   <button class="more-menu-item" onclick="exitGame();toggleMoreMenu()">退出遊戲</button>
-  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);">登出</button>
+  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);border-top:1px solid var(--border);">登出帳號</button>
 </div>
 
 <!-- 扭轉劇情面板 -->
@@ -3997,6 +3997,15 @@ async function renderPhonePage(page){
       <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
+  // 統一確保 actions 裡有「繼續遊戲」按鈕
+  if(actions && !actions.querySelector('.po-close')){
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'po-close';
+    closeBtn.textContent = '繼續遊戲';
+    closeBtn.onclick = closePhone;
+    actions.appendChild(closeBtn);
+  }
+
   // 重新綁定所有按鈕（解決安卓 onclick 失效問題）
   setTimeout(function(){
     // 綁定 actions 按鈕
@@ -4813,6 +4822,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r77</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r79</div>
 </body>
 </html>
