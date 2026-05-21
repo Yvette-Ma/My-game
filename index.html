@@ -810,16 +810,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫</button>
       <button class="gh-btn" onclick="openPhoneOverlay('home')">手機</button>
       <button class="gh-btn" onclick="openDiary()">日記</button>
-      <div style="position:relative;display:inline-block;">
+      <div class="gh-more-wrap" id="gh-more-wrap">
         <button class="gh-btn gh-more-btn" onclick="toggleMoreMenu()" id="gh-more-btn">⋯</button>
-        <div id="more-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg3);border:1px solid var(--border2);border-radius:.6rem;z-index:200;box-shadow:0 4px 20px rgba(0,0,0,.6);overflow:hidden;white-space:nowrap;">
-          <button class="more-menu-item" onclick="openTwist();toggleMoreMenu()">扭轉劇情</button>
-          <button class="more-menu-item" onclick="replayRound();toggleMoreMenu()">重玩此回合</button>
-          <div style="height:1px;background:var(--border);"></div>
-          <button class="more-menu-item" onclick="showSettingsFromGame();toggleMoreMenu()">設定</button>
-          <div style="height:1px;background:var(--border);"></div>
-          <button class="more-menu-item" onclick="exitGame();toggleMoreMenu()">退出遊戲</button>
-          <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);">登出帳號</button>
+        <div class="gh-dropdown" id="gh-dropdown">
+          <button class="gh-dd-item" onclick="openTwist();closeMoreMenu()">扭轉劇情</button>
+          <button class="gh-dd-item" onclick="replayRound();closeMoreMenu()">重玩此回合</button>
+          <div class="gh-dd-sep"></div>
+          <button class="gh-dd-item" onclick="showSettingsFromGame();closeMoreMenu()">設定</button>
+          <div class="gh-dd-sep"></div>
+          <button class="gh-dd-item" onclick="exitGame();closeMoreMenu()">退出遊戲</button>
+          <button class="gh-dd-item danger" onclick="signOutUser();closeMoreMenu()">登出帳號</button>
         </div>
       </div>
     </div>
@@ -2078,22 +2078,18 @@ window.toggleOptions = function(){
 
 // ── 更多選單開關 ──
 window.toggleMoreMenu = function(){
-  var menu = document.getElementById('more-menu');
-  if(!menu) return;
-  var isOpen = menu.style.display !== 'none';
-  menu.style.display = isOpen ? 'none' : 'block';
-  // 點擊其他地方關閉
-  if(!isOpen){
-    setTimeout(function(){
-      document.addEventListener('click', function closeMenu(e){
-        if(!e.target.closest('#more-menu') && !e.target.closest('#gh-more-btn')){
-          menu.style.display = 'none';
-          document.removeEventListener('click', closeMenu);
-        }
-      });
-    }, 10);
-  }
+  var dd = document.getElementById('gh-dropdown');
+  if(!dd) return;
+  dd.classList.toggle('open');
 };
+window.closeMoreMenu = function(){
+  var dd = document.getElementById('gh-dropdown');
+  if(dd) dd.classList.remove('open');
+};
+document.addEventListener('click', function(e){
+  var wrap = document.getElementById('gh-more-wrap');
+  if(wrap && !wrap.contains(e.target)) closeMoreMenu();
+});
 
 // ── 日記：合併回憶剪貼簿 + 劇情回顧 ──
 window.openDiary = function(){
@@ -4828,6 +4824,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r81</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r82</div>
 </body>
 </html>
