@@ -478,6 +478,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   #screen-game{align-items:center;}
   #screen-game .game-header{width:100%;max-width:800px;}
 }
+
+.gh-more-btn{padding:.3rem .55rem;font-size:.9rem;letter-spacing:.1em;}
+.gh-more-wrap{position:relative;display:inline-block;}
+.gh-dropdown{position:absolute;top:calc(100% + 4px);right:0;z-index:200;background:var(--bg3);border:1px solid var(--border2);border-radius:.5rem;min-width:120px;display:none;flex-direction:column;box-shadow:0 8px 24px rgba(0,0,0,.6);overflow:hidden;}
+.gh-dropdown.open{display:flex;}
+.gh-dd-item{padding:.55rem .9rem;font-size:.8rem;color:var(--text2);cursor:pointer;background:none;border:none;text-align:left;white-space:nowrap;transition:background .15s;display:block;width:100%;box-sizing:border-box;}
+.gh-dd-item:hover{background:var(--bg2);color:var(--text);}
+.gh-dd-item.danger{color:var(--rose2);}
+.gh-dd-sep{height:1px;background:var(--border);margin:.15rem 0;}
 </style>
 </head>
 <body>
@@ -4824,6 +4833,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r82</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r84</div>
 </body>
 </html>
