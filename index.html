@@ -839,8 +839,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   </div>
 
   <div class="options-panel" id="options-panel">
-    <div class="options-title">▸ 選擇你的行動</div>
+    <div class="options-title" onclick="toggleOptions()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;">
+      <span>▸ 選擇你的行動</span>
+      <span id="opts-toggle" style="font-size:.65rem;color:var(--text3);margin-left:.5rem;">收合</span>
+    </div>
+    <div id="opts-collapsible">
     <div class="options-grid" id="options-grid"></div>
+    </div>
   </div>
 </div>
 
@@ -4829,6 +4834,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r86</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r87</div>
 </body>
 </html>
