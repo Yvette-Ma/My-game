@@ -877,6 +877,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
           <button class="gh-dd-item" onclick="openComm('contacts');closeAllMenus()">👥 人脈</button>
           <button class="gh-dd-item" onclick="openComm('notifs');closeAllMenus()">📜 通知 <span class="dd-badge" id="badge-notif" style="display:none;"></span></button>
           <button class="gh-dd-item" onclick="openRecap();closeAllMenus()">📖 劇情回顧</button>
+          <button class="gh-dd-item" onclick="showCharacterSheet();closeAllMenus()">🧙 角色檔案</button>
         </div>
       </div>
 
@@ -956,6 +957,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
 </div>
 
 <!-- ════ 回憶覆蓋 ════ -->
+<!-- ════ 角色檔案 ════ -->
+<div id="charsheet-overlay" style="position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;overflow:hidden;">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0;">
+    <span style="font-size:.9rem;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:.08em;">🧙 巫師檔案</span>
+    <button onclick="document.getElementById('charsheet-overlay').style.display='none'" style="background:none;border:1px solid var(--border);color:var(--text3);padding:.25rem .6rem;border-radius:.2rem;cursor:pointer;font-size:.8rem;">關閉</button>
+  </div>
+  <div id="charsheet-body" style="flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.55rem;"></div>
+</div>
+
 <!-- ════ 劇情回顧（含特殊時刻）════ -->
 <div id="recap-overlay" style="position:fixed;inset:0;z-index:65;background:rgba(8,6,16,.97);display:none;flex-direction:column;">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0;">
@@ -1727,6 +1737,11 @@ async function startGame(retryCount){
   retryCount=retryCount||0;
   if(retryCount===0){
     gameState.round=1;gameState.memories=[];gameState.storyLog=[];gameState.history=[];
+    gameState.targetProfile=null;gameState.playerMemory=[];gameState.playerPersonality={traits:{},summary:'',lastUpdatedRound:0};
+    gameState.npcs={};gameState.flooAddresses=[];gameState.unlockedComm=[];
+    gameState.affection=50;gameState.affectionTrend='stable';gameState.endingPath='';
+    gameState.flags={};gameState.playerMood='normal';gameState.relationStatus='';
+    gameState.beWarning=0;gameState.pendingSpecialEvent=null;gameState.pendingTwistHint=null;
     gameState.magicData={owlPost:{letters:[]},portraitChat:{conversations:{}},dailyProphet:{articles:[]},wizardingWireless:{broadcasts:[]},notifs:[]};
   }
   if(retryCount>2){addSystemMsg('開場生成失敗，請檢查 API Key 或模型設定。');renderOptions([{label:'A',text:'回設定頁（更換 API Key 或模型）'}]);return;}
@@ -1746,6 +1761,18 @@ async function startGame(retryCount){
 在「${gameState.playerEra}」的魔法世界冒險故事。
 陣營：${gameState.playerFaction}
 主線：${gameState.plotType}
+
+⚠️ 重要：玩家年齡是【${gameState.playerAge}歲】，對應霍格華茲【${
+  parseInt(gameState.playerAge)===11?'一年級新生':
+  parseInt(gameState.playerAge)===12?'二年級生':
+  parseInt(gameState.playerAge)===13?'三年級生':
+  parseInt(gameState.playerAge)===14?'四年級生':
+  parseInt(gameState.playerAge)===15?'五年級生（備考OWL）':
+  parseInt(gameState.playerAge)===16?'六年級生':
+  parseInt(gameState.playerAge)===17?'七年級生（備考NEWT）':
+  parseInt(gameState.playerAge)>=18?'畢業巫師/成人，不在校就讀':
+  '未指定年級'
+}】，所有劇情必須嚴格符合此年齡，不可出現任何暗示玩家「遲到」「年齡特殊」「晚入學」的描述，除非玩家在背景設定中明確填入此設定。
 
 重要對象：${targetDesc}
 
@@ -2916,6 +2943,66 @@ window.goToLocation=function(locationName){
   handlePlayerAction(`前往${locationName}`);
 };
 
+// ── 角色檔案 ──
+window.showCharacterSheet=function(){
+  const overlay=document.getElementById('charsheet-overlay');
+  const body=document.getElementById('charsheet-body');
+  if(!overlay||!body)return;
+  const g=gameState;
+
+  function row(label,value,locked){
+    if(!value)return'';
+    return`<div style="display:flex;gap:.7rem;align-items:flex-start;padding:.55rem .9rem;background:var(--bg3);border-radius:.25rem;border:1px solid ${locked?'rgba(200,168,74,.25)':'var(--border)'};">
+      <div style="font-family:'Cinzel',serif;font-size:.76rem;color:${locked?'var(--gold3)':'var(--text3)'};letter-spacing:.05em;min-width:80px;flex-shrink:0;padding-top:.05rem;">${label}${locked?'<span style="font-size:.6rem;margin-left:.3rem;opacity:.6;">🔒</span>':''}</div>
+      <div style="font-size:.92rem;color:var(--text);line-height:1.55;flex:1;">${value}</div>
+    </div>`;
+  }
+  function section(title,sub){
+    return`<div style="font-family:'Cinzel',serif;font-size:.76rem;color:var(--gold3);letter-spacing:.1em;text-transform:uppercase;margin-top:.6rem;padding:.3rem 0 .2rem;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:.5rem;">${title}${sub?`<span style="font-size:.68rem;color:var(--text3);text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-style:italic;">${sub}</span>`:''}`;
+  }
+
+  const year=parseInt(g.playerAge)||0;
+  const grade=year===11?'一年級':year===12?'二年級':year===13?'三年級':year===14?'四年級':year===15?'五年級':year===16?'六年級':year===17?'七年級':year>=18?'畢業巫師':'未知';
+  const appearance=[g.appBody,g.appHair,g.appFace,g.appVibe].filter(Boolean).join('　');
+
+  body.innerHTML=[
+    section('基本身份','（🔒 不可修改）'),
+    row('姓名',g.playerName,true),
+    row('年齡',g.playerAge+'歲'+(grade?'　（'+grade+'）':''),true),
+    row('血統',g.playerBlood,true),
+    row('學院',g.playerHouse,true),
+    row('外貌',appearance,false),
+
+    section('魔法能力','（可隨劇情成長）'),
+    row('魔法才能',g.talents||'未特別指定',false),
+    row('個性特質',g.traits||'未特別指定',false),
+    g.playerPersonality?.summary?row('AI 觀察特質',g.playerPersonality.summary,false):'',
+
+    section('故事背景','（🔒 不可修改）'),
+    row('時代',g.playerEra,true),
+    row('陣營',g.playerFaction,true),
+    row('主線',g.plotType,true),
+    row('故事起點',g.storyStart,false),
+    row('個人背景',g.background||'無',false),
+    row('既往設定',g.backstory||'無',false),
+
+    section('當前狀態'),
+    row('關係狀態',g.relationStatus||g.storyStart||'初始',false),
+    row('個人目標',g.playerStory?.goal||'尚未確立',false),
+    row('當前挑戰',g.playerStory?.currentChallenge||'尚未確立',false),
+    g.myWizardProfile?row('巫師身份',g.myWizardProfile.title+(g.myWizardProfile.notes?'：'+g.myWizardProfile.notes:''),false):'',
+
+    section('重要角色'),
+    row('核心角色',g.castMode==='auto'?'由劇情自然安排':(g.bfName||'未指定'),false),
+    row('重點配角',g.sideChars||'無',false),
+    Object.keys(g.npcs||{}).length?row('已識人物',Object.entries(g.npcs).map(([n,v])=>n+(v.relationship?'（'+v.relationship+'）':'')).join('、'),false):'',
+
+    `<div style="font-size:.74rem;color:var(--text3);text-align:center;padding:.5rem;font-style:italic;margin-top:.3rem;">🔒 標示的欄位在遊戲開始後不可修改</div>`,
+  ].filter(Boolean).join('');
+
+  overlay.style.display='flex';
+};
+
 // ── 選項面板收合 ──
 window.toggleOptionsPanel=function(){
   const toggle=document.getElementById('options-toggle');
@@ -2999,8 +3086,8 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     // 關閉所有浮層
     document.getElementById('twist-panel').style.display='none';
-    
     document.getElementById('recap-overlay').style.display='none';
+    document.getElementById('charsheet-overlay').style.display='none';
     document.getElementById('scroll-overlay').classList.remove('open');
     document.getElementById('contact-panel').classList.remove('open');
   }
@@ -3050,6 +3137,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v3.0</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v3.1</div>
 </body>
 </html>
