@@ -808,8 +808,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
     <div class="gh-right">
       <span class="save-indicator" id="save-indicator">已同步</span>
       <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫</button>
-      <button class="gh-btn" onclick="openPhoneOverlay('home')">📱 手機</button>
-      <button class="gh-btn" onclick="openDiary()">📖 日記</button>
+      <button class="gh-btn" onclick="openPhoneOverlay('home')">手機</button>
+      <button class="gh-btn" onclick="openDiary()">日記</button>
       <button class="gh-btn gh-more-btn" onclick="toggleMoreMenu()" id="gh-more-btn">⋯</button>
     </div>
   </div>
@@ -854,19 +854,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 
 <!-- 更多選單 -->
 <div id="more-menu" style="
-  display:none;position:fixed;top:40px;right:.5rem;
+  display:none;position:fixed;top:40px;right:4px;
   background:var(--bg3);border:1px solid var(--border2);
-  border-radius:.7rem;z-index:200;width:136px;
+  border-radius:.7rem;z-index:200;width:130px;
   box-shadow:0 4px 24px rgba(0,0,0,.7);overflow:hidden;
-  font-size:.76rem;
+  font-size:.74rem;
 ">
-  <button class="more-menu-item" onclick="openTwist();toggleMoreMenu()">✦ 扭轉劇情</button>
-  <button class="more-menu-item" onclick="replayRound();toggleMoreMenu()">↺ 重玩此回合</button>
+  <button class="more-menu-item" onclick="openTwist();toggleMoreMenu()">扭轉劇情</button>
+  <button class="more-menu-item" onclick="replayRound();toggleMoreMenu()">重玩此回合</button>
   <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
-  <button class="more-menu-item" onclick="showSettingsFromGame();toggleMoreMenu()">⚙ 設定</button>
+  <button class="more-menu-item" onclick="showSettingsFromGame();toggleMoreMenu()">設定</button>
   <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
-  <button class="more-menu-item" onclick="exitGame();toggleMoreMenu()">← 退出遊戲</button>
-  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);">⏻ 登出</button>
+  <button class="more-menu-item" onclick="exitGame();toggleMoreMenu()">退出遊戲</button>
+  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);">登出</button>
 </div>
 
 <!-- 扭轉劇情面板 -->
@@ -2474,6 +2474,7 @@ ${(()=>{
 }
 
 每個選項只描述玩家的對話、行動或反應，絕不包含任何括號說明或後果提示。
+選項、narration、event 中禁止使用 emoji，除非是引用訊息或社群媒體內容。
 
 【場景節奏規則】：
 sceneOver 的判斷標準：
@@ -3483,13 +3484,13 @@ async function renderPhonePage(page){
       <div class="home-app-grid">
         <div class="home-app" data-fn="renderPhonePage" data-arg="ins" style="cursor:pointer;">
           <div class="home-app-wrap">
-            <div class="app-ico" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);">📸</div>
+            <div class="app-ico" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);"></div>
           </div>
           <span class="app-lbl">Instagram</span>
         </div>
         <div class="home-app" data-fn="renderPhonePage" data-arg="kakao" style="cursor:pointer;">
           <div class="home-app-wrap">
-            <div class="app-ico" style="background:#fae100;">💬</div>
+            <div class="app-ico" style="background:#fae100;"></div>
             ${(gameState.phoneData.kakao.chats[gameState.bfName]||[]).filter(m=>m.from!=='me').length > 0 ? '<span class="app-badge">New</span>' : ''}
           </div>
           <span class="app-lbl">KakaoTalk</span>
@@ -3557,7 +3558,8 @@ async function renderPhonePage(page){
       +makeAvatar(gameState.playerName||'我',28)
       +'</button>'
       +'</div>'
-      +'<button class="po-close" onclick="closePhone()" style="margin-left:.5rem;">繼續</button>';
+      +'<button class="po-btn" onclick="renderPhonePage(\'home\')" style="padding:.3rem .6rem;">← 返回</button>'
+      +'<button class="po-close" onclick="closePhone()">繼續遊戲</button>';
 
   } else if(page==='ins-bf'){
     const bfForIns = getDisplayBfName();
@@ -3872,37 +3874,52 @@ async function renderPhonePage(page){
       <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
 
   } else if(page==='weverse'){
-    const bfName = getDisplayBfName();
-    const wvPosts = gameState.phoneData.weverse.posts;
-    content.innerHTML = `
-      <div class="phone-app-header">
-        <span class="app-icon">🌟</span><span class="app-name">Weverse</span>
-      </div>
-      <div style="padding:.5rem .8rem;font-size:.68rem;color:#555;border-bottom:1px solid #1a1a24;">
-        ${bfName} 官方社群
-      </div>
-      ${wvPosts.length ? wvPosts.slice(0,3).map(p=>`
-        <div class="weverse-post">
-          <div class="wv-user">
-            <span>${bfName}</span>
-            <span class="wv-badge">藝人</span>
-          </div>
-          <div class="wv-content">${p.content||''}</div>
-          <div class="wv-stats">❤️ ${Math.floor(Math.random()*100000+50000).toLocaleString()}  💬 ${Math.floor(Math.random()*5000+1000).toLocaleString()}</div>
-        </div>`).join('') : `
-        <div class="weverse-post">
-          <div class="wv-user"><span>${bfName||'（尚未追蹤的偶像）'}</span>${bfName?'<span class="wv-badge">藝人</span>':''}</div>
-          <div class="wv-content">${bfName?'오늘도 열심히 💪<br>（今天也很努力～感謝大家的支持）':'還沒有追蹤的對象，劇情推進後會出現動態。'}</div>
-          <div class="wv-stats">❤️ 128,492  💬 4,231</div>
-        </div>
-        <div class="weverse-post">
-          <div class="wv-user"><span style="color:#6060a0;">caratForever</span></div>
-          <div class="wv-content">오빠 오늘 무대 너무 멋있었어요!! 😭❤️</div>
-          <div class="wv-stats">❤️ 2,103</div>
-        </div>`}`;
-    actions.innerHTML = `
-      <button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>
-      <button class="po-close" onclick="closePhone()">繼續遊戲</button>`;
+    const wvName = getDisplayBfName();
+    const wvPosts = gameState.phoneData.weverse.posts||[];
+
+    var wvHeader2 = '<div style="background:#0d0d10;border-bottom:1px solid #1a1a20;padding:.55rem .8rem;display:flex;align-items:center;justify-content:space-between;">'
+      +'<div style="display:flex;gap:1.2rem;">'
+      +'<span style="font-size:.82rem;color:#fff;font-weight:700;border-bottom:2px solid #00d4aa;padding-bottom:.3rem;">Feed</span>'
+      +'<span style="font-size:.82rem;color:#555;">Media</span>'
+      +'<span style="font-size:.82rem;color:#555;">Live</span>'
+      +'</div>'
+      +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
+      +'</div>';
+
+    // 預設貼文（有對象時才顯示）
+    var defaultWv = wvName ? [
+      {author:wvName, role:'artist', content:'오늘도 열심히 했어요 🙏
+（今天也很努力，謝謝大家的支持）', time:'2小時前', likes:128492, comments:4231},
+      {author:'caratForever', role:'fan', content:'오빠 오늘 무대 너무 멋있었어요!! 😭❤️
+（歐巴今天的舞台太帥了！！）', time:'30分鐘前', likes:2103, comments:89}
+    ] : [];
+    var allWv = wvPosts.length ? wvPosts : defaultWv;
+
+    // 無對象且無貼文：只顯示 header
+    if(!allWv.length){
+      content.innerHTML = wvHeader2;
+    } else {
+      var wvCards2 = allWv.map(function(p){
+        var isArtist = p.role==='artist';
+        var aName = p.author||wvName||'';
+        var badge = isArtist ? '<span style="font-size:.58rem;background:#00d4aa;color:#000;padding:.1rem .35rem;border-radius:.2rem;font-weight:700;margin-left:.3rem;">Artist</span>' : '';
+        return '<div style="padding:.7rem .8rem;border-bottom:1px solid #111;">'
+          +'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem;">'
+          +makeAvatar(aName, 36)
+          +'<div><div style="display:flex;align-items:center;font-size:.8rem;color:#eee;font-weight:600;">'+aName+badge+'</div>'
+          +'<div style="font-size:.62rem;color:#555;">'+(p.time||'')+'</div></div>'
+          +'</div>'
+          +'<div style="font-size:.8rem;color:#d0d0d0;line-height:1.65;white-space:pre-line;word-break:break-word;">'+(p.content||'')+'</div>'
+          +'<div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.72rem;color:#666;">'
+          +'<span>🤍 '+(p.likes||0).toLocaleString()+'</span>'
+          +'<span>💬 '+(p.comments||0).toLocaleString()+'</span>'
+          +'<span style="margin-left:auto;">공유</span>'
+          +'</div></div>';
+      }).join('');
+      content.innerHTML = wvHeader2 + wvCards2;
+    }
+    actions.innerHTML = '<button class="po-btn" onclick="renderPhonePage('home')">← 返回</button>'
+      +'<button class="po-close" onclick="closePhone()">繼續遊戲</button>';
 
   } else if(page==='youtube'){
     const ytName = getDisplayBfName();
@@ -4798,6 +4815,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r72</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r75</div>
 </body>
 </html>
