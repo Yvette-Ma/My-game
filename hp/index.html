@@ -832,6 +832,19 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'EB Gar
   </div>
 </div>
 
+<!-- ════ 角色確認 ════ -->
+<div id="screen-profile" class="screen" style="background:var(--bg2);align-items:center;justify-content:flex-start;padding:1.5rem 1rem 2rem;overflow-y:auto;">
+  <div style="width:100%;max-width:540px;margin:0 auto;">
+    <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);letter-spacing:.1em;margin-bottom:.25rem;">確認你的巫師檔案</div>
+    <p style="font-size:.82rem;color:var(--text3);margin-bottom:1.5rem;font-style:italic;">確認以下設定無誤後，即可踏入魔法世界。</p>
+    <div id="profile-confirm-body" style="display:flex;flex-direction:column;gap:.7rem;"></div>
+    <div style="display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.8rem;">
+      <button class="btn" onclick="showScreen('screen-settings')">← 返回修改</button>
+      <button class="btn btn-primary" onclick="confirmProfileAndStart()">踏入魔法世界 ✦</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════ GAME ════ -->
 <div id="screen-game" class="screen">
   <div class="game-header">
@@ -1399,7 +1412,57 @@ window.finishCasting=function(){
   if(mainCard) gameState.bfName=mainCard.dataset.name;
   if(sideCards.length&&!gameState.sideChars) gameState.sideChars=sideCards.map(c=>c.dataset.name).join('、');
   gameState.castMode=castMode;
-  showScreen('screen-game');startGame();
+  showProfileConfirm();
+};
+
+function showProfileConfirm(){
+  const body=document.getElementById('profile-confirm-body');
+  if(!body)return;
+
+  function row(label,value,highlight){
+    if(!value) return '';
+    return`<div style="display:flex;gap:.8rem;padding:.55rem .9rem;background:var(--bg3);border-radius:.25rem;border:1px solid var(--border);">
+      <div style="font-family:'Cinzel',serif;font-size:.76rem;color:var(--text3);letter-spacing:.06em;min-width:90px;flex-shrink:0;padding-top:.05rem;">${label}</div>
+      <div style="font-size:.9rem;color:${highlight?'var(--gold2)':'var(--text)'};line-height:1.5;">${value}</div>
+    </div>`;
+  }
+  function section(title){
+    return`<div style="font-family:'Cinzel',serif;font-size:.72rem;color:var(--gold3);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;padding-bottom:.2rem;border-bottom:1px solid var(--border);opacity:.8;">${title}</div>`;
+  }
+
+  const g=gameState;
+  const appearance=[g.appBody,g.appHair,g.appFace,g.appVibe].filter(Boolean).join('　');
+
+  body.innerHTML=[
+    section('基本資料'),
+    row('姓名',g.playerName,true),
+    row('年齡',g.playerAge?g.playerAge+'歲':''),
+    row('血統',g.playerBlood),
+    row('學院',g.playerHouse),
+    row('外貌',appearance),
+    row('才能',g.talents),
+    row('個性',g.traits),
+    row('背景',g.background),
+
+    section('故事設定'),
+    row('時代',g.playerEra,true),
+    row('陣營',g.playerFaction),
+    row('主線',g.plotType,true),
+    row('故事起點',g.storyStart),
+    row('既往設定',g.backstory),
+
+    section('重要角色'),
+    row('核心角色',g.castMode==='auto'?'由劇情自然安排':(g.bfName||'未指定'),true),
+    row('重點配角',g.sideChars),
+    row('角色偏好',g.bfCondition),
+  ].filter(Boolean).join('');
+
+  showScreen('screen-profile');
+}
+
+window.confirmProfileAndStart=function(){
+  showScreen('screen-game');
+  startGame();
 };
 
 // ── 遊戲初始化 ──
@@ -1481,8 +1544,9 @@ ${plotDesc}
 主線設定：${gameState.plotType}
 
 【玩家資料】
+⚠️ 以下資料為玩家明確設定，絕對不可更改或忽略：
 - 姓名：${gameState.playerName}
-- 年齡：${gameState.playerAge}歲
+- 年齡：【${gameState.playerAge}歲】——嚴格依此年齡決定霍格華茲年級、人生經歷、言行舉止
 - 血統：${gameState.playerBlood}
 - 學院：${gameState.playerHouse||'未指定'}
 - 陣營：${gameState.playerFaction}
@@ -1492,6 +1556,17 @@ ${plotDesc}
 - 背景：${gameState.background||'無'}
 - 故事起點：${gameState.storyStart}
 - 既往設定：${gameState.backstory||'無'}
+
+【年齡對應年級規則】
+- 11歲：一年級新生
+- 12歲：二年級
+- 13歲：三年級（可選修占卜術、馬法生物照護）
+- 14歲：四年級
+- 15歲：五年級（備考OWL）
+- 16歲：六年級（備考NEWT）
+- 17歲：七年級（備考NEWT）
+- 18歲以上：非在校學生（畢業巫師、成人）
+嚴格按此對應，不可讓${gameState.playerAge}歲的玩家出現不符年齡的設定。
 - 選角模式：${gameState.castMode==='auto'?'命運自然流動（不預設主要角色）':'指定核心角色'}
 - 主要對象：${gameState.castMode==='auto'?'未指定，由劇情自然安排':(gameState.bfName||'未指定')}
 - 候選人池：${gameState.targetCandidates?.join('、')||'未指定'}
@@ -2975,6 +3050,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v2.9</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v3.0</div>
 </body>
 </html>
