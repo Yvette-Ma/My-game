@@ -853,20 +853,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 <div class="ending-aura aura-unknown" id="ending-aura"></div>
 
 <!-- 更多選單 -->
-<div id="more-menu" style="
-  display:none;position:fixed;top:40px;right:4px;
-  background:var(--bg3);border:1px solid var(--border2);
-  border-radius:.7rem;z-index:200;width:120px;
-  box-shadow:0 4px 24px rgba(0,0,0,.7);overflow:hidden;
-  font-size:.74rem;
-">
+<div id="more-menu" style="display:none;position:fixed;top:40px;right:4px;background:var(--bg3);border:1px solid var(--border2);border-radius:.7rem;z-index:200;width:140px;box-shadow:0 4px 24px rgba(0,0,0,.7);overflow:hidden;">
   <button class="more-menu-item" onclick="openTwist();toggleMoreMenu()">扭轉劇情</button>
   <button class="more-menu-item" onclick="replayRound();toggleMoreMenu()">重玩此回合</button>
-  <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
+  <div style="height:1px;background:var(--border);"></div>
   <button class="more-menu-item" onclick="showSettingsFromGame();toggleMoreMenu()">設定</button>
-  <div style="height:1px;background:var(--border);margin:.2rem 0;"></div>
+  <div style="height:1px;background:var(--border);"></div>
   <button class="more-menu-item" onclick="exitGame();toggleMoreMenu()">退出遊戲</button>
-  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);border-top:1px solid var(--border);">登出帳號</button>
+  <div style="height:1px;background:var(--border);"></div>
+  <button class="more-menu-item" onclick="signOutUser();toggleMoreMenu()" style="color:var(--rose2);">登出帳號</button>
 </div>
 
 <!-- 扭轉劇情面板 -->
@@ -4822,6 +4817,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r79</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r80</div>
 </body>
 </html>
