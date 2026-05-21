@@ -2071,15 +2071,10 @@ window.toggleOptions = function(){
   var col = document.getElementById('opts-collapsible');
   var btn = document.getElementById('opts-toggle');
   if(!col || !btn) return;
-  if(col.style.display === 'none'){
-    col.style.display = '';
-    btn.textContent = '收合 ▾';
-    btn.style.color = 'var(--text3)';
-  } else {
-    col.style.display = 'none';
-    btn.textContent = '展開 ▴';
-    btn.style.color = 'var(--text2)';
-    // 收合時自動滾動到最新劇情
+  var isHidden = col.style.display === 'none';
+  col.style.display = isHidden ? '' : 'none';
+  btn.textContent = isHidden ? '收合' : '展開';
+  if(!isHidden){
     var panel = document.getElementById('story-panel');
     if(panel) panel.scrollTop = panel.scrollHeight;
   }
@@ -3495,13 +3490,13 @@ async function renderPhonePage(page){
       <div class="home-app-grid">
         <div class="home-app" data-fn="renderPhonePage" data-arg="ins" style="cursor:pointer;">
           <div class="home-app-wrap">
-            <div class="app-ico" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);"></div>
+            <div class="app-ico" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg></div>
           </div>
           <span class="app-lbl">Instagram</span>
         </div>
         <div class="home-app" data-fn="renderPhonePage" data-arg="kakao" style="cursor:pointer;">
           <div class="home-app-wrap">
-            <div class="app-ico" style="background:#fae100;"></div>
+            <div class="app-ico" style="background:#fae100;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#3c1e1e" d="M12 3C6.48 3 2 6.48 2 10.8c0 2.7 1.6 5.1 4 6.6l-1 3.6 4.2-2.8c.9.2 1.8.3 2.8.3 5.52 0 10-3.48 10-7.8S17.52 3 12 3z"/></svg></div>
             ${(gameState.phoneData.kakao.chats[gameState.bfName]||[]).filter(m=>m.from!=='me').length > 0 ? '<span class="app-badge">New</span>' : ''}
           </div>
           <span class="app-lbl">KakaoTalk</span>
@@ -3757,6 +3752,7 @@ async function renderPhonePage(page){
       +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>'
       +'<span style="font-size:.58rem;color:rgba(255,255,255,.3);">返回</span></button>'
       +'</div>'
+      +'<button class="po-btn" onclick="renderPhonePage(\'home\')" style="margin-right:.3rem;">← 返回</button>'
       +'<button class="po-close" onclick="closePhone()">繼續遊戲</button>';
 
   } else if(page==='kakao-bf'){
@@ -4833,6 +4829,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r84</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r86</div>
 </body>
 </html>
