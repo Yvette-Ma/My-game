@@ -2269,6 +2269,8 @@ function updateHeader(){
     const hasUnread = (gameState.phoneData?.notifs || []).some(n => !n.read);
     phoneBadge.style.display = hasUnread ? '' : 'none';
   }
+  // 男友狀態
+  const bfStatusEl = document.getElementById('gh-bf-status');
   if(bfStatusEl){
     const bfName = gameState.bfName || (gameState.bfCandidates&&gameState.bfCandidates[0]) || '';
     const cond = gameState.bfCondition || '';
@@ -2663,6 +2665,7 @@ ${(()=>{
     {"label":"B","text":"選項"},
     {"label":"C","text":"選項"}
   ],
+  ⚠️ options 為必填，每回合必須回傳 A/B/C 三個選項，不可省略或回傳空陣列
   "affectionDelta": 數字（-10到+10，本回合好感度變化，不顯示給玩家）,
   "moodUpdate": "玩家情緒（happy/normal/anxious/sad/angry）",
   "stateUpdate": {"flag名稱": true或false},
@@ -3141,6 +3144,15 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
         && o.label !== '📱' && o.label !== 'D' && o.text !== '自定義（玩家自行輸入）';
   });
 
+  // AI 未回傳選項時給預設 fallback，避免選項區空白
+  if(opts.length === 0){
+    opts = [
+      {label:'A', text:'繼續觀察，靜靜感受當下的氣氛'},
+      {label:'B', text:'採取主動，做些什麼改變現狀'},
+      {label:'C', text:'先退一步，整理一下自己的思緒'},
+    ];
+  }
+
   // 有新通知時更新 header 角標（不加入選項列）
   updateHeader();
 
@@ -3220,6 +3232,7 @@ function renderOptions(opts){
   const panel = document.getElementById('options-panel');
   grid.innerHTML = '';
   panel.classList.remove('disabled');
+  expandOptionsPanel(); // 確保每次渲染選項時面板都是展開狀態
   gameState.lastRenderedOptions = opts; // 記錄供 continueGame 恢復用
 
   const tagShort = {
@@ -5141,6 +5154,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r116</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r119</div>
 </body>
 </html>
