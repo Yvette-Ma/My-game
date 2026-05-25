@@ -1601,6 +1601,13 @@ function buildSystemPrompt(){
     '成長':'這是一個以蛻變為核心的故事。AI 聚焦在挑戰、自我發現、人際關係的演變，人際張力不必然走向戀愛。'
   };
   const plotDesc=Object.entries(plotTypeDesc).find(([k])=>gameState.plotType?.includes(k))?.[1]||'這是一個玩家自定義的魔法世界故事，AI 根據玩家的選擇與行動自由推進，不預設任何特定的主線方向。';
+  const houseTendency=gameState.playerHouse?(
+    gameState.playerHouse.includes('葛來分多')?'勇敢、衝動、正義感強、重視榮譽，傾向直接面對衝突':
+    gameState.playerHouse.includes('史萊哲林')?'野心、謀略、重視血統與地位，善用人際關係達成目標':
+    gameState.playerHouse.includes('雷文克勞')?'智識、好奇、重視學術與邏輯，傾向分析後再行動':
+    gameState.playerHouse.includes('赫夫帕夫')?'忠誠、勤勉、公正、包容，重視團隊與情誼':
+    '無特定學院性格傾向'
+  ):'';
   return `你是哈利波特魔法世界的沉浸式文字RPG遊戲主持人（GM）。
 
 【時代背景】
@@ -1622,14 +1629,7 @@ ${plotDesc}
 - 姓名：${gameState.playerName}
 - 年齡：【${gameState.playerAge}歲】——嚴格依此年齡決定霍格華茲年級、人生經歷、言行舉止
 - 血統：${gameState.playerBlood}
-- 學院：${gameState.playerHouse||'未指定'}${gameState.playerHouse?`
-  學院性格傾向：${
-    gameState.playerHouse.includes('葛來分多')?'勇敢、衝動、正義感強、重視榮譽，傾向直接面對衝突':
-    gameState.playerHouse.includes('史萊哲林')?'野心、謀略、重視血統與地位，善用人際關係達成目標':
-    gameState.playerHouse.includes('雷文克勞')?'智識、好奇、重視學術與邏輯，傾向分析後再行動':
-    gameState.playerHouse.includes('赫夫帕夫')?'忠誠、勤勉、公正、包容，重視團隊與情誼':
-    '無特定學院性格傾向'
-  }（此為傾向參考，玩家可有自己的個性，不需強制套用）`:''}`
+- 學院：${gameState.playerHouse||'未指定'}${houseTendency?'\n  學院性格傾向：'+houseTendency+'（此為傾向參考，玩家可有自己的個性，不需強制套用）':''}
 - 陣營：${gameState.playerFaction||'未指定'}
 - 外貌：${gameState.appBody||''}${gameState.appHair?'；'+gameState.appHair:''}${gameState.appFace?'；'+gameState.appFace:''}${gameState.appVibe?'；'+gameState.appVibe:''}
 - 魔法才能：${gameState.talents||'未特別指定'}
@@ -1697,16 +1697,8 @@ ${gameState.storySummaries.map(s=>`第${s.roundStart}—${s.roundEnd}回合：${
 - 結局走向：${gameState.endingPath||'未定'}
 - 固定NPC：${Object.keys(gameState.npcs||{}).join('、')||'尚未建立'}
 - 重點配角（必須在劇情中自然出現）：${gameState.sideChars||'無'}
-- NPC關係網絡提示（原著設定，使用時保持一致）：
-  ${gameState.playerEra?.includes('哈利')||gameState.playerEra?.includes('第二次')?`
-  · 石內卜：認識盧平（同屆同學）、認識詹姆波特（宿敵）、暗中效忠鄧不利多
-  · 馬份家族：父親路修斯是食死人、與葛來分多有世代宿怨
-  · 韋斯萊家族：純血但非食死人、與魔法部有聯繫（亞瑟在麻瓜文物部門）
-  · 盧平：狼人身份秘密、與小天狼星布萊克是舊友`:''}
-  ${gameState.playerEra?.includes('第一次')?`
-  · 莉莉與詹姆波特：年輕的抵抗成員、鳳凰會核心
-  · 小天狼星布萊克：詹姆的密友、飛行員執照持有者`:''}
-  以上為AI在安排NPC互動時的參考，不需要在每回合都提及`
+- NPC關係網絡提示（原著設定，使用時保持一致）：${gameState.playerEra?.includes('哈利')||gameState.playerEra?.includes('第二次')?'\n  · 石內卜：認識盧平（同屆同學）、認識詹姆波特（宿敵）、暗中效忠鄧不利多\n  · 馬份家族：父親路修斯是食死人、與葛來分多有世代宿怨\n  · 韋斯萊家族：純血但非食死人、與魔法部有聯繫（亞瑟在麻瓜文物部門）\n  · 盧平：狼人身份秘密、與小天狼星布萊克是舊友':''}${gameState.playerEra?.includes('第一次')?'\n  · 莉莉與詹姆波特：年輕的抵抗成員、鳳凰會核心\n  · 小天狼星布萊克：詹姆的密友、飛行員執照持有者':''}
+  以上為AI在安排NPC互動時的參考，不需要在每回合都提及
 
 【主要對象性格檔案】（嚴格遵守，不可OOC）
 ${gameState.targetProfile?`
