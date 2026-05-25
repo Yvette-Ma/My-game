@@ -2655,7 +2655,7 @@ ${(()=>{
   "time": "具體時間（如：2025年3月15日 週六 下午3:22）",
   "notifications": [{"app":"應用名","content":"推送內容"}],
   "narration": "場景敘述（emoji+細膩描寫，150字內）",
-  "event": "本回合事件（150字內）",
+  "event": "本回合事件（NPC言行、環境變化、外部事件，150字內；禁止描寫玩家的主動言行——玩家行動由選項決定）",
   "sceneOver": true或false（本次交流後這個場景是否自然告一段落，告一段落才推進新回合）,
   "sceneResponse": "對玩家行動/對話的即時回應（1-4句，純對話/場景延續，不開啟新情節）",
   "options": [
@@ -2804,6 +2804,9 @@ ${meetingHint}
 場景細節要求：
 - narration：純粹的場景描寫，只有感官細節（時間/地點/氛圍/聲音/氣味），不包含任何對話或事件（100字內）
 - event：本回合發生的事件和對話，從narration結束的地方接續，不重複narration的場景描寫（150字內）
+  ⚠️【event 邊界規則】event 只能描寫「世界發生了什麼」與「NPC 的言行」，絕對不可描寫「玩家主動說了什麼」或「玩家採取了什麼行動」。玩家的行動必須保留給選項讓玩家自己決定。
+  ✗ 錯誤範例：「${gameState.playerName||'玩家'} 鼓起勇氣問道：『……』」（玩家的主動行為）
+  ✓ 正確範例：「${gameState.bfName||'他'} 的眼神一亮，似乎注意到玩家的好奇，停頓了一下，等待她的回應。」（NPC 行為 + 留白給玩家）
 - 選項：貼近玩家當下情境，有日常感
 
 【特別注意】若劇情起點是「初次相遇」或「曖昧期」，絕對不能一開始就把玩家當成跟蹤者或非法接觸者——兩人的關係必須從一開始就是合理、正當的接觸，哪怕只是遠遠看見。
@@ -5138,6 +5141,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r115</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r116</div>
 </body>
 </html>
