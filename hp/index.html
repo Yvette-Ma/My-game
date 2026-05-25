@@ -1839,6 +1839,7 @@ notifications 中的 app 欄位使用魔法世界的媒介：
     {"label":"B","text":"選項"},
     {"label":"C","text":"選項"}
   ],
+  // ⚠️ options 為必填，每回合必須回傳 A/B/C 三個選項，不可省略或回傳空陣列
   "affectionDelta": 數字（-10到+10，依以下標準給值：
     +8~+10：極重要的信任時刻（分享最深的秘密、在危機中捨命保護）
     +4~+7：明確的正面互動（主動幫助、坦誠表達、成功合作）
@@ -2134,6 +2135,14 @@ function processAIResponse(raw,isFirst=false,retryCount=0){
   const hasOwlLetter=!!(data.owlLetter&&data.owlLetter.from&&data.owlLetter.content);
   opts=opts.filter(o=>o.label!=='📜'); // 先移除 AI 回傳的（可能條件不對）
   if(hasOwlLetter) opts.push({label:'📜',text:'查看來信'});
+  // AI 未回傳選項時給預設 fallback，避免選項區空白
+  if(opts.length===0){
+    opts=[
+      {label:'A',text:'靜靜觀察，感受周遭的魔法氛圍'},
+      {label:'B',text:'主動採取行動，改變當下局面'},
+      {label:'C',text:'退一步，在心中整理思緒與應對'},
+    ];
+  }
   // 3. 統一補入自定義選項（永遠最後一個）
   opts.push({label:'D',text:'自定義（玩家自行輸入）'});
   renderOptions(opts);
@@ -3617,6 +3626,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v4.8</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v5.0</div>
 </body>
 </html>
