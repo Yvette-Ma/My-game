@@ -238,8 +238,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   background:var(--card);border-color:var(--border2);
   color:var(--text);transform:translateX(3px);
 }
-.opt-btn.phone-opt{border-color:rgba(120,168,224,.3);}
-.opt-btn.phone-opt:hover{background:var(--card);border-color:var(--border2);}
+
 .opt-label{
   font-size:.7rem;color:var(--text3);min-width:1.2rem;
   font-family:'Playfair Display',serif;font-style:italic;margin-top:.05rem;
@@ -841,7 +840,7 @@ body.mood-married .story-msg.event-box{border-left-color:#5050a0;}
     <div class="gh-right">
       <span class="save-indicator" id="save-indicator">已同步</span>
       <button class="gh-btn" onclick="initiateContact()" id="btn-contact" style="display:none;">聯繫</button>
-      <button class="gh-btn" onclick="openPhoneOverlay('home')">手機</button>
+      <button class="gh-btn" id="btn-phone" onclick="openPhoneOverlay('home')" style="position:relative;">手機<span id="phone-badge" style="display:none;position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--rose);pointer-events:none;"></span></button>
       <button class="gh-btn" onclick="openDiary()">日記</button>
       <div class="gh-more-wrap" id="gh-more-wrap">
         <button class="gh-btn gh-more-btn" onclick="toggleMoreMenu()" id="gh-more-btn">⋯</button>
@@ -1526,7 +1525,6 @@ window.continueGame = async function(){
       // 無上次選項：給預設選項，不自動推進
       renderOptions([
         {label:'A', text:'繼續故事'},
-        {label:'📱', text:'查看手機'},
         {label:'D', text:'自定義（玩家自行輸入）'}
       ]);
     }
@@ -2265,8 +2263,12 @@ function updateHeader(){
     if(affWrap) affWrap.style.display = 'none';
   }
 
-  // 男友狀態
-  const bfStatusEl = document.getElementById('gh-bf-status');
+  // 手機通知角標
+  const phoneBadge = document.getElementById('phone-badge');
+  if(phoneBadge){
+    const hasUnread = (gameState.phoneData?.notifs || []).some(n => !n.read);
+    phoneBadge.style.display = hasUnread ? '' : 'none';
+  }
   if(bfStatusEl){
     const bfName = gameState.bfName || (gameState.bfCandidates&&gameState.bfCandidates[0]) || '';
     const cond = gameState.bfCondition || '';
@@ -2657,9 +2659,7 @@ ${(()=>{
   "options": [
     {"label":"A","text":"選項（只含玩家行動/對話）"},
     {"label":"B","text":"選項"},
-    {"label":"C","text":"選項"},
-    {"label":"📱","text":"查看手機"},
-    {"label":"D","text":"自定義（玩家自行輸入）"}
+    {"label":"C","text":"選項"}
   ],
   "affectionDelta": 數字（-10到+10，本回合好感度變化，不顯示給玩家）,
   "moodUpdate": "玩家情緒（happy/normal/anxious/sad/angry）",
@@ -2671,7 +2671,7 @@ ${(()=>{
   "relationStatus": "當前關係狀態描述",
   "bfProfileUpdate": {"speechStyle":"","habits":"","quirks":"","stressResponse":"","loveReason":""},
   "playerMemoryAdd": "本回合玩家透露的值得記住的細節（字串，無則null）",
-  "optionTags": ["A的標籤","B的標籤","C的標籤","📱","D"],
+  "optionTags": ["A的標籤","B的標籤","C的標籤","D的標籤"],
   "playerStoryUpdate": {"goal":"","currentChallenge":""},
   "beWarningUpdate": 數字或null,
   "playerInsProfile": {"handle":"IG帳號名（英文小寫，符合人設）","bio":"IG簡介（1-2行，符合真實IG風格，用emoji，符合玩家身份但不暴露秘密）","isPrivate":true或false},
@@ -2894,7 +2894,6 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
       renderOptions([
         {label:'A', text:'繼續'},
         {label:'B', text:'換個話題'},
-        {label:'📱', text:'查看手機'},
         {label:'D', text:'自定義（玩家自行輸入）'}
       ]);
     } else {
@@ -3136,11 +3135,8 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
         && o.label !== '📱' && o.label !== 'D' && o.text !== '自定義（玩家自行輸入）';
   });
 
-  // 有未讀通知或 AI 標記主動訊息時，才加手機選項
-  const hasNewNotif = (gameState.phoneData.notifs || []).some(n => !n.read);
-  if(hasNewNotif || data.bfProactive){
-    opts.push({label:'📱', text:'查看手機'});
-  }
+  // 有新通知時更新 header 角標（不加入選項列）
+  updateHeader();
 
   // 固定補上自定義輸入
   opts.push({label:'D', text:'自定義（玩家自行輸入）'});
@@ -3235,12 +3231,6 @@ function renderOptions(opts){
         <button class="custom-send" onclick="submitCustom()">送出</button>
       `;
       grid.appendChild(row);
-    } else if(opt.text==='查看手機' || opt.label==='📱'){
-      const btn = document.createElement('button');
-      btn.className = 'opt-btn phone-opt';
-      btn.innerHTML = `<span class="opt-label">📱</span><span class="opt-text">查看手機</span>`;
-      btn.onclick = ()=>openPhoneOverlay('home');
-      grid.appendChild(btn);
     } else if(opt.text === '回設定頁（更換 API Key 或模型）'){
       const btn = document.createElement('button');
       btn.className = 'opt-btn';
@@ -3439,7 +3429,7 @@ async function handlePlayerAction(playerChoice){
       const baseOpts = filteredParsed.length >= 2
         ? filteredParsed
         : [{label:'A', text:'繼續'}, {label:'B', text:'換個話題'}];
-      const opts = [...baseOpts, {label:'📱', text:'查看手機'}, {label:'D', text:'自定義（玩家自行輸入）'}];
+      const opts = [...baseOpts, {label:'D', text:'自定義（玩家自行輸入）'}];
       renderOptions(opts);
     }
 
@@ -5139,6 +5129,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r112</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r113</div>
 </body>
 </html>
