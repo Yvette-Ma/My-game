@@ -1303,27 +1303,29 @@ ${excludeNote}
       card.onclick = (e)=>{
         if(card._longPressed){ card._longPressed=false; return; }
         if(castMode === 'pick'){
-          if(card.dataset.role === '') card.dataset.role = 'main';
+          if(card.dataset.role === '' || card.dataset.role === 'side') card.dataset.role = 'main';
           else if(card.dataset.role === 'main') card.dataset.role = '';
-          // side狀態需長按取消
         } else {
-          // auto模式：點選提示只能長按設配角
-          if(card.dataset.role === '' || card.dataset.role === 'main'){
-            // 不做任何事，提示用
-          }
+          // auto模式：點選切換重點配角
+          if(card.dataset.role === 'side') card.dataset.role = '';
+          else if(card.dataset.role === '') card.dataset.role = 'side';
+          // 'main' 狀態在 auto 模式下不應存在，但若切模式時殘留就清掉
+          else if(card.dataset.role === 'main') card.dataset.role = '';
         }
         updateCardStyle();
       };
 
-      // 長按：設為/取消重點配角
+      // 長按：pick模式→切配角/取消；auto模式與點選同效
       let pressTimer;
       card.addEventListener('pointerdown', ()=>{
         pressTimer = setTimeout(()=>{
           card._longPressed = true;
-          if(card.dataset.role === 'side'){
-            card.dataset.role = '';
-          } else if(card.dataset.role === ''){
-            card.dataset.role = 'side';
+          if(castMode === 'pick'){
+            if(card.dataset.role === 'side') card.dataset.role = '';
+            else card.dataset.role = 'side';
+          } else {
+            if(card.dataset.role === 'side') card.dataset.role = '';
+            else card.dataset.role = 'side';
           }
           updateCardStyle();
         }, 500);
@@ -2088,14 +2090,14 @@ window.setCastMode = function(mode){
   document.getElementById('cast-mode-pick').classList.toggle('selected', mode==='pick');
   const hint = document.getElementById('cast-hint');
   if(mode==='auto'){
-    hint.textContent = '所有人都可能與你發生故事，由劇情自然決定走向。長按任一人設為重點配角（固定出現）。';
+    hint.textContent = '點選任一人設為重點配角（固定出現）｜再次點選取消';
     // 清除所有候選人標記，保留配角
     document.querySelectorAll('#casting-list [data-role="main"]').forEach(el=>{
       el.dataset.role = '';
       el._updateStyle && el._updateStyle();
     });
   } else {
-    hint.textContent = '點選 = 候選人（優先感情線）｜長按 = 重點配角｜再次點選 = 取消';
+    hint.textContent = '點選 = 候選人（優先感情線）｜長按 = 重點配角｜再次點選切換/取消';
   }
 };
 
@@ -5126,6 +5128,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r107</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r108</div>
 </body>
 </html>
