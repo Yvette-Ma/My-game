@@ -2180,18 +2180,18 @@ function renderOptions(opts){
       btn.onclick=()=>{document.getElementById('story-panel').innerHTML='';gameState.history=[];gameState.round=1;updateHeader();startGame();};grid.appendChild(btn);
     } else {
       const btn=document.createElement('button');btn.className='opt-btn';
-      // 情感/立場標籤 → 轉換為 icon
-      const tagIcons={
-        '冒險/衝動':'⚡','謹慎/觀察':'👁','溫和/體貼':'🤝','強硬/對抗':'⚔️',
-        '逃避/退縮':'↩','誠實/坦率':'💬','欺騙/隱瞞':'🎭','學術/分析':'📚',
-        '情感/感性':'💛','務實/社交':'🌐','獨立/學術':'📖','危險/激進':'🔥',
-        '觀察':'👁','行動':'⚡','對話':'💬','探索':'🗺️',
-        '魔法/施咒':'✨','危機/逃脫':'🌑','忠誠/守護':'🛡️',
-        '知識/調查':'📚','信任/坦誠':'💫','退讓/妥協':'🕊️','探索/冒險':'🗺️',
+      // 情感/立場標籤 → 顯示為淡色小字（取標籤第一個關鍵詞）
+      const tagShort={
+        '冒險/衝動':'衝動','謹慎/觀察':'謹慎','溫和/體貼':'體貼','強硬/對抗':'對抗',
+        '逃避/退縮':'退縮','誠實/坦率':'坦率','欺騙/隱瞞':'欺騙','學術/分析':'分析',
+        '情感/感性':'感性','務實/社交':'社交','獨立/學術':'學術','危險/激進':'激進',
+        '觀察':'觀察','行動':'行動','對話':'對話','探索':'探索',
+        '魔法/施咒':'施咒','危機/逃脫':'逃脫','忠誠/守護':'守護',
+        '知識/調查':'調查','信任/坦誠':'坦誠','退讓/妥協':'妥協','探索/冒險':'冒險',
       };
       const tag=gameState.pendingOptionTags?.[Array.from(grid.children).length];
-      const tagIcon=tag?Object.entries(tagIcons).find(([k])=>tag.includes(k))?.[1]||'':'';
-      btn.innerHTML=`<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>${tagIcon?`<span style="font-size:.85rem;flex-shrink:0;opacity:.55;margin-left:.3rem;">${tagIcon}</span>`:''}`;
+      const tagLabel=tag?Object.entries(tagShort).find(([k])=>tag.includes(k))?.[1]||'':'';
+      btn.innerHTML=`<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>${tagLabel?`<span style="font-size:.72rem;flex-shrink:0;opacity:.38;margin-left:.5rem;letter-spacing:.04em;font-family:'Cinzel',serif;color:var(--text3);">${tagLabel}</span>`:''}`;
       btn.onclick=()=>chooseOption(opt.text,btn);grid.appendChild(btn);
     }
   });
@@ -3611,6 +3611,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v4.7</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v4.8</div>
 </body>
 </html>
