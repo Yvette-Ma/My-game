@@ -2568,6 +2568,8 @@ ${(()=>{
 這是一個強調真實感與代入感的沉浸式戀愛養成遊戲。
 請把自己當成一位優秀的言情小說作家，而不是遊戲GM。
 
+【語言規則】所有敘事文字、對話、選項一律使用繁體中文；嚴禁在選項或敘事中夾雜英文單字（包括情緒詞如 overwhelmed、confused 等）；若有特定文化用語難以中譯，首次出現時須附中文說明。
+
 【人物塑造】
 - 玩家角色是一個有完整生活的真實人物：有工作壓力、朋友煩惱、家庭牽掛、個人夢想
 - 男友不是完美偶像，而是一個有缺陷、有壓力、有自己人生困境的真實人
@@ -2712,6 +2714,7 @@ sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，
 選項格式要求：
 - 必須包含具體動詞＋對象（錯誤：「離開」；正確：「轉身離開錄音室，不再解釋」）
 - 字數 15-30 字，直接描述玩家的行動或台詞
+- 選項文字必須全部使用繁體中文，嚴禁出現任何英文單字（包括 overwhelmed、confused、shocked 等情緒詞）；若概念難以翻譯，請用中文近義詞替代（如：不知所措、困惑、震驚）
 - 每個選項的情感方向不同（主動/迴避/對抗/妥協/試探）
 
 若本回合有新的手機通知或訊息，在 bfProactive 填入男友傳來的訊息文字（字串），程式會自動加入查看手機按鈕，【不要】在 options 裡加入手機選項
@@ -3216,9 +3219,13 @@ function renderOptions(opts){
   panel.classList.remove('disabled');
   gameState.lastRenderedOptions = opts; // 記錄供 continueGame 恢復用
 
-  const TAG_ICONS = {
-    'active':'⚡','passive':'👁','emotional':'💬','rational':'◈','conflict':'⚔','compromise':'◎',
-    '信任/坦誠':'💫','退讓/妥協':'🕊️'
+  const tagShort = {
+    'active':'衝動','passive':'謹慎','emotional':'感性','rational':'理性','conflict':'對抗','compromise':'妥協',
+    '冒險/衝動':'衝動','謹慎/觀察':'謹慎','溫和/體貼':'體貼','強硬/對抗':'對抗',
+    '逃避/退縮':'退縮','誠實/坦率':'坦率','欺騙/隱瞞':'欺騙','學術/分析':'分析',
+    '情感/感性':'感性','務實/社交':'社交','獨立/學術':'學術','危險/激進':'激進',
+    '觀察':'觀察','行動':'行動','對話':'對話','探索':'探索',
+    '信任/坦誠':'坦誠','退讓/妥協':'妥協','探索/冒險':'冒險',
   };
 
   opts.forEach(opt=>{
@@ -3252,7 +3259,9 @@ function renderOptions(opts){
     } else {
       const btn = document.createElement('button');
       btn.className = 'opt-btn';
-      btn.innerHTML = `<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>`;
+      const tag = gameState.pendingOptionTags?.[grid.children.length];
+      const tagLabel = tag ? (Object.entries(tagShort).find(([k]) => tag.includes(k))?.[1] || '') : '';
+      btn.innerHTML = `<span class="opt-label">${escapeHtml(opt.label)}</span><span class="opt-text">${escapeHtml(opt.text)}</span>${tagLabel ? `<span style="font-size:.72rem;flex-shrink:0;opacity:.38;margin-left:.5rem;letter-spacing:.04em;font-family:'Noto Sans TC',sans-serif;color:var(--text3);">${tagLabel}</span>` : ''}`;
       btn.onclick = ()=>chooseOption(opt.text, btn);
       grid.appendChild(btn);
     }
@@ -5129,6 +5138,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r113</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r115</div>
 </body>
 </html>
