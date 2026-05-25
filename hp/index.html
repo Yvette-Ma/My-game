@@ -1836,9 +1836,7 @@ notifications 中的 app 欄位使用魔法世界的媒介：
   "options": [
     {"label":"A","text":"選項"},
     {"label":"B","text":"選項"},
-    {"label":"C","text":"選項"},
-    {"label":"📜","text":"查看來信（只有本回合有owlLetter時才加入此選項）"},
-    {"label":"D","text":"自定義（玩家自行輸入）"}
+    {"label":"C","text":"選項"}
   ],
   "affectionDelta": 數字（-10到+10，依以下標準給值：
     +8~+10：極重要的信任時刻（分享最深的秘密、在危機中捨命保護）
@@ -1864,7 +1862,7 @@ notifications 中的 app 欄位使用魔法世界的媒介：
   "relationStatus": "當前關係狀態描述",
   "targetProfileUpdate": {"speechStyle":"","habits":"","quirks":"","stressResponse":"","bondReason":"與玩家產生連結的核心原因（依主線可能是信任、恐懼、欽佩、利益等）"},
   "playerMemoryAdd": "本回合玩家透露的值得記住的細節（字串，無則null）",
-  "optionTags": ["A的標籤","B的標籤","C的標籤","📜","D"],
+  "optionTags": ["A的標籤","B的標籤","C的標籤"],
   "playerStoryUpdate": {"goal":"","currentChallenge":""},
   "beWarningUpdate": 數字或null,
   "playerWizardProfile": {"title":"巫師稱號或身份","notes":"關於此人的公開認知","isPublicFigure":true或false},
@@ -1883,8 +1881,8 @@ notifications 中的 app 欄位使用魔法世界的媒介：
 - 禁止出現純粹無後果的「完美選項」
 - 選項之間的後果走向必須真正分歧，選A和選B應該導向不同的下一個場景
 - 選項文字長度控制在15-30字之間，不要太短（無意義）也不要太長（難讀）
-- 選項D固定為「自定義（玩家自行輸入）」
-- 選項📜只在本回合有書信送達（owlLetter不為null）時才加入，文字為「查看來信」`;
+- 選項D固定為「自定義（玩家自行輸入）」，系統會自動加入，AI 回傳的 options 陣列中不需要包含 D 選項
+- 選項📜只在本回合有書信送達（owlLetter不為null）時才加入，文字為「查看來信」，系統會自動依 owlLetter 狀態決定是否加入，AI 回傳的 options 不需自行加入 📜
 }
 
 // ── 開始遊戲 ──
@@ -2124,7 +2122,15 @@ function processAIResponse(raw,isFirst=false,retryCount=0){
   if(summary) gameState.lastSceneSummary=summary;
 
   let opts=data.options||[];
-  // 📜 只在 AI 主動給出此選項時才顯示，不自動插入
+  // ── 選項去重與標準化 ──
+  // 1. 移除 AI 自行回傳的 D（自定義）和 📱（手機，非本版選項）避免重複
+  opts=opts.filter(o=>o.label!=='D'&&o.label!=='📱'&&o.text!=='自定義（玩家自行輸入）');
+  // 2. 📜 來信選項：僅在本回合確實有信件時才加入，且最多一個
+  const hasOwlLetter=!!(data.owlLetter&&data.owlLetter.from&&data.owlLetter.content);
+  opts=opts.filter(o=>o.label!=='📜'); // 先移除 AI 回傳的（可能條件不對）
+  if(hasOwlLetter) opts.push({label:'📜',text:'查看來信'});
+  // 3. 統一補入自定義選項（永遠最後一個）
+  opts.push({label:'D',text:'自定義（玩家自行輸入）'});
   renderOptions(opts);
   // 更新聯繫按鈕可見性
   if(typeof updateContactButton==='function') updateContactButton();
@@ -2263,7 +2269,7 @@ ${eventHint}${endingHint}${twistHint}${detailHint}
   try {
     const response=await callAI(prompt);
     gameState.history.push({role:'user',content:prompt});gameState.history.push({role:'assistant',content:response});
-    if(gameState.history.length>24) gameState.history=gameState.history.slice(-20);
+    // 不做硬截斷——history 長度由 compressHistoryIfNeeded() 統一管理（每8回合壓縮並產生 storySummaries）
     gameState.pendingSpecialEvent=null;gameState.pendingEndingHint=false;gameState.pendingTwistHint=null;
     processAIResponse(response,false);
     // 壓縮舊 history（背景執行，不阻塞）
@@ -3605,6 +3611,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v4.5</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v4.7</div>
 </body>
 </html>
