@@ -132,6 +132,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .gh-title{font-family:'Playfair Display',serif;font-style:normal;font-size:.95rem;color:var(--text2);}
 .gh-round{font-size:.75rem;color:var(--text3);background:var(--bg3);padding:.2rem .6rem;border-radius:1rem;border:1px solid var(--border);}
 .gh-time{font-size:.75rem;color:var(--text3);font-family:'Noto Sans TC',sans-serif;}
+#gh-bf-status{font-size:.68rem;color:var(--text3);font-family:'Noto Sans TC',sans-serif;flex-shrink:0;white-space:nowrap;overflow:hidden;max-width:80px;text-overflow:ellipsis;}
 .gh-right{display:flex;align-items:center;gap:.5rem;}
 .gh-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:.3rem .6rem;border-radius:.5rem;cursor:pointer;font-size:.75rem;transition:all .2s;}
 .gh-btn:hover{border-color:var(--border2);color:var(--text2);}
@@ -830,6 +831,7 @@ body.mood-married .story-msg.event-box{border-left-color:#5050a0;}
       
       <span class="gh-round" id="gh-round">第 1 回合</span>
       <span class="gh-time" id="gh-time"></span>
+      <span id="gh-bf-status" style="font-size:.68rem;color:var(--text3);font-family:'Noto Sans TC',sans-serif;flex-shrink:0;"></span>
       <div id="gh-aff-wrap" style="display:none;align-items:center;gap:.3rem;flex-shrink:0;">
         <div style="width:48px;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;border:1px solid var(--border);">
           <div id="gh-aff-bar" style="height:100%;width:50%;background:var(--gold);border-radius:2px;transition:width .6s ease,background .6s ease;"></div>
@@ -2712,8 +2714,8 @@ sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，
 - 字數 15-30 字，直接描述玩家的行動或台詞
 - 每個選項的情感方向不同（主動/迴避/對抗/妥協/試探）
 
-若本回合有新的手機通知或訊息，才加入【查看手機】選項（label用「📱」）
-選項D固定為「自定義（玩家自行輸入）」`;
+若本回合有新的手機通知或訊息，在 bfProactive 填入男友傳來的訊息文字（字串），程式會自動加入查看手機按鈕，【不要】在 options 裡加入手機選項
+選項 D「自定義」由程式自動加入，【不要】在 options 裡回傳 D 選項`;
 }
 
 // ── 開始遊戲 ──
@@ -3011,7 +3013,10 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
       if(!gameState.npcs) gameState.npcs = {};
       if(!gameState.npcs[name]) gameState.npcs[name] = {};
       if(info.role) gameState.npcs[name].role = info.role;
-      if(info.recentNote) gameState.npcRecentNotes[name] = info.recentNote;
+      if(info.recentNote){
+        gameState.npcRecentNotes = gameState.npcRecentNotes || {};
+        gameState.npcRecentNotes[name] = info.recentNote;
+      }
     });
   }
 
@@ -3121,18 +3126,25 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
     addSystemMsg(`💬 ${gameState.bfName||'他'}傳來了訊息，查看手機回覆`);
   }
 
-  // 選項（加入手機選項）
+  // 選項組裝（去重後補固定選項）
   let opts = data.options || [];
-  // 只在有新通知時才加入「查看手機」選項
-  const hasNewNotif = (gameState.phoneData.notifs||[]).some(function(n){
-    return !n.read;
+
+  // 去除 AI 已回傳的手機/自定義選項，統一由下方補入，避免重複
+  opts = opts.filter(o => {
+    const t = (o.text || '') + (o.label || '');
+    return !t.includes('手機') && !t.includes('查看消息') && !t.includes('查看通知')
+        && o.label !== '📱' && o.label !== 'D' && o.text !== '自定義（玩家自行輸入）';
   });
-  // 若 AI 已在選項裡加了手機選項就保留，否則只在有通知時加
-  if(!opts.find(o=>o.text&&(o.text.includes('手機')||o.text.includes('查看消息')||o.text.includes('查看通知')))) {
-    if(hasNewNotif){
-      opts = [...opts, {label:'📱', text:'查看手機（有新通知）'}];
-    }
+
+  // 有未讀通知或 AI 標記主動訊息時，才加手機選項
+  const hasNewNotif = (gameState.phoneData.notifs || []).some(n => !n.read);
+  if(hasNewNotif || data.bfProactive){
+    opts.push({label:'📱', text:'查看手機'});
   }
+
+  // 固定補上自定義輸入
+  opts.push({label:'D', text:'自定義（玩家自行輸入）'});
+
   renderOptions(opts);
 }
 
@@ -3206,6 +3218,7 @@ function renderOptions(opts){
   const panel = document.getElementById('options-panel');
   grid.innerHTML = '';
   panel.classList.remove('disabled');
+  gameState.lastRenderedOptions = opts; // 記錄供 continueGame 恢復用
 
   const TAG_ICONS = {
     'active':'⚡','passive':'👁','emotional':'💬','rational':'◈','conflict':'⚔','compromise':'◎',
@@ -3417,14 +3430,16 @@ async function handlePlayerAction(playerChoice){
       // nextRound 已呼叫 renderOptions，這裡不再呼叫
       return;
     } else {
-      const opts = parsedOptions.length >= 2
-        ? [...parsedOptions, {label:'📱', text:'查看手機'}, {label:'D', text:'自定義（玩家自行輸入）'}]
-        : [
-            {label:'A', text:'繼續'},
-            {label:'B', text:'換個話題'},
-            {label:'📱', text:'查看手機'},
-            {label:'D', text:'自定義（玩家自行輸入）'}
-          ];
+      // 過濾 AI 回傳中可能重複的手機/自定義選項，再統一補入
+      const filteredParsed = parsedOptions.filter(o => {
+        const t = (o.text || '') + (o.label || '');
+        return !t.includes('手機') && !t.includes('查看消息') && o.label !== '📱'
+            && o.label !== 'D' && o.text !== '自定義（玩家自行輸入）';
+      });
+      const baseOpts = filteredParsed.length >= 2
+        ? filteredParsed
+        : [{label:'A', text:'繼續'}, {label:'B', text:'換個話題'}];
+      const opts = [...baseOpts, {label:'📱', text:'查看手機'}, {label:'D', text:'自定義（玩家自行輸入）'}];
       renderOptions(opts);
     }
 
@@ -3512,7 +3527,7 @@ async function nextRound(playerChoice){
     ? '本回合可以有與男友相關的互動，但保持真實節奏'
     : '本回合可以有一個稍微重要的情節推進，符合目前的關係階段';
 
-  const lastSceneEnd = gameState.lastSceneEnd || '';
+  const lastSceneEnd = gameState.currentSceneContext || '';
   const roundPrompt = `玩家剛才的行動：「${playerChoice}」
 ${lastSceneEnd ? '上一個場景的收尾：'+lastSceneEnd : ''}
 
@@ -3542,14 +3557,10 @@ ${twistNote ? '- '+twistNote : ''}
 - 請以完整 JSON 格式回覆，不得截斷`;
 
   try {
-  compressHistoryIfNeeded();
+    compressHistoryIfNeeded();
     const response = await callAI(roundPrompt);
     gameState.history.push({ role:'user', content: roundPrompt });
     gameState.history.push({ role:'assistant', content: response });
-    // 保持 history 不超過30條（節省 token）
-    if(gameState.history.length > 30){
-      gameState.history = gameState.history.slice(-28);
-    }
     typingDiv.remove();
     processAIResponse(response);
     await saveGame();
@@ -5128,6 +5139,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r108</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r112</div>
 </body>
 </html>
