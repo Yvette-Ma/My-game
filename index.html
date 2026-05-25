@@ -35,7 +35,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 
 /* ── 粒子（已停用）── */
-#particles{display:none;}
 
 /* ── 通用 ── */
 .screen{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;overflow:hidden;}
@@ -213,7 +212,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   background:var(--bg2);border-top:1px solid var(--border);
   display:flex;flex-direction:column;gap:.6rem;backdrop-filter:blur(10px);
 }
-.options-title{font-size:.72rem;color:var(--text3);letter-spacing:.1em;margin-bottom:.1rem;}
+.options-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.5rem .9rem;cursor:pointer;user-select:none;
+  border-bottom:1px solid transparent;transition:border-color .2s;
+}
+.options-toggle:hover{background:rgba(255,255,255,.02);}
+.options-toggle.open{border-bottom-color:var(--border);}
+.options-toggle-label{font-size:.78rem;color:var(--text3);letter-spacing:.08em;}
+.options-toggle-arrow{font-size:.7rem;color:var(--text3);transition:transform .2s;}
+.options-toggle.open .options-toggle-arrow{transform:rotate(180deg);}
+.options-body{display:flex;flex-direction:column;gap:.35rem;padding:.5rem .8rem .7rem;overflow:hidden;}
+.options-body.collapsed{display:none;}
 .options-grid{display:flex;flex-direction:column;gap:.45rem;}
 .opt-btn{
   display:flex;align-items:flex-start;gap:.6rem;
@@ -365,6 +375,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 .aura-happy{background:linear-gradient(90deg,transparent,#a0c8a0,transparent);}
 .aura-breakup{background:linear-gradient(90deg,transparent,#c0a0a0,transparent);}
 .aura-exposed{background:linear-gradient(90deg,transparent,#c0b040,transparent);}
+body.mood-happy .story-msg.narration{color:#c8b87a;}
+body.mood-happy .story-msg.event-box{border-left-color:#8a6a2a;}
+body.mood-breakup .story-msg.narration{color:#c87a8a;}
+body.mood-breakup .story-msg.event-box{border-left-color:#8a2a3a;}
+body.mood-exposed .story-msg.narration{color:#b0a870;}
+body.mood-exposed .story-msg.event-box{border-left-color:#6a6020;}
+body.mood-married .story-msg.narration{color:#a09ccc;}
+body.mood-married .story-msg.event-box{border-left-color:#5050a0;}
 .aura-unknown{background:transparent;}
 
 /* ── 設定檔卡片 ── */
@@ -491,7 +509,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
 </head>
 <body>
 
-<div id="particles"></div>
 
 <!-- ════ SPLASH ════ -->
 <div id="screen-splash" class="screen active">
@@ -813,6 +830,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       
       <span class="gh-round" id="gh-round">第 1 回合</span>
       <span class="gh-time" id="gh-time"></span>
+      <div id="gh-aff-wrap" style="display:none;align-items:center;gap:.3rem;flex-shrink:0;">
+        <div style="width:48px;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden;border:1px solid var(--border);">
+          <div id="gh-aff-bar" style="height:100%;width:50%;background:var(--gold);border-radius:2px;transition:width .6s ease,background .6s ease;"></div>
+        </div>
+      </div>
     </div>
     <div class="gh-right">
       <span class="save-indicator" id="save-indicator">已同步</span>
@@ -822,6 +844,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
       <div class="gh-more-wrap" id="gh-more-wrap">
         <button class="gh-btn gh-more-btn" onclick="toggleMoreMenu()" id="gh-more-btn">⋯</button>
         <div class="gh-dropdown" id="gh-dropdown">
+          <button class="gh-dd-item" id="dd-contacts" style="display:none;" onclick="initiateContact();closeMoreMenu()">聯絡人 <span class="dd-badge" style="display:none;background:var(--rose);color:#fff;border-radius:1rem;font-size:.65rem;padding:.1rem .4rem;margin-left:.3rem;"></span></button>
+          <div class="gh-dd-sep" id="dd-contacts-sep" style="display:none;"></div>
           <button class="gh-dd-item" onclick="openTwist();closeMoreMenu()">扭轉劇情</button>
           <button class="gh-dd-item" onclick="replayRound();closeMoreMenu()">重玩此回合</button>
           <div class="gh-dd-sep"></div>
@@ -839,12 +863,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Noto S
   </div>
 
   <div class="options-panel" id="options-panel">
-    <div class="options-title" onclick="toggleOptions()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;">
-      <span>▸ 選擇你的行動</span>
-      <span id="opts-toggle" style="font-size:.65rem;color:var(--text3);margin-left:.5rem;">收合</span>
+    <div class="options-toggle open" id="options-toggle" onclick="toggleOptionsPanel()">
+      <span class="options-toggle-label">▸ 選擇你的行動</span>
+      <span class="options-toggle-arrow">▾</span>
     </div>
-    <div id="opts-collapsible">
-    <div class="options-grid" id="options-grid"></div>
+    <div class="options-body" id="options-body">
+      <div class="options-grid" id="options-grid"></div>
     </div>
   </div>
 </div>
@@ -1077,6 +1101,7 @@ let gameState = {
   castMode: 'pick',         // 'auto'=劇情隨機 | 'pick'=指定候選人
   // ── 本回合待處理的男友主動訊息 ──
   pendingBfMsg: null,
+  pendingDetailInjection: null,
   lastRenderedOptions: null,  // 最後一次的選項，用於繼續遊戲恢復
   // ── 男友性格檔案（第一回合建立後固定）──
   bfProfile: null,       // {habits, speechStyle, quirks, hiddenFlaw, loveReason}
@@ -1100,26 +1125,11 @@ let gameState = {
   },
   // ── BE節點追蹤 ──
   beWarning: 0,          // BE警告層級 0-3，達3時強制BE事件
+  eventCooldowns: {},    // {eventId: lastTriggeredRound}
   initialized: false
 };
 
 // ── 粒子 ──
-(function createParticles(){
-  const container = document.getElementById('particles');
-  for(let i=0;i<18;i++){
-    const p = document.createElement('div');
-    p.className = 'pt';
-    const size = Math.random()*6+3;
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      animation-duration:${Math.random()*12+8}s;
-      animation-delay:${Math.random()*8}s;
-      background:radial-gradient(circle,rgba(${Math.random()>0.5?'232,120,160':'168,120,224'},.5),transparent);
-    `;
-    container.appendChild(p);
-  }
-})();
 
 // ── 畫面切換 ──
 window.showScreen = function(id){
@@ -1439,11 +1449,24 @@ window.startNewGame = function(){
   // 清除舊存檔
   gameState = {
     round:1, time:"", playerName:"",playerAge:"",playerNation:"",
-    playerIdentity:"",bfName:"",myPet:"",bfPet:"",
+    playerIdentity:"",appearance:"",talents:"",traits:"",background:"",backstory:"",
+    storyStart:"",bfName:"",myPet:"",bfPet:"",
     apiProvider:"", apiModel:"",
     history:[], storyLog:[],
     phoneData:{ ins:{posts:[],dms:[]},kakao:{chats:{}},weverse:{posts:[]},notifs:[] },
-    initialized:false
+    affection:50, affectionTrend:'stable',
+    flags:{ firstKiss:false,firstNight:false,metParents:false,exposed:false,
+            pregnant:false,engaged:false,married:false,brokeUp:false,madeUp:false,
+            hadFight:false,bfSuspected:false,companyPressure:false,militaryService:false },
+    relationStatus:'', endingPath:'',
+    memories:[], npcs:{}, playerMood:'normal', sideChars:'',
+    myInsProfile:null, bfCandidates:[], castMode:'pick',
+    pendingBfMsg:null, pendingDetailInjection:null, lastRenderedOptions:null, bfProfile:null,
+    playerMemory:[], lastChoiceTag:'', lastChoiceText:'',
+    playerPersonality:{ traits:{}, summary:'', lastUpdatedRound:0 },
+    playerBehaviorLog:[],
+    playerStory:{ goal:'', currentChallenge:'', nextPersonalEventRound:0 },
+    beWarning:0, eventCooldowns:{}, initialized:false
   };
   // 恢復上次的 API 設定
   const savedProvider = localStorage.getItem('kpop_provider')||'';
@@ -1490,8 +1513,6 @@ window.continueGame = async function(){
     initGameScreen();
     showScreen('screen-game');
     renderAllStory();
-    updateHeader();
-    // 讀取後恢復上次的選項，不自動推進
     updateHeader();
     // 恢復上次的選項
     const lastOpts = gameState.lastRenderedOptions;
@@ -1965,10 +1986,17 @@ window.openRecap = function(){
     return;
   }
 
-  // 回合選擇列
+  // 回合選擇列（有特殊回憶的回合顯示金點）
+  var memsByRound = {};
+  (gameState.memories || []).forEach(function(m){
+    if(!memsByRound[m.round]) memsByRound[m.round] = true;
+  });
   roundsEl.innerHTML = rounds.map(function(r){
+    var hasMem = memsByRound[r];
     return '<button onclick="showRecapRound('+r+')" id="recap-btn-'+r+'" '
-      +'style="flex-shrink:0;font-size:.72rem;padding:.3rem .7rem;border-radius:1rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;">第'+r+'回合</button>';
+      +'style="flex-shrink:0;font-size:.72rem;padding:.3rem .7rem;border-radius:1rem;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;position:relative;">'
+      +(hasMem ? '<span style="position:absolute;top:-2px;right:-2px;width:6px;height:6px;border-radius:50%;background:var(--gold);pointer-events:none;"></span>' : '')
+      +'第'+r+'回合</button>';
   }).join('');
 
   // 顯示最新回合
@@ -2071,20 +2099,26 @@ window.setCastMode = function(mode){
   }
 };
 
-// ── 選項收合/展開 ──
-window.toggleOptions = function(){
-  var col = document.getElementById('opts-collapsible');
-  var btn = document.getElementById('opts-toggle');
-  if(!col || !btn) return;
-  var isHidden = col.style.display === 'none';
-  col.style.display = isHidden ? '' : 'none';
-  btn.textContent = isHidden ? '收合' : '展開';
-  if(!isHidden){
-    var panel = document.getElementById('story-panel');
-    if(panel) panel.scrollTop = panel.scrollHeight;
+// ── 選項面板折疊（與姊妹版同步）──
+window.toggleOptionsPanel = function(){
+  const toggle = document.getElementById('options-toggle');
+  const body = document.getElementById('options-body');
+  if(!toggle || !body) return;
+  const isOpen = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', isOpen);
+  toggle.classList.toggle('open', !isOpen);
+  if(isOpen){
+    const panel = document.getElementById('story-panel');
+    if(panel) setTimeout(()=>{ panel.scrollTop = panel.scrollHeight; }, 50);
   }
 };
-
+function expandOptionsPanel(){
+  const body = document.getElementById('options-body');
+  const toggle = document.getElementById('options-toggle');
+  if(body) body.classList.remove('collapsed');
+  if(toggle) toggle.classList.add('open');
+}
+window.toggleOptions = window.toggleOptionsPanel;
 // ── 更多選單開關 ──
 window.toggleMoreMenu = function(){
   var dd = document.getElementById('gh-dropdown');
@@ -2198,9 +2232,121 @@ function initGameScreen(){
   updateEndingAura();
 }
 
+function updateContactButton(){
+  const el = document.getElementById('dd-contacts');
+  const sep = document.getElementById('dd-contacts-sep');
+  const npcCount = Object.keys(gameState.npcs || {}).length;
+  if(el){
+    el.style.display = npcCount > 0 ? '' : 'none';
+    if(sep) sep.style.display = npcCount > 0 ? '' : 'none';
+    const badge = el.querySelector('.dd-badge');
+    if(badge){ badge.textContent = npcCount || ''; badge.style.display = npcCount > 0 ? '' : 'none'; }
+  }
+  if(typeof updateCommMenus === 'function') updateCommMenus();
+}
+window.updateContactButton = updateContactButton;
+
 function updateHeader(){
   document.getElementById('gh-round').textContent = `第 ${gameState.round} 回合`;
   document.getElementById('gh-time').textContent = gameState.time||'';
+  // 好感度進度條（0~100 直接對應）
+  const affBar = document.getElementById('gh-aff-bar');
+  const affWrap = document.getElementById('gh-aff-wrap');
+  if(affBar && gameState.round > 0){
+    const pct = Math.max(0, Math.min(100, gameState.affection));
+    affBar.style.width = pct + '%';
+    affBar.style.background = pct < 35 ? 'var(--rose2)' : pct > 65 ? 'var(--gold)' : 'var(--text3)';
+    if(affWrap) affWrap.style.display = 'flex';
+  } else {
+    if(affWrap) affWrap.style.display = 'none';
+  }
+
+  // 男友狀態
+  const bfStatusEl = document.getElementById('gh-bf-status');
+  if(bfStatusEl){
+    const bfName = gameState.bfName || (gameState.bfCandidates&&gameState.bfCandidates[0]) || '';
+    const cond = gameState.bfCondition || '';
+    bfStatusEl.textContent = bfName && cond ? bfName + '・' + cond : '';
+  }
+}
+
+
+// ── History 壓縮（避免 context window 爆滿）──
+function compressHistoryIfNeeded(){
+  const MAX_PAIRS = 12; // 保留最近 12 組對話（user+assistant）
+  const history = gameState.history || [];
+  if(history.length <= MAX_PAIRS * 2) return; // 未超過上限，不壓縮
+
+  // 保留最新的 MAX_PAIRS 組，舊的截斷
+  const keep = history.slice(-(MAX_PAIRS * 2));
+
+  // 把被截斷的部分摘要一句話存到 lastRoundSummary（若尚未有更新的）
+  const dropped = history.slice(0, history.length - MAX_PAIRS * 2);
+  const droppedText = dropped
+    .filter(m => m.role === 'assistant')
+    .map(m => {
+      try {
+        const d = JSON.parse(m.content.split('```json').join('').split('```').join('').trim().match(/\{[\s\S]*\}/)[0]);
+        return d.roundSummary || d.narration?.slice(0, 30) || '';
+      } catch(e){ return ''; }
+    })
+    .filter(Boolean)
+    .slice(-2)
+    .join('；');
+
+  if(droppedText && !gameState._historyCompressNote){
+    gameState._historyCompressNote = '（早期劇情：' + droppedText + '）';
+  }
+
+  const droppedRoundStart = 1;
+  const droppedRoundEnd = Math.max(1, gameState.round - MAX_PAIRS - 1);
+  archiveRoundToSummary(droppedRoundStart, droppedRoundEnd);
+  gameState.history = keep;
+}
+
+// ── 分段快照：將被壓縮的回合存入 storySummaries ──
+function archiveRoundToSummary(roundStart, roundEnd){
+  const log = gameState.storyLog || [];
+  let cur = 1;
+  const snapshot = [];
+  for(const entry of log){
+    if(entry.type === 'round_start') cur = entry.round || cur;
+    if(cur >= roundStart && cur <= roundEnd &&
+       (entry.type === 'narration' || entry.type === 'event' || entry.type === 'choice')){
+      snapshot.push({type: entry.type, text: (entry.text||'').slice(0, 80)});
+    }
+  }
+  if(!snapshot.length) return;
+  gameState.storySummaries = gameState.storySummaries || [];
+  const existing = gameState.storySummaries.find(s => s.roundStart === roundStart);
+  if(!existing){
+    gameState.storySummaries.push({roundStart, roundEnd, logSnapshot: snapshot});
+    if(gameState.storySummaries.length > 10) gameState.storySummaries.shift();
+  }
+}
+
+// ── 是否需要回溯特定回合細節 ──
+function needRoundDetail(targetRound){
+  // 優先從 storySummaries 快照查詢
+  const summaries = gameState.storySummaries || [];
+  const found = summaries.find(s => s.roundStart <= targetRound && s.roundEnd >= targetRound);
+  if(found && found.logSnapshot && found.logSnapshot.length > 0){
+    return found.logSnapshot.map(e => e.text || '').filter(Boolean).join(' / ');
+  }
+  // 若目標回合的內容已被壓縮出 history，從 storyLog 重建摘要
+  const log = gameState.storyLog || [];
+  let round = 1;
+  const roundEntries = [];
+  for(const entry of log){
+    if(entry.type === 'round_start') round = entry.round || round;
+    if(round === targetRound) roundEntries.push(entry);
+  }
+  if(!roundEntries.length) return null;
+  return roundEntries
+    .filter(e => e.type === 'narration' || e.type === 'event' || e.type === 'choice')
+    .map(e => e.text?.slice(0, 40) || '')
+    .filter(Boolean)
+    .join(' / ');
 }
 
 // ── AI 呼叫 ──
@@ -2309,6 +2455,8 @@ function buildSystemPrompt(){
 - 年齡：${gameState.playerAge}歲
 - 國籍：${gameState.playerNation}
 - 身份：${gameState.playerIdentity}
+- 背景：${gameState.background||'未設定'}
+→ 身份應滲透場景細節（財閥→司機/家族壓力；偶像→公司宿舍/行程；素人→日常生活質感）
 - 外貌：
   · 身高體型：${gameState.appBody||'未指定'}
   · 髮型髮色：${gameState.appHair||'未指定'}
@@ -2350,7 +2498,7 @@ ${gameState.bfProfile ? `
 - 喜歡玩家的原因（隱藏）：${gameState.bfProfile.loveReason}
 ` : '（尚未建立，本回合請在 bfProfileUpdate 欄位建立）'}
 
-【玩家記憶庫】（他記得這些細節，在適當時機自然提起）
+${gameState._historyCompressNote ? "【早期劇情摘要（已壓縮）】" + gameState._historyCompressNote + "\n\n" : ""}【玩家記憶庫】（他記得這些細節，在適當時機自然提起）
 ${gameState.playerMemory && gameState.playerMemory.length > 0
   ? gameState.playerMemory.slice(-8).map(m=>'第'+m.round+'回合：'+m.detail).join('\n')
   : '尚無記憶，在劇情中自然收集玩家透露的個人喜好/習慣/心事'}
@@ -2359,19 +2507,55 @@ ${gameState.playerMemory && gameState.playerMemory.length > 0
 - 玩家的個人目標：${gameState.playerStory?.goal || '尚未建立'}
 - 當前個人挑戰：${gameState.playerStory?.currentChallenge || '尚未建立'}
 
-【上一回合選項後果延續】
+【上一回合資訊】
 - 玩家選了：${gameState.lastChoiceText || '無'}
-- 屬性標籤：${gameState.lastChoiceTag || '無'}
-- 後果延續要求：本回合劇情必須在細節中呈現上一個選擇的餘韻（至少1-2句）
+- 上回合場景摘要：${gameState.lastRoundSummary || '無（第一回合）'}
+- 當前地點：${gameState.currentLocation || '未指定'}
+- 上回合時間：${gameState.lastRoundTime || '未知'}
+  → 本回合時間必須在此之後的合理跨度內（同一天的數小時後，或隔天）
+  → 禁止時間倒退或跨越不合理的長度（如一夜跳到一個月後）
 
-【玩家性格特質檔案】（從玩家的選擇中累積提取，描述人物時必須依此）
+【好感對照表】（本回合 affectionDelta 上限 ±5）
++4~+5：捨命保護、深刻告白、關鍵時刻完美回應
++2~+3：體貼行動、主動傾聽、記住小細節
++1：日常溫暖互動
+0：中性互動
+-1：小摩擦或誤會
+-2~-3：冷漠、忽視、讓對方失望
+-4~-5：嚴重背叛、碰觸底線、公開傷害
+
+【NPC 近況】
+${Object.entries(gameState.npcRecentNotes||{}).map(([n,note])=>`- ${n}：${note}`).join('\n')||'無已知NPC近況'}
+
+【玩家行為傾向（影響選項設計）】
+上一輪標籤：${gameState.lastChoiceTag||'無'}
+近期傾向：${(()=>{ const log=(gameState.playerBehaviorLog||[]).slice(-5); const tags=log.map(b=>b.tag).filter(Boolean); if(!tags.length) return '尚無資料'; const cnt={}; tags.forEach(t=>{cnt[t]=(cnt[t]||0)+1;}); const dom=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]; return dom?dom[0]+'型為主（'+dom[1]+'/'+tags.length+'次）':'無明顯傾向'; })()}
+→ passive/rational 為主時多提供觀察型選項；active/emotional 為主時多提供主動型選項。
+
+【好感度對照表】（本回合 affectionDelta 上限 ±5）
++4~+5：捨命保護、深刻表白、關鍵時刻的完美理解
++2~+3：體貼舉動、傾聽、主動關心
++1：日常好感小事
+0：中性互動
+-1：小摩擦、誤會
+-2~-3：冷漠、忽視、讓對方失望
+-4~-5：嚴重背叛、公開羞辱、碰觸底線
+
+【玩家性格特質檔案】★重要★ 描寫玩家心理時，必須完全依照此檔案，不得擅自詮釋
 ${(()=>{
   const p = gameState.playerPersonality;
-  if(!p || !Object.keys(p.traits||{}).length) return '尚在觀察中，依玩家選擇方向詮釋';
-  const sorted = Object.entries(p.traits).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  return '已確認特質：' + sorted.map(([k,v])=>k+'('+v+'次)').join('、') + '\n'
-    + '→ 描寫玩家的心理、動機、反應時必須符合這些特質，不得背離。'
-    + '\n→ 玩家設定的性格：${gameState.traits||"未設定"}（初始設定，可隨劇情發展深化）';
+  const initTraits = gameState.traits || '未設定';
+  if(!p || !Object.keys(p.traits||{}).length){
+    return '初始設定：' + initTraits + '\n→ 目前尚無足夠行為資料，依初始設定詮釋人物。';
+  }
+  const sorted = Object.entries(p.traits).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topTraits = sorted.map(([k,v])=>k+'('+v+'次)').join('、');
+  const recentChoices = (gameState.playerBehaviorLog||[]).slice(-3).map(b=>b.choice.slice(0,15)).join(' / ');
+  return '初始設定：' + initTraits
+    + '\n累積特質：' + topTraits
+    + '\n近期行動：' + (recentChoices||'無')
+    + '\n→ 上述特質是玩家透過實際選擇確認的性格，描寫時優先參考。'
+    + '\n→ 禁止讓玩家角色表現出與此相反的心理（如特質為「重視事業」卻寫「渴望逃離」）';
 })()}
 
 【敘事核心原則】
@@ -2408,6 +2592,12 @@ ${(()=>{
    - 其他任何外語（英文除人名/品牌外）一律禁止
 2. 遊戲背景為2025年現代首爾，禁止超自然、古代、血腥元素
 3. 若男友姓名有指定，嚴格根據其真實公開形象構建人設，不可OOC；若未指定，自行選定後全程一致
+3b.【真實藝人現實準確性】凡涉及現實韓國藝人（無論主角或配角），以下資訊必須與現實一致，不可捏造：
+   - 所屬公司、所屬團體、公開職稱（如「製作人」「演員」「歌手」）
+   - 識別證、名牌、字幕等文字道具只能顯示已知公開資訊（藝名、所屬公司/團體）
+   - 禁止虛構部門名稱（如「製作部」「企劃組」）或現實中不存在的職務
+   - 若不確定某人的具體職務，改用模糊描述（「他走出工作室」）而非捏造具體職銜
+   - 此規則適用於所有出現方式：識別證、對話提及、場景描寫
 4. 玩家只有主視角，不顯示任何數值、概率、百分比、狀態標籤、遊戲化提示
 5. 男友隱藏缺點在20回合後透過細節顯現，不單獨提示
 5b.【節奏調配】劇情需有張弛，不能每回合都是大事件。
@@ -2481,7 +2671,11 @@ ${(()=>{
   "playerStoryUpdate": {"goal":"","currentChallenge":""},
   "beWarningUpdate": 數字或null,
   "playerInsProfile": {"handle":"IG帳號名（英文小寫，符合人設）","bio":"IG簡介（1-2行，符合真實IG風格，用emoji，符合玩家身份但不暴露秘密）","isPrivate":true或false},
-  "playerTraitExtract": "從玩家本回合的選擇和行動中提取1-2個性格特質關鍵詞（如：積極主動、重視事業、情感細膩、理性冷靜、保護自我、顧慮他人 等，若玩家未表現出明顯特質則填null）"
+  "playerTraitExtract": "從玩家本回合選擇提取1-2個性格特質關鍵詞，無明顯特質填null",
+  "currentLocation": "本回合場景地點（5字內，如：錄音室、公司走廊、他的車上）",
+  "roundSummary": "本回合最重要的一件事（20字內，作為下回合的上回合摘要）",
+  "npcUpdate": {"NPC名": {"role": "身份", "recentNote": "本回合最重要言行（15字內）"}},
+  "locationUpdate": "若地點改變填新地點，否則填null"
 }
 
 每個選項只描述玩家的對話、行動或反應，絕不包含任何括號說明或後果提示。
@@ -2506,11 +2700,17 @@ sceneResponse 是當下的即時回應，只寫「這一刻發生了什麼」，
 - 至少一個選項應該有一定風險或代價（可能讓關係更近但更暴露、或更安全但錯過機會）
 
 禁止出現的選項類型：
-- 只是描述行動細節步驟（「擦乾頭髮」「躺上床」「閉上眼睛」等日常瑣事）
-- 選哪個結果都一樣的偽選擇
-- 純粹正面無風險的「完美選項」（現實中沒有零代價的選擇）
+- 空洞行動：「繼續」「換個話題」「換個方向」「什麼都不做」
+- 日常瑣事步驟：「擦乾頭髮」「躺上床」「閉上眼睛」
+- 偽選擇：選哪個結果都一樣
+- 完美選項：純粹正面無風險
 
-必須包含一個【查看手機】選項（label用「📱」）
+選項格式要求：
+- 必須包含具體動詞＋對象（錯誤：「離開」；正確：「轉身離開錄音室，不再解釋」）
+- 字數 15-30 字，直接描述玩家的行動或台詞
+- 每個選項的情感方向不同（主動/迴避/對抗/妥協/試探）
+
+若本回合有新的手機通知或訊息，才加入【查看手機】選項（label用「📱」）
 選項D固定為「自定義（玩家自行輸入）」`;
 }
 
@@ -2734,7 +2934,8 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
   // ── 處理新系統欄位 ──
   // 好感度
   if(typeof data.affectionDelta === 'number'){
-    gameState.affection = Math.max(-100, Math.min(100, (gameState.affection||50) + data.affectionDelta));
+    const clampedDelta = Math.max(-5, Math.min(5, data.affectionDelta));
+    gameState.affection = Math.max(-100, Math.min(100, (gameState.affection||50) + clampedDelta));
     gameState.affectionTrend = data.affectionDelta > 2 ? 'rising' : data.affectionDelta < -2 ? 'falling' : 'stable';
   }
   // 情緒
@@ -2757,6 +2958,10 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
   // 結局走向
   if(data.endingHint && data.endingHint !== 'null'){
     gameState.endingPath = data.endingHint;
+  // 氛圍色調
+  var _mm={'happy':'mood-happy','breakup':'mood-breakup','exposed':'mood-exposed','hidden-married':'mood-married'};
+  document.body.className=document.body.className.replace(/mood-[^ ]+/g,'').trim();
+  if(_mm[gameState.endingPath]) document.body.classList.add(_mm[gameState.endingPath]);
     updateEndingAura();
   }
   // 關係狀態
@@ -2765,6 +2970,52 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
   // ── 玩家 IG 個人資料 ──
   if(data.playerInsProfile && !gameState.myInsProfile){
     gameState.myInsProfile = data.playerInsProfile;
+  }
+
+  // ── 時間連貫性 ──
+  // 時間跨夜偵測
+  if(data.time && gameState.lastRoundTime){
+    const extractHour = t => {
+      const m = t.match(/(上午|下午|晚上|凌晨|早上)\s*(\d{1,2})/);
+      if(!m) return -1;
+      let h = parseInt(m[2]);
+      if((m[1]==='下午'||m[1]==='晚上') && h<12) h+=12;
+      if((m[1]==='凌晨'||m[1]==='早上') && h===12) h=0;
+      return h;
+    };
+    const prevH = extractHour(gameState.lastRoundTime);
+    const currH = extractHour(data.time);
+    // 跨夜（前一回合是晚上，這回合是早上/上午）
+    if(prevH >= 20 && currH >= 0 && currH <= 10){
+      const sep = document.createElement('div');
+      sep.style.cssText = 'text-align:center;font-size:.65rem;color:var(--text3);opacity:.4;padding:.4rem 0;letter-spacing:.15em;';
+      sep.textContent = '— ' + (data.time.match(/\d+月\d+日/)||[''])[0] + ' —';
+      const sp = document.getElementById('story-panel');
+      if(sp) sp.appendChild(sep);
+    }
+  }
+  if(data.time) gameState.lastRoundTime = data.time;
+
+  // ── 場景地點 ──
+  if(data.currentLocation) gameState.currentLocation = data.currentLocation;
+  if(data.locationUpdate && data.locationUpdate !== 'null') gameState.currentLocation = data.locationUpdate;
+
+  // ── 回合摘要 ──
+  if(data.roundSummary) gameState.lastRoundSummary = data.roundSummary;
+
+  // ── NPC recentNote ──
+  if(data.npcUpdate && typeof data.npcUpdate === 'object'){
+    Object.entries(data.npcUpdate).forEach(([name, info])=>{
+      if(!gameState.npcs) gameState.npcs = {};
+      if(!gameState.npcs[name]) gameState.npcs[name] = {};
+      if(info.role) gameState.npcs[name].role = info.role;
+      if(info.recentNote) gameState.npcRecentNotes[name] = info.recentNote;
+    });
+  }
+
+  // ── 事件冷卻記錄 ──
+  if(gameState.pendingSpecialEvent && gameState.pendingSpecialEvent.id){
+    markEventTriggered(gameState.pendingSpecialEvent.id);
   }
 
   // ── 玩家特質提取 ──
@@ -2870,8 +3121,15 @@ function processAIResponse(raw, isFirst=false, retryCount=0){
 
   // 選項（加入手機選項）
   let opts = data.options || [];
-  if(!opts.find(o=>o.text&&o.text.includes('手機'))){
-    opts = [...opts, {label:'📱', text:'查看手機'}];
+  // 只在有新通知時才加入「查看手機」選項
+  const hasNewNotif = (gameState.phoneData.notifs||[]).some(function(n){
+    return !n.read;
+  });
+  // 若 AI 已在選項裡加了手機選項就保留，否則只在有通知時加
+  if(!opts.find(o=>o.text&&(o.text.includes('手機')||o.text.includes('查看消息')||o.text.includes('查看通知')))) {
+    if(hasNewNotif){
+      opts = [...opts, {label:'📱', text:'查看手機（有新通知）'}];
+    }
   }
   renderOptions(opts);
 }
@@ -2946,6 +3204,11 @@ function renderOptions(opts){
   const panel = document.getElementById('options-panel');
   grid.innerHTML = '';
   panel.classList.remove('disabled');
+
+  const TAG_ICONS = {
+    'active':'⚡','passive':'👁','emotional':'💬','rational':'◈','conflict':'⚔','compromise':'◎',
+    '信任/坦誠':'💫','退讓/妥協':'🕊️'
+  };
 
   opts.forEach(opt=>{
     if(opt.label==='D' || opt.text==='自定義（玩家自行輸入）'){
@@ -3277,6 +3540,7 @@ ${twistNote ? '- '+twistNote : ''}
 - 請以完整 JSON 格式回覆，不得截斷`;
 
   try {
+  compressHistoryIfNeeded();
     const response = await callAI(roundPrompt);
     gameState.history.push({ role:'user', content: roundPrompt });
     gameState.history.push({ role:'assistant', content: response });
@@ -4618,6 +4882,15 @@ window.doContact = async function(type){
 // ══════════════════════════════════════════════════════
 
 // 初始化下次事件觸發回合（隨機4-9回合後）
+function isEventCooledDown(id, cooldown){
+  const last = (gameState.eventCooldowns || {})[id] || 0;
+  return (gameState.round || 1) - last >= cooldown;
+}
+function markEventTriggered(id){
+  gameState.eventCooldowns = gameState.eventCooldowns || {};
+  gameState.eventCooldowns[id] = gameState.round || 1;
+}
+
 function scheduleNextEvent(){
   const interval = 4 + Math.floor(Math.random() * 6); // 4~9回合
   gameState.nextEventRound = (gameState.round || 1) + interval;
@@ -4681,14 +4954,31 @@ function buildEventPool(){
   if(round >= 8){
     pool.push({ id:'FAMILY_PRESSURE', weight:1, desc:'家人或摯友對這段關係表示擔憂或反對' });
   }
-  // 已婚/同居後特有事件
-  if(start.includes('同居') || start.includes('婚') || flags.married){
-    pool.push({ id:'COHABITATION_FRICTION', weight:3, desc:'同居生活中的真實摩擦或甜蜜細節' });
-  }
   // 服役威脅（年齡合理時）
   if(round >= 15 && !flags.militaryService){
     pool.push({ id:'MILITARY_APPROACHING', weight:1, desc:'服役的話題隱隱浮現，兩人如何面對' });
   }
+
+  // ── 關係階段專屬背景事件 ──
+  const isEarly = start.includes('初次') || start.includes('曖昧');
+  const isMid   = start.includes('剛交往') || start.includes('交往中');
+  const isLate  = start.includes('同居') || start.includes('婚') || flags.married;
+
+  if(isEarly){
+    pool.push({id:'CHANCE_ENCOUNTER', weight:2, desc:'一個意外的偶遇或巧合，讓兩人的距離微妙地縮短'});
+    pool.push({id:'MUTUAL_FRIEND',    weight:1, desc:'共同認識的人出現，在無意中牽線或洩露資訊'});
+  }
+  if(isMid){
+    pool.push({id:'FIRST_ARGUMENT', weight:2, desc:'第一次為了小事起爭執，反而讓彼此更了解對方'});
+    pool.push({id:'MEET_FRIENDS',   weight:1, desc:'他的朋友或同事意外出現，玩家首次融入他的社交圈'});
+  }
+  if(isLate){
+    pool.push({id:'DOMESTIC_MOMENT',        weight:3, desc:'同居生活中一個真實而細膩的日常瞬間'});
+    pool.push({id:'SPACE_TENSION',          weight:2, desc:'長時間相處後，空間與個人習慣開始產生微妙的摩擦'});
+    pool.push({id:'COHABITATION_FRICTION',  weight:2, desc:'同居生活中的真實摩擦，考驗兩人的包容力'});
+  }
+  // 通用：行業日常噪音
+  pool.push({id:'INDUSTRY_EVENT', weight:1, desc:'韓娛圈的某個公開事件（頒獎/出道/解散）在背景中發生，影響他的情緒或行程'});
 
   return pool;
 }
@@ -4727,17 +5017,19 @@ function checkSpecialEvents(){
     forceEvent = { id:'PROPOSAL', desc:'他在某個特別的時刻提出了某個問題' };
   }
 
-  if(forceEvent){
+  if(forceEvent && isEventCooledDown(forceEvent.id, 3)){
     gameState.pendingSpecialEvent = forceEvent;
+    markEventTriggered(forceEvent.id);
     scheduleNextEvent(); // 強制觸發後重新排程
     return;
   }
 
   // ── 排程觸發（到達預定回合）──
   if(round >= (gameState.nextEventRound || 999) && !gameState.pendingSpecialEvent){
-    const pool = buildEventPool();
+    const pool = buildEventPool().filter(e => isEventCooledDown(e.id, 5));
     if(pool.length > 0){
       gameState.pendingSpecialEvent = weightedRandom(pool);
+      markEventTriggered(gameState.pendingSpecialEvent.id);
     }
     scheduleNextEvent(); // 設定下一次
   }
@@ -4834,6 +5126,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r87</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r107</div>
 </body>
 </html>
