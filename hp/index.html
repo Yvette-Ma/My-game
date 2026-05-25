@@ -3498,6 +3498,8 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 window.renderScrollPage=renderScrollPage;
+function closeScroll(){document.getElementById('scroll-overlay').classList.remove('open');}
+function clearMagicNotifs(){gameState.magicData.notifs=[];renderScrollPage('notifs');}
 window.closeScroll=closeScroll;
 window.clearMagicNotifs=clearMagicNotifs;
 window.sendPortraitMessage=sendPortraitMessage;
