@@ -999,8 +999,28 @@ function loadFirebase(){
   return new Promise(resolve=>{
     if(firebaseReady){resolve();return;}
     const scripts=['https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js'];
-    let loaded=0;
-    scripts.forEach(src=>{const s=document.createElement('script');s.src=src;s.onload=()=>{loaded++;if(loaded===scripts.length){try{if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();provider=new firebase.auth.GoogleAuthProvider();firebaseReady=true;auth.onAuthStateChanged(user=>{currentUser=user;if(user){document.getElementById('auth-overlay').classList.remove('show');loadCloudSave();}});}catch(e){}resolve();}};s.onerror=()=>{loaded++;if(loaded===scripts.length)resolve();};document.head.appendChild(s);});
+    function loadNext(i){
+      if(i>=scripts.length){
+        try{
+          if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+          auth=firebase.auth();
+          db=firebase.firestore();
+          provider=new firebase.auth.GoogleAuthProvider();
+          firebaseReady=true;
+          auth.onAuthStateChanged(user=>{
+            currentUser=user;
+            if(user){document.getElementById('auth-overlay').classList.remove('show');loadCloudSave();}
+          });
+        }catch(e){console.warn('Firebase init error:',e);}
+        resolve();return;
+      }
+      const s=document.createElement('script');
+      s.src=scripts[i];
+      s.onload=()=>loadNext(i+1);
+      s.onerror=()=>{console.warn('Firebase script load error:',scripts[i]);loadNext(i+1);};
+      document.head.appendChild(s);
+    }
+    loadNext(0);
   });
 }
 
@@ -3626,6 +3646,6 @@ window.addEventListener('load',function(){
 });
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v5.0</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:.8rem;color:#6a5a40;pointer-events:none;z-index:9999;letter-spacing:.06em;font-family:'Cinzel',serif;">v5.1</div>
 </body>
 </html>
