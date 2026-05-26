@@ -1002,40 +1002,38 @@ let firebaseReady = false;
 function loadFirebase(){
   return new Promise((resolve) => {
     if(firebaseReady){ resolve(); return; }
-    // 動態載入 Firebase CDN
+    // 循序載入 Firebase CDN（app 必須最先完成）
     const scripts = [
       'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
       'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js',
       'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js',
     ];
-    let loaded = 0;
-    scripts.forEach(src => {
+    function loadNext(i){
+      if(i >= scripts.length){
+        try {
+          if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+          auth = firebase.auth();
+          db = firebase.firestore();
+          provider = new firebase.auth.GoogleAuthProvider();
+          firebaseReady = true;
+          auth.onAuthStateChanged(user => {
+            currentUser = user;
+            if(user){
+              document.getElementById('auth-overlay').classList.remove('show');
+              loadCloudSave();
+            }
+          });
+        } catch(e){ console.warn('Firebase init error:', e); }
+        resolve();
+        return;
+      }
       const s = document.createElement('script');
-      s.src = src;
-      s.onload = () => {
-        loaded++;
-        if(loaded === scripts.length){
-          try {
-            if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            db = firebase.firestore();
-            provider = new firebase.auth.GoogleAuthProvider();
-            firebaseReady = true;
-            // 監聽登入狀態
-            auth.onAuthStateChanged(user => {
-              currentUser = user;
-              if(user){
-                document.getElementById('auth-overlay').classList.remove('show');
-                loadCloudSave();
-              }
-            });
-          } catch(e){ console.warn('Firebase init error:', e); }
-          resolve();
-        }
-      };
-      s.onerror = () => { loaded++; if(loaded===scripts.length) resolve(); };
+      s.src = scripts[i];
+      s.onload = () => loadNext(i + 1);
+      s.onerror = () => { console.warn('Firebase script load error:', scripts[i]); loadNext(i + 1); };
       document.head.appendChild(s);
-    });
+    }
+    loadNext(0);
   });
 }
 
@@ -5154,6 +5152,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </script>
 
-  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r119</div>
+  <div style="position:fixed;bottom:6px;right:8px;font-size:.55rem;color:#666;pointer-events:none;z-index:9999;letter-spacing:.04em;line-height:1;">r120</div>
 </body>
 </html>
